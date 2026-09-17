@@ -10,7 +10,7 @@ Legend: ✅ done · 🔄 in progress · ⏳ open
 | # | Step | Status | Result |
 |---|---|---|---|
 | 0 | **Project setup:** clean Flutter project (Android + iOS), Git, packages, languages, design tokens, navigation base, brand/market config, docs | ✅ | Welcome screen builds for Android; tests pass |
-| 1 | **Onboarding & app shells:** role selection (customer / provider), role-based navigation, customer and provider menus with placeholder screens | ⏳ | Clickable app skeleton for both roles |
+| 1 | **Onboarding & app shells:** role selection (customer / provider), role-based navigation, customer and provider menus with placeholder screens | ✅ | Clickable app skeleton for both roles; role remembered on the device; mode switch in profile |
 | 2 | **Backend setup:** Supabase account (EU region), dev + prod projects, environment config, login with email code, profiles, roles, security rules | ⏳ | Real sign-up and login; role stored on the server |
 | 3 | **Service catalog:** categories, services, price options, sample data for Vienna | ⏳ | Real categories loaded from Supabase |
 | 4 | **Provider onboarding & verification:** profile, services, prices, service area, availability, document upload, category-specific requirements | ⏳ | Provider submits documents; admin approves in Supabase |

@@ -29,10 +29,18 @@ Guidance for AI coding assistants working in this repository.
 
 ## Architecture rules
 
-- Feature-first: `lib/features/<feature>/{data,domain,presentation}`.
-  Shared infrastructure in `lib/core/`, visual tokens and theme in
+- Feature-first: `lib/features/<feature>/{data,domain,application,presentation}`
+  (`application/` = Riverpod state shared by several screens). Shared
+  infrastructure in `lib/core/`, visual tokens, theme and shared widgets in
   `lib/design_system/`.
 - State management: Riverpod. Navigation: go_router, paths in `AppRoutes`.
+- Every route lives in exactly one area (`/welcome`, `/customer`, `/provider`).
+  `route_guard.dart` is deny-by-default; keep its unit tests in sync. It is a
+  navigation guard, not a security boundary.
+- Bottom navigation tabs come from `ShellTab`. Keep tab labels short enough for
+  five tabs on a 320-point-wide screen.
+- Placeholder screens live in the feature folder that will own the real screen;
+  replace them there.
 - Import `package:material_ui/material_ui.dart`, never
   `package:flutter/material.dart`. Localization delegates come from
   `material_ui` (`GlobalMaterialLocalizations.delegates`).

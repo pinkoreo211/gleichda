@@ -38,22 +38,45 @@ flutter build apk --debug
 
 ```
 lib/
-├─ main.dart                 start-up
+├─ main.dart                 start-up (loads saved session, starts the app)
 ├─ app.dart                  root widget: theme, languages, navigation
 ├─ core/
 │  ├─ config/                brand name, market settings (Austria)
-│  └─ routing/               all screens and navigation rules
-├─ design_system/            colors, spacing, theme
+│  └─ routing/               screen addresses, router, route guard
+├─ design_system/            colors, spacing, theme, shared widgets
 ├─ features/                 one folder per feature
-│  └─ onboarding/presentation/welcome_screen.dart
+│  ├─ session/               active role (customer / provider), saved on device
+│  ├─ onboarding/            welcome and role selection
+│  ├─ shell/                 bottom navigation per role
+│  ├─ discovery/             customer home (placeholder)
+│  ├─ jobs/                  customer bookings, provider jobs (placeholders)
+│  ├─ chat/                  chats (placeholder)
+│  ├─ availability/          provider calendar (placeholder)
+│  ├─ earnings/              provider finances (placeholder)
+│  └─ profile/               profile and mode switch
 └─ l10n/                     translations (.arb) + generated code
-test/                        automated tests
+test/                        automated tests (helpers/ has test utilities)
 docs/                        roadmap and project documentation
 ```
 
-Each feature grows into three layers:
-`data/` (talks to the backend), `domain/` (models and business rules),
+Each feature is split into up to four layers:
+`data/` (storage and backend access), `domain/` (models and business rules),
+`application/` (app-wide state shared by several screens),
 `presentation/` (screens and widgets).
+
+## Roles and navigation
+
+- After onboarding the user is either in **customer** or **provider** mode
+  (`features/session`). The choice is saved on the device and can be switched
+  in the profile.
+- Every screen lives in exactly one area: `/welcome/...`, `/customer/...` or
+  `/provider/...` (`core/routing/app_routes.dart`).
+- `core/routing/route_guard.dart` keeps each role inside its own area
+  (deny by default). This only controls navigation in the app. Access to
+  real data will be enforced by the backend's security rules.
+- Bottom navigation tabs are defined once in
+  `features/shell/presentation/shell_tab.dart`. Tab labels must stay short:
+  the provider bar has five tabs and must fit a 320-point-wide iPhone SE.
 
 ## Texts and languages
 

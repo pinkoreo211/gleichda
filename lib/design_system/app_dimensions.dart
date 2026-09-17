@@ -16,5 +16,11 @@ abstract final class AppRadius {
   static const double lg = 20;
 }
 
+/// Icon sizes beyond the default 24.
+abstract final class AppIconSize {
+  static const double lg = 32;
+  static const double xl = 56;
+}
+
 /// Minimum height of primary buttons: large, easy thumb targets.
 const double kPrimaryButtonHeight = 52;

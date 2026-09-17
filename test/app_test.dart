@@ -1,43 +1,55 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
-import 'package:app/app.dart';
 import 'package:app/core/config/brand_config.dart';
+import 'package:app/features/session/domain/app_role.dart';
+
+import 'helpers/pump_app.dart';
 
 void main() {
-  testWidgets('starts on the welcome screen in German on an Austrian device', (
-    tester,
-  ) async {
-    tester.platformDispatcher.localesTestValue = const [Locale('de', 'AT')];
-    addTearDown(tester.platformDispatcher.clearLocalesTestValue);
+  group('language', () {
+    testWidgets('German on an Austrian device', (tester) async {
+      await pumpApp(tester);
 
-    await tester.pumpWidget(const ProviderScope(child: App()));
-    await tester.pumpAndSettle();
+      expect(find.text(BrandConfig.appName), findsOneWidget);
+      expect(find.text('Du brauchst wen? Gleich da.'), findsOneWidget);
+    });
 
-    expect(find.text(BrandConfig.appName), findsOneWidget);
-    expect(find.text('Du brauchst wen? Gleich da.'), findsOneWidget);
+    testWidgets('English on an English device', (tester) async {
+      await pumpApp(tester, locale: const Locale('en', 'GB'));
+
+      expect(find.text('Need someone? Right there.'), findsOneWidget);
+    });
+
+    testWidgets('German fallback for unsupported languages', (tester) async {
+      await pumpApp(tester, locale: const Locale('tr', 'TR'));
+
+      expect(find.text('Du brauchst wen? Gleich da.'), findsOneWidget);
+    });
   });
 
-  testWidgets('uses English on an English device', (tester) async {
-    tester.platformDispatcher.localesTestValue = const [Locale('en', 'GB')];
-    addTearDown(tester.platformDispatcher.clearLocalesTestValue);
+  group('app start', () {
+    testWidgets('new users see the welcome screen', (tester) async {
+      await pumpApp(tester);
 
-    await tester.pumpWidget(const ProviderScope(child: App()));
-    await tester.pumpAndSettle();
+      expect(find.text("Los geht's"), findsOneWidget);
+      expect(find.byType(NavigationBar), findsNothing);
+    });
 
-    expect(find.text('Need someone? Right there.'), findsOneWidget);
-  });
+    testWidgets('a remembered customer opens directly in the customer area', (
+      tester,
+    ) async {
+      await pumpApp(tester, store: InMemorySessionStore(AppRole.customer));
 
-  testWidgets('falls back to German for unsupported device languages', (
-    tester,
-  ) async {
-    tester.platformDispatcher.localesTestValue = const [Locale('tr', 'TR')];
-    addTearDown(tester.platformDispatcher.clearLocalesTestValue);
+      expect(find.text('Was brauchst du?'), findsOneWidget);
+    });
 
-    await tester.pumpWidget(const ProviderScope(child: App()));
-    await tester.pumpAndSettle();
+    testWidgets('a remembered provider opens directly in the provider area', (
+      tester,
+    ) async {
+      await pumpApp(tester, store: InMemorySessionStore(AppRole.provider));
 
-    expect(find.text('Du brauchst wen? Gleich da.'), findsOneWidget);
+      expect(find.text('Noch keine Aufträge'), findsOneWidget);
+    });
   });
 }

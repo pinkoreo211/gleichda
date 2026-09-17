@@ -109,6 +109,210 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Geprüfte Dienstleister in deiner Nähe – schnell gefunden, einfach gebucht.'**
   String get welcomeSubtitle;
+
+  /// Primary button on the welcome screen that starts onboarding.
+  ///
+  /// In de, this message translates to:
+  /// **'Los geht\'s'**
+  String get welcomeGetStarted;
+
+  /// Heading of the role selection screen.
+  ///
+  /// In de, this message translates to:
+  /// **'Wie möchtest du {appName} nutzen?'**
+  String roleSelectionTitle(String appName);
+
+  /// Role option for customers on the role selection screen.
+  ///
+  /// In de, this message translates to:
+  /// **'Ich brauche eine Dienstleistung'**
+  String get roleCustomerTitle;
+
+  /// Explanation below the customer role option.
+  ///
+  /// In de, this message translates to:
+  /// **'Geprüfte Profis in deiner Nähe finden, buchen und bezahlen.'**
+  String get roleCustomerDescription;
+
+  /// Role option for service providers on the role selection screen.
+  ///
+  /// In de, this message translates to:
+  /// **'Ich biete Dienstleistungen an'**
+  String get roleProviderTitle;
+
+  /// Explanation below the provider role option.
+  ///
+  /// In de, this message translates to:
+  /// **'Aufträge in deiner Umgebung erhalten, Angebote senden und verdienen.'**
+  String get roleProviderDescription;
+
+  /// Hint below the role options that the choice is not final.
+  ///
+  /// In de, this message translates to:
+  /// **'Du kannst den Modus später jederzeit im Profil wechseln.'**
+  String get roleSwitchHint;
+
+  /// Button that confirms the selected role.
+  ///
+  /// In de, this message translates to:
+  /// **'Weiter'**
+  String get roleSelectionContinue;
+
+  /// Name of the customer mode, shown in the profile.
+  ///
+  /// In de, this message translates to:
+  /// **'Kundenmodus'**
+  String get roleCustomerModeName;
+
+  /// Name of the provider mode, shown in the profile.
+  ///
+  /// In de, this message translates to:
+  /// **'Anbietermodus'**
+  String get roleProviderModeName;
+
+  /// Bottom navigation label: customer home.
+  ///
+  /// In de, this message translates to:
+  /// **'Start'**
+  String get tabHome;
+
+  /// Bottom navigation label: customer bookings.
+  ///
+  /// In de, this message translates to:
+  /// **'Buchungen'**
+  String get tabBookings;
+
+  /// Bottom navigation label: chats (customer and provider). Keep short: the provider bar has five tabs.
+  ///
+  /// In de, this message translates to:
+  /// **'Chats'**
+  String get tabMessages;
+
+  /// Bottom navigation label: profile (customer and provider).
+  ///
+  /// In de, this message translates to:
+  /// **'Profil'**
+  String get tabProfile;
+
+  /// Bottom navigation label: provider jobs.
+  ///
+  /// In de, this message translates to:
+  /// **'Aufträge'**
+  String get tabJobs;
+
+  /// Bottom navigation label: provider availability and appointments.
+  ///
+  /// In de, this message translates to:
+  /// **'Kalender'**
+  String get tabCalendar;
+
+  /// Bottom navigation label: provider earnings, payouts and transactions. Keep short: the provider bar has five tabs.
+  ///
+  /// In de, this message translates to:
+  /// **'Finanzen'**
+  String get tabEarnings;
+
+  /// Heading of the customer home screen (placeholder).
+  ///
+  /// In de, this message translates to:
+  /// **'Was brauchst du?'**
+  String get customerHomeTitle;
+
+  /// Placeholder text on the customer home screen until search is built.
+  ///
+  /// In de, this message translates to:
+  /// **'Bald beschreibst du hier dein Anliegen oder wählst eine Kategorie – und findest geprüfte Profis in deiner Nähe.'**
+  String get customerHomeMessage;
+
+  /// Empty state title on the customer bookings screen.
+  ///
+  /// In de, this message translates to:
+  /// **'Noch keine Buchungen'**
+  String get customerBookingsEmptyTitle;
+
+  /// Empty state text on the customer bookings screen.
+  ///
+  /// In de, this message translates to:
+  /// **'Hier siehst du bald deine Buchungen und Projekte mit ihrem aktuellen Status.'**
+  String get customerBookingsEmptyMessage;
+
+  /// Empty state title on the messages screen.
+  ///
+  /// In de, this message translates to:
+  /// **'Noch keine Nachrichten'**
+  String get conversationsEmptyTitle;
+
+  /// Empty state text on the messages screen.
+  ///
+  /// In de, this message translates to:
+  /// **'Hier findest du bald alle Chats zu deinen Aufträgen.'**
+  String get conversationsEmptyMessage;
+
+  /// Empty state title on the provider jobs screen.
+  ///
+  /// In de, this message translates to:
+  /// **'Noch keine Aufträge'**
+  String get providerJobsEmptyTitle;
+
+  /// Empty state text on the provider jobs screen.
+  ///
+  /// In de, this message translates to:
+  /// **'Sobald dein Profil geprüft ist, erhältst du hier passende Anfragen und Projekte aus deiner Umgebung.'**
+  String get providerJobsEmptyMessage;
+
+  /// Heading on the provider calendar screen (placeholder).
+  ///
+  /// In de, this message translates to:
+  /// **'Deine Verfügbarkeit'**
+  String get availabilityTitle;
+
+  /// Placeholder text on the provider calendar screen.
+  ///
+  /// In de, this message translates to:
+  /// **'Hier legst du bald fest, wann du arbeitest, und siehst deine Termine.'**
+  String get availabilityMessage;
+
+  /// Empty state title on the provider earnings screen.
+  ///
+  /// In de, this message translates to:
+  /// **'Noch keine Einnahmen'**
+  String get earningsEmptyTitle;
+
+  /// Empty state text on the provider earnings screen.
+  ///
+  /// In de, this message translates to:
+  /// **'Hier siehst du bald deine abgeschlossenen Aufträge und Auszahlungen.'**
+  String get earningsEmptyMessage;
+
+  /// Label for the active mode in the profile.
+  ///
+  /// In de, this message translates to:
+  /// **'Aktueller Modus'**
+  String get profileCurrentMode;
+
+  /// Button in the profile that switches from customer to provider mode.
+  ///
+  /// In de, this message translates to:
+  /// **'Zum Anbietermodus wechseln'**
+  String get profileSwitchToProvider;
+
+  /// Button in the profile that switches from provider to customer mode.
+  ///
+  /// In de, this message translates to:
+  /// **'Zum Kundenmodus wechseln'**
+  String get profileSwitchToCustomer;
+
+  /// Placeholder note in the profile until accounts exist.
+  ///
+  /// In de, this message translates to:
+  /// **'Anmeldung, persönliche Daten und Einstellungen folgen in Kürze.'**
+  String get profileAccountComingSoon;
+
+  /// Debug-only button that resets the role and shows onboarding again.
+  ///
+  /// In de, this message translates to:
+  /// **'Onboarding neu starten (nur Testversion)'**
+  String get profileRestartOnboarding;
 }
 
 class _AppLocalizationsDelegate

@@ -7,5 +7,147 @@
   "welcomeSubtitle": "Geprüfte Dienstleister in deiner Nähe – schnell gefunden, einfach gebucht.",
   "@welcomeSubtitle": {
     "description": "Short explanation of the app below the slogan on the welcome screen."
+  },
+  "welcomeGetStarted": "Los geht's",
+  "@welcomeGetStarted": {
+    "description": "Primary button on the welcome screen that starts onboarding."
+  },
+  "roleSelectionTitle": "Wie möchtest du {appName} nutzen?",
+  "@roleSelectionTitle": {
+    "description": "Heading of the role selection screen.",
+    "placeholders": {
+      "appName": {
+        "type": "String",
+        "example": "GleichDa"
+      }
+    }
+  },
+  "roleCustomerTitle": "Ich brauche eine Dienstleistung",
+  "@roleCustomerTitle": {
+    "description": "Role option for customers on the role selection screen."
+  },
+  "roleCustomerDescription": "Geprüfte Profis in deiner Nähe finden, buchen und bezahlen.",
+  "@roleCustomerDescription": {
+    "description": "Explanation below the customer role option."
+  },
+  "roleProviderTitle": "Ich biete Dienstleistungen an",
+  "@roleProviderTitle": {
+    "description": "Role option for service providers on the role selection screen."
+  },
+  "roleProviderDescription": "Aufträge in deiner Umgebung erhalten, Angebote senden und verdienen.",
+  "@roleProviderDescription": {
+    "description": "Explanation below the provider role option."
+  },
+  "roleSwitchHint": "Du kannst den Modus später jederzeit im Profil wechseln.",
+  "@roleSwitchHint": {
+    "description": "Hint below the role options that the choice is not final."
+  },
+  "roleSelectionContinue": "Weiter",
+  "@roleSelectionContinue": {
+    "description": "Button that confirms the selected role."
+  },
+  "roleCustomerModeName": "Kundenmodus",
+  "@roleCustomerModeName": {
+    "description": "Name of the customer mode, shown in the profile."
+  },
+  "roleProviderModeName": "Anbietermodus",
+  "@roleProviderModeName": {
+    "description": "Name of the provider mode, shown in the profile."
+  },
+  "tabHome": "Start",
+  "@tabHome": {
+    "description": "Bottom navigation label: customer home."
+  },
+  "tabBookings": "Buchungen",
+  "@tabBookings": {
+    "description": "Bottom navigation label: customer bookings."
+  },
+  "tabMessages": "Chats",
+  "@tabMessages": {
+    "description": "Bottom navigation label: chats (customer and provider). Keep short: the provider bar has five tabs."
+  },
+  "tabProfile": "Profil",
+  "@tabProfile": {
+    "description": "Bottom navigation label: profile (customer and provider)."
+  },
+  "tabJobs": "Aufträge",
+  "@tabJobs": {
+    "description": "Bottom navigation label: provider jobs."
+  },
+  "tabCalendar": "Kalender",
+  "@tabCalendar": {
+    "description": "Bottom navigation label: provider availability and appointments."
+  },
+  "tabEarnings": "Finanzen",
+  "@tabEarnings": {
+    "description": "Bottom navigation label: provider earnings, payouts and transactions. Keep short: the provider bar has five tabs."
+  },
+  "customerHomeTitle": "Was brauchst du?",
+  "@customerHomeTitle": {
+    "description": "Heading of the customer home screen (placeholder)."
+  },
+  "customerHomeMessage": "Bald beschreibst du hier dein Anliegen oder wählst eine Kategorie – und findest geprüfte Profis in deiner Nähe.",
+  "@customerHomeMessage": {
+    "description": "Placeholder text on the customer home screen until search is built."
+  },
+  "customerBookingsEmptyTitle": "Noch keine Buchungen",
+  "@customerBookingsEmptyTitle": {
+    "description": "Empty state title on the customer bookings screen."
+  },
+  "customerBookingsEmptyMessage": "Hier siehst du bald deine Buchungen und Projekte mit ihrem aktuellen Status.",
+  "@customerBookingsEmptyMessage": {
+    "description": "Empty state text on the customer bookings screen."
+  },
+  "conversationsEmptyTitle": "Noch keine Nachrichten",
+  "@conversationsEmptyTitle": {
+    "description": "Empty state title on the messages screen."
+  },
+  "conversationsEmptyMessage": "Hier findest du bald alle Chats zu deinen Aufträgen.",
+  "@conversationsEmptyMessage": {
+    "description": "Empty state text on the messages screen."
+  },
+  "providerJobsEmptyTitle": "Noch keine Aufträge",
+  "@providerJobsEmptyTitle": {
+    "description": "Empty state title on the provider jobs screen."
+  },
+  "providerJobsEmptyMessage": "Sobald dein Profil geprüft ist, erhältst du hier passende Anfragen und Projekte aus deiner Umgebung.",
+  "@providerJobsEmptyMessage": {
+    "description": "Empty state text on the provider jobs screen."
+  },
+  "availabilityTitle": "Deine Verfügbarkeit",
+  "@availabilityTitle": {
+    "description": "Heading on the provider calendar screen (placeholder)."
+  },
+  "availabilityMessage": "Hier legst du bald fest, wann du arbeitest, und siehst deine Termine.",
+  "@availabilityMessage": {
+    "description": "Placeholder text on the provider calendar screen."
+  },
+  "earningsEmptyTitle": "Noch keine Einnahmen",
+  "@earningsEmptyTitle": {
+    "description": "Empty state title on the provider earnings screen."
+  },
+  "earningsEmptyMessage": "Hier siehst du bald deine abgeschlossenen Aufträge und Auszahlungen.",
+  "@earningsEmptyMessage": {
+    "description": "Empty state text on the provider earnings screen."
+  },
+  "profileCurrentMode": "Aktueller Modus",
+  "@profileCurrentMode": {
+    "description": "Label for the active mode in the profile."
+  },
+  "profileSwitchToProvider": "Zum Anbietermodus wechseln",
+  "@profileSwitchToProvider": {
+    "description": "Button in the profile that switches from customer to provider mode."
+  },
+  "profileSwitchToCustomer": "Zum Kundenmodus wechseln",
+  "@profileSwitchToCustomer": {
+    "description": "Button in the profile that switches from provider to customer mode."
+  },
+  "profileAccountComingSoon": "Anmeldung, persönliche Daten und Einstellungen folgen in Kürze.",
+  "@profileAccountComingSoon": {
+    "description": "Placeholder note in the profile until accounts exist."
+  },
+  "profileRestartOnboarding": "Onboarding neu starten (nur Testversion)",
+  "@profileRestartOnboarding": {
+    "description": "Debug-only button that resets the role and shows onboarding again."
   }
 }
