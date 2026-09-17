@@ -1,0 +1,11 @@
+{
+  "@@locale": "de",
+  "appTagline": "Du brauchst wen? Gleich da.",
+  "@appTagline": {
+    "description": "Brand slogan shown on the welcome screen."
+  },
+  "welcomeSubtitle": "Geprüfte Dienstleister in deiner Nähe – schnell gefunden, einfach gebucht.",
+  "@welcomeSubtitle": {
+    "description": "Short explanation of the app below the slogan on the welcome screen."
+  }
+}

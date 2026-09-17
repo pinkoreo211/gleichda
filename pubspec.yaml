@@ -7,8 +7,15 @@ environment:
   sdk: ^3.13.2
 
 dependencies:
+  cupertino_icons: ^1.0.9
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  flutter_riverpod: ^3.4.3
+  go_router: ^18.0.1
+  intl: ^0.20.3
+  material_ui: ^1.3.0
 
 dev_dependencies:
   flutter_test:
@@ -17,3 +24,5 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  # Generates the translation classes from lib/l10n/*.arb (see l10n.yaml).
+  generate: true

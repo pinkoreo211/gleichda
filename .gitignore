@@ -46,3 +46,11 @@ app.*.map.json
 
 # Widget Preview related
 .widget_preview/
+
+# Environment files with keys (e.g. Supabase). Never commit real values;
+# only the *.example files belong in Git.
+.env
+.env.*
+!.env.example
+/env/*.json
+!/env/*.example.json

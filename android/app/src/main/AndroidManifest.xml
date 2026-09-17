@@ -1,6 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Needed in release builds to reach the backend. Flutter only adds it
+         to debug/profile builds automatically. -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
-        android:label="app"
+        android:label="GleichDa"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

@@ -1,0 +1,10 @@
+# Translation setup. German is the source language: every new text is
+# added to app_de.arb first, then translated in the other .arb files.
+arb-dir: lib/l10n
+template-arb-file: app_de.arb
+output-localization-file: app_localizations.dart
+output-class: AppLocalizations
+nullable-getter: false
+# If the device language is not supported, fall back to German.
+preferred-supported-locales:
+  - de
