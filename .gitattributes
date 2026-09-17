@@ -1,0 +1,10 @@
+# Store text files with LF line endings in the repository.
+# Each machine converts to its native line endings on checkout
+# (Windows: CRLF, macOS: LF), so switching computers never
+# shows every file as "changed".
+* text=auto
+
+# Scripts that must keep a specific line ending on every OS.
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.sh text eol=lf
