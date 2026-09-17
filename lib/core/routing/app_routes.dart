@@ -7,6 +7,7 @@ import 'package:app/features/session/domain/app_role.dart';
 abstract final class AppRoutes {
   // Onboarding
   static const String welcome = '/welcome';
+  static const String login = '/welcome/login';
   static const String roleSelection = '/welcome/role';
 
   // Customer area

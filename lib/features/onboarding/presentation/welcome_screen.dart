@@ -53,7 +53,7 @@ class WelcomeScreen extends StatelessWidget {
                 ),
               ),
               FilledButton(
-                onPressed: () => context.go(AppRoutes.roleSelection),
+                onPressed: () => context.go(AppRoutes.login),
                 child: Text(l10n.welcomeGetStarted),
               ),
             ],

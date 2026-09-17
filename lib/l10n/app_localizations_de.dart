@@ -125,9 +125,66 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get profileAccountComingSoon =>
-      'Anmeldung, persönliche Daten und Einstellungen folgen in Kürze.';
+      'Persönliche Daten und Einstellungen folgen in Kürze.';
 
   @override
-  String get profileRestartOnboarding =>
-      'Onboarding neu starten (nur Testversion)';
+  String get profileSignedInAs => 'Angemeldet als';
+
+  @override
+  String get signOut => 'Abmelden';
+
+  @override
+  String get loginTitle => 'Anmelden oder registrieren';
+
+  @override
+  String get loginEmailIntro =>
+      'Gib deine E-Mail-Adresse ein. Wir schicken dir einen Code – ganz ohne Passwort.';
+
+  @override
+  String get loginEmailLabel => 'E-Mail-Adresse';
+
+  @override
+  String get loginSendCode => 'Code senden';
+
+  @override
+  String get loginCodeTitle => 'Code eingeben';
+
+  @override
+  String loginCodeIntro(String email) {
+    return 'Wir haben dir einen Code an $email geschickt. Schau auch im Spam-Ordner nach.';
+  }
+
+  @override
+  String get loginCodeLabel => 'Code aus der E-Mail';
+
+  @override
+  String get loginVerifyCode => 'Bestätigen';
+
+  @override
+  String get loginResendCode => 'Code erneut senden';
+
+  @override
+  String get loginCodeResent => 'Neuer Code ist unterwegs.';
+
+  @override
+  String get loginChangeEmail => 'Andere E-Mail-Adresse verwenden';
+
+  @override
+  String get errorInvalidEmail => 'Bitte gib eine gültige E-Mail-Adresse ein.';
+
+  @override
+  String get errorInvalidOrExpiredCode =>
+      'Der Code ist falsch oder abgelaufen. Fordere bei Bedarf einen neuen an.';
+
+  @override
+  String get errorTooManyRequests =>
+      'Zu viele Versuche. Bitte warte kurz und versuche es dann erneut.';
+
+  @override
+  String get errorEmailNotAuthorized =>
+      'An diese E-Mail-Adresse können wir derzeit keine E-Mails senden.';
+
+  @override
+  String get errorUnknown =>
+      'Das hat nicht geklappt. Bitte prüfe deine Internetverbindung und versuche es erneut.';
 }

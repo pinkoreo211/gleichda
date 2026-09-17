@@ -2,12 +2,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:app/features/session/domain/app_role.dart';
 
-/// Remembers session choices on this device between app starts.
+/// Remembers the last used mode per account on this device, so a returning
+/// user lands in the same mode and a different account on the same phone
+/// does not inherit it.
 abstract interface class SessionStore {
-  AppRole? readActiveRole();
+  AppRole? readActiveRole(String userId);
 
-  /// Saves [role], or forgets the saved role when [role] is `null`.
-  Future<void> writeActiveRole(AppRole? role);
+  Future<void> writeActiveRole(String userId, AppRole role);
 }
 
 /// [SessionStore] backed by the platform's key-value storage
@@ -15,20 +16,18 @@ abstract interface class SessionStore {
 class SharedPreferencesSessionStore implements SessionStore {
   SharedPreferencesSessionStore(this._preferences);
 
-  static const String activeRoleKey = 'session.active_role';
-
   final SharedPreferencesWithCache _preferences;
 
+  static String _activeRoleKey(String userId) => 'session.active_role.$userId';
+
   @override
-  AppRole? readActiveRole() {
-    final stored = _preferences.getString(activeRoleKey);
+  AppRole? readActiveRole(String userId) {
+    final stored = _preferences.getString(_activeRoleKey(userId));
     // Unknown values (e.g. from an older app version) count as "no role".
     return AppRole.values.asNameMap()[stored];
   }
 
   @override
-  Future<void> writeActiveRole(AppRole? role) {
-    if (role == null) return _preferences.remove(activeRoleKey);
-    return _preferences.setString(activeRoleKey, role.name);
-  }
+  Future<void> writeActiveRole(String userId, AppRole role) =>
+      _preferences.setString(_activeRoleKey(userId), role.name);
 }

@@ -18,6 +18,7 @@ abstract final class AppRadius {
 
 /// Icon sizes beyond the default 24.
 abstract final class AppIconSize {
+  static const double md = 24;
   static const double lg = 32;
   static const double xl = 56;
 }

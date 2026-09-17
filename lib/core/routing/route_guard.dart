@@ -4,21 +4,24 @@ import 'package:app/features/session/domain/app_role.dart';
 /// Decides where the user may go. Returns the path to redirect to, or
 /// `null` if [location] is allowed.
 ///
-/// - Without a role, only onboarding is reachable.
-/// - With a role, only that role's area is reachable (deny by default), so a
+/// - Signed out: only the welcome and login screens.
+/// - Signed in without a mode: only mode selection.
+/// - Signed in with a mode: only that mode's area (deny by default), so a
 ///   customer can never open a provider screen, even through a link.
 ///
 /// This protects the app's navigation only. Access to real data is enforced
 /// by the backend's security rules.
 String? resolveRedirect({
+  required bool isSignedIn,
   required AppRole? activeRole,
   required String location,
 }) {
+  if (!isSignedIn) {
+    const allowed = {AppRoutes.welcome, AppRoutes.login};
+    return allowed.contains(location) ? null : AppRoutes.welcome;
+  }
   if (activeRole == null) {
-    final inOnboarding =
-        location == AppRoutes.welcome ||
-        AppRoutes.isInside(location, AppRoutes.welcome);
-    return inOnboarding ? null : AppRoutes.welcome;
+    return location == AppRoutes.roleSelection ? null : AppRoutes.roleSelection;
   }
   return AppRoutes.isInside(location, AppRoutes.areaFor(activeRole))
       ? null

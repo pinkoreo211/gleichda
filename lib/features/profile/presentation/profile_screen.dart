@@ -1,26 +1,49 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
+import 'package:app/core/errors/app_failure_message.dart';
 import 'package:app/design_system/app_dimensions.dart';
+import 'package:app/design_system/widgets/button_progress.dart';
+import 'package:app/features/auth/application/current_user.dart';
+import 'package:app/features/auth/data/auth_repository.dart';
+import 'package:app/features/auth/presentation/sign_out_button.dart';
 import 'package:app/features/session/application/active_role_controller.dart';
 import 'package:app/features/session/domain/app_role.dart';
 import 'package:app/l10n/app_localizations.dart';
 
-/// Profile, shared by customers and providers. For now it shows the active
-/// mode and lets the user switch; account details follow with sign-in.
-class ProfileScreen extends ConsumerWidget {
+/// Profile, shared by customers and providers: account, mode switch and
+/// sign-out. Profile editing follows later.
+class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends ConsumerState<ProfileScreen> {
+  bool _isSwitching = false;
+
+  Future<void> _switchTo(AppRole role) async {
+    setState(() => _isSwitching = true);
+    try {
+      await ref.read(activeRoleProvider.notifier).activate(role);
+    } catch (error) {
+      if (mounted) showFailureSnackBar(context, error);
+    }
+    if (mounted) setState(() => _isSwitching = false);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
+    // Watched so the screen updates when the account changes.
+    ref.watch(currentUserIdProvider);
+    final email = ref.read(authRepositoryProvider).currentEmail;
     final role = ref.watch(activeRoleProvider);
-    // Briefly null while leaving the area after "restart onboarding".
+    // Briefly null while leaving the area after sign-out.
     if (role == null) return const SizedBox.shrink();
 
-    final roleController = ref.read(activeRoleProvider.notifier);
     final (modeName, switchLabel, otherRole) = switch (role) {
       AppRole.customer => (
         l10n.roleCustomerModeName,
@@ -41,16 +64,27 @@ class ProfileScreen extends ConsumerWidget {
         children: [
           Card(
             margin: EdgeInsets.zero,
-            child: ListTile(
-              leading: const Icon(Icons.badge_outlined),
-              title: Text(l10n.profileCurrentMode),
-              subtitle: Text(modeName),
+            child: Column(
+              children: [
+                ListTile(
+                  leading: const Icon(Icons.alternate_email),
+                  title: Text(l10n.profileSignedInAs),
+                  subtitle: Text(email ?? ''),
+                ),
+                ListTile(
+                  leading: const Icon(Icons.badge_outlined),
+                  title: Text(l10n.profileCurrentMode),
+                  subtitle: Text(modeName),
+                ),
+              ],
             ),
           ),
           const SizedBox(height: AppSpacing.md),
           OutlinedButton.icon(
-            onPressed: () => roleController.select(otherRole),
-            icon: const Icon(Icons.swap_horiz),
+            onPressed: _isSwitching ? null : () => _switchTo(otherRole),
+            icon: _isSwitching
+                ? const ButtonProgress()
+                : const Icon(Icons.swap_horiz),
             label: Text(switchLabel),
           ),
           const SizedBox(height: AppSpacing.lg),
@@ -60,13 +94,8 @@ class ProfileScreen extends ConsumerWidget {
               color: theme.colorScheme.onSurfaceVariant,
             ),
           ),
-          if (kDebugMode) ...[
-            const SizedBox(height: AppSpacing.xl),
-            TextButton(
-              onPressed: roleController.clear,
-              child: Text(l10n.profileRestartOnboarding),
-            ),
-          ],
+          const SizedBox(height: AppSpacing.xl),
+          const SignOutButton(),
         ],
       ),
     );

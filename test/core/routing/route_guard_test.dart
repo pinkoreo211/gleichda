@@ -5,26 +5,57 @@ import 'package:app/core/routing/route_guard.dart';
 import 'package:app/features/session/domain/app_role.dart';
 
 void main() {
-  group('without a role', () {
-    String? redirect(String location) =>
-        resolveRedirect(activeRole: null, location: location);
+  group('signed out', () {
+    String? redirect(String location) => resolveRedirect(
+      isSignedIn: false,
+      activeRole: null,
+      location: location,
+    );
 
-    test('allows onboarding screens', () {
+    test('allows welcome and login', () {
       expect(redirect(AppRoutes.welcome), isNull);
-      expect(redirect(AppRoutes.roleSelection), isNull);
+      expect(redirect(AppRoutes.login), isNull);
     });
 
-    test('sends every other screen to the welcome screen', () {
+    test('sends everything else to the welcome screen', () {
+      expect(redirect(AppRoutes.roleSelection), AppRoutes.welcome);
       expect(redirect(AppRoutes.customerHome), AppRoutes.welcome);
       expect(redirect(AppRoutes.providerJobs), AppRoutes.welcome);
       expect(redirect('/'), AppRoutes.welcome);
-      expect(redirect('/welcomeback'), AppRoutes.welcome);
+      expect(redirect('/welcome/unknown'), AppRoutes.welcome);
+    });
+
+    test('ignores a leftover mode', () {
+      expect(
+        resolveRedirect(
+          isSignedIn: false,
+          activeRole: AppRole.customer,
+          location: AppRoutes.customerHome,
+        ),
+        AppRoutes.welcome,
+      );
     });
   });
 
-  group('as customer', () {
+  group('signed in without a mode', () {
     String? redirect(String location) =>
-        resolveRedirect(activeRole: AppRole.customer, location: location);
+        resolveRedirect(isSignedIn: true, activeRole: null, location: location);
+
+    test('allows only mode selection', () {
+      expect(redirect(AppRoutes.roleSelection), isNull);
+      expect(redirect(AppRoutes.welcome), AppRoutes.roleSelection);
+      expect(redirect(AppRoutes.login), AppRoutes.roleSelection);
+      expect(redirect(AppRoutes.customerHome), AppRoutes.roleSelection);
+      expect(redirect(AppRoutes.providerJobs), AppRoutes.roleSelection);
+    });
+  });
+
+  group('signed in as customer', () {
+    String? redirect(String location) => resolveRedirect(
+      isSignedIn: true,
+      activeRole: AppRole.customer,
+      location: location,
+    );
 
     test('allows customer screens', () {
       expect(redirect(AppRoutes.customerHome), isNull);
@@ -38,6 +69,7 @@ void main() {
 
     test('skips onboarding and unknown areas', () {
       expect(redirect(AppRoutes.welcome), AppRoutes.customerHome);
+      expect(redirect(AppRoutes.login), AppRoutes.customerHome);
       expect(redirect(AppRoutes.roleSelection), AppRoutes.customerHome);
       expect(redirect(AppRoutes.customerArea), AppRoutes.customerHome);
       expect(redirect('/'), AppRoutes.customerHome);
@@ -45,9 +77,12 @@ void main() {
     });
   });
 
-  group('as provider', () {
-    String? redirect(String location) =>
-        resolveRedirect(activeRole: AppRole.provider, location: location);
+  group('signed in as provider', () {
+    String? redirect(String location) => resolveRedirect(
+      isSignedIn: true,
+      activeRole: AppRole.provider,
+      location: location,
+    );
 
     test('allows provider screens', () {
       expect(redirect(AppRoutes.providerJobs), isNull);

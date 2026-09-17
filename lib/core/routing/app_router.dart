@@ -4,6 +4,8 @@ import 'package:material_ui/material_ui.dart';
 
 import 'package:app/core/routing/app_routes.dart';
 import 'package:app/core/routing/route_guard.dart';
+import 'package:app/features/auth/application/current_user.dart';
+import 'package:app/features/auth/presentation/login_screen.dart';
 import 'package:app/features/availability/presentation/availability_screen.dart';
 import 'package:app/features/chat/presentation/conversations_screen.dart';
 import 'package:app/features/discovery/presentation/customer_home_screen.dart';
@@ -20,18 +22,20 @@ import 'package:app/features/shell/presentation/shell_tab.dart';
 
 /// The app's navigation.
 ///
-/// The router is created once. When the active role changes, it re-runs the
-/// route guard instead of being rebuilt, so the user is moved to the right
-/// area without losing the router's state.
+/// The router is created once. When the user signs in or out or changes
+/// mode, it re-runs the route guard instead of being rebuilt, so the user is
+/// moved to the right screen without losing the router's state.
 final appRouterProvider = Provider<GoRouter>((ref) {
-  final activeRole = ValueNotifier<AppRole?>(ref.read(activeRoleProvider));
-  ref.listen(activeRoleProvider, (_, role) => activeRole.value = role);
+  final refresh = _RouterRefresh();
+  ref.listen(currentUserIdProvider, (_, _) => refresh.notify());
+  ref.listen(activeRoleProvider, (_, _) => refresh.notify());
 
   final router = GoRouter(
     initialLocation: AppRoutes.welcome,
-    refreshListenable: activeRole,
+    refreshListenable: refresh,
     redirect: (context, state) => resolveRedirect(
-      activeRole: activeRole.value,
+      isSignedIn: ref.read(currentUserIdProvider) != null,
+      activeRole: ref.read(activeRoleProvider),
       location: state.matchedLocation,
     ),
     routes: [
@@ -41,10 +45,15 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         routes: [
           // Nested so the back button returns to the welcome screen.
           GoRoute(
-            path: 'role',
-            builder: (context, state) => const RoleSelectionScreen(),
+            path: 'login',
+            builder: (context, state) => const LoginScreen(),
           ),
         ],
+      ),
+      // Not nested: after sign-in there is no way "back" to the welcome screen.
+      GoRoute(
+        path: AppRoutes.roleSelection,
+        builder: (context, state) => const RoleSelectionScreen(),
       ),
       for (final role in AppRole.values) _roleArea(role),
     ],
@@ -52,10 +61,14 @@ final appRouterProvider = Provider<GoRouter>((ref) {
 
   ref.onDispose(() {
     router.dispose();
-    activeRole.dispose();
+    refresh.dispose();
   });
   return router;
 });
+
+class _RouterRefresh extends ChangeNotifier {
+  void notify() => notifyListeners();
+}
 
 /// One role's area: a shell with a navigation branch per tab.
 StatefulShellRoute _roleArea(AppRole role) {

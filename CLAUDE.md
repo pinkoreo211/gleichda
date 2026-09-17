@@ -20,7 +20,12 @@ Guidance for AI coding assistants working in this repository.
   (Dart package `app`, brand name only via `BrandConfig`).
 - Launch in Austria (Vienna), German first. Architecture must support Germany
   and additional languages.
-- Backend: Supabase in an EU region (account not created yet).
+- Backend: Supabase (one dev project connected; a separate prod project comes
+  before launch). Sign-in is passwordless with a one-time email code.
+- The owner never shares secret keys. Use only the Project URL and the
+  publishable key, read from `env/*.json` via `--dart-define-from-file`
+  (`Env`). Never hard-code them or commit them. Dashboard changes (SQL,
+  email templates) are done by the owner following `docs/supabase-setup.md`.
 - Payments: prepare for Stripe Connect (payments, platform fee, payouts,
   refunds, status, history); no live payments yet.
 - AI (later) must never invent prices; estimates for large projects are
@@ -55,6 +60,15 @@ Guidance for AI coding assistants working in this repository.
 - **The server decides.** Anything involving money, job status, verification
   or permissions must be enforced in the backend (Supabase RLS / server
   functions), never only in the app.
+- Database changes are new files in `supabase/migrations/` (never edit an
+  applied migration). Every table: RLS enabled, explicit grants, policies for
+  each allowed action. `security definer` functions set `search_path = ''`
+  and revoke execute from `public`/`anon`.
+- Roles live in `public.user_roles` and are only added via `add_my_role`
+  (customer/provider). The provider role alone never means verified.
+- Screens never use Supabase types. Repositories (`data/`) wrap Supabase and
+  throw `AppFailure`; tests override repository providers with fakes from
+  `test/helpers/pump_app.dart` and never call the real backend.
 - Never commit secrets (`.env*`, `env/*.json`, keystores).
 
 ## Before every commit

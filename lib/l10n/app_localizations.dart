@@ -302,17 +302,119 @@ abstract class AppLocalizations {
   /// **'Zum Kundenmodus wechseln'**
   String get profileSwitchToCustomer;
 
-  /// Placeholder note in the profile until accounts exist.
+  /// Placeholder note in the profile until profile editing exists.
   ///
   /// In de, this message translates to:
-  /// **'Anmeldung, persönliche Daten und Einstellungen folgen in Kürze.'**
+  /// **'Persönliche Daten und Einstellungen folgen in Kürze.'**
   String get profileAccountComingSoon;
 
-  /// Debug-only button that resets the role and shows onboarding again.
+  /// Label above the signed-in email address in the profile.
   ///
   /// In de, this message translates to:
-  /// **'Onboarding neu starten (nur Testversion)'**
-  String get profileRestartOnboarding;
+  /// **'Angemeldet als'**
+  String get profileSignedInAs;
+
+  /// Button that signs the user out.
+  ///
+  /// In de, this message translates to:
+  /// **'Abmelden'**
+  String get signOut;
+
+  /// Heading of the email step on the login screen. Works for new and existing users.
+  ///
+  /// In de, this message translates to:
+  /// **'Anmelden oder registrieren'**
+  String get loginTitle;
+
+  /// Explanation on the email step of the login screen.
+  ///
+  /// In de, this message translates to:
+  /// **'Gib deine E-Mail-Adresse ein. Wir schicken dir einen Code – ganz ohne Passwort.'**
+  String get loginEmailIntro;
+
+  /// Label of the email input field.
+  ///
+  /// In de, this message translates to:
+  /// **'E-Mail-Adresse'**
+  String get loginEmailLabel;
+
+  /// Button that sends the one-time code by email.
+  ///
+  /// In de, this message translates to:
+  /// **'Code senden'**
+  String get loginSendCode;
+
+  /// Heading of the code step on the login screen.
+  ///
+  /// In de, this message translates to:
+  /// **'Code eingeben'**
+  String get loginCodeTitle;
+
+  /// Explanation on the code step of the login screen.
+  ///
+  /// In de, this message translates to:
+  /// **'Wir haben dir einen Code an {email} geschickt. Schau auch im Spam-Ordner nach.'**
+  String loginCodeIntro(String email);
+
+  /// Label of the one-time code input field.
+  ///
+  /// In de, this message translates to:
+  /// **'Code aus der E-Mail'**
+  String get loginCodeLabel;
+
+  /// Button that checks the entered code and signs in.
+  ///
+  /// In de, this message translates to:
+  /// **'Bestätigen'**
+  String get loginVerifyCode;
+
+  /// Button that sends a new one-time code.
+  ///
+  /// In de, this message translates to:
+  /// **'Code erneut senden'**
+  String get loginResendCode;
+
+  /// Confirmation after a new code was sent.
+  ///
+  /// In de, this message translates to:
+  /// **'Neuer Code ist unterwegs.'**
+  String get loginCodeResent;
+
+  /// Button that returns from the code step to the email step.
+  ///
+  /// In de, this message translates to:
+  /// **'Andere E-Mail-Adresse verwenden'**
+  String get loginChangeEmail;
+
+  /// Error when the email address is not valid.
+  ///
+  /// In de, this message translates to:
+  /// **'Bitte gib eine gültige E-Mail-Adresse ein.'**
+  String get errorInvalidEmail;
+
+  /// Error when the one-time code is wrong or expired.
+  ///
+  /// In de, this message translates to:
+  /// **'Der Code ist falsch oder abgelaufen. Fordere bei Bedarf einen neuen an.'**
+  String get errorInvalidOrExpiredCode;
+
+  /// Error when the backend rate limit was hit.
+  ///
+  /// In de, this message translates to:
+  /// **'Zu viele Versuche. Bitte warte kurz und versuche es dann erneut.'**
+  String get errorTooManyRequests;
+
+  /// Error when the email service refuses the address (e.g. test email service limited to team members).
+  ///
+  /// In de, this message translates to:
+  /// **'An diese E-Mail-Adresse können wir derzeit keine E-Mails senden.'**
+  String get errorEmailNotAuthorized;
+
+  /// Generic error message for unexpected problems.
+  ///
+  /// In de, this message translates to:
+  /// **'Das hat nicht geklappt. Bitte prüfe deine Internetverbindung und versuche es erneut.'**
+  String get errorUnknown;
 }
 
 class _AppLocalizationsDelegate

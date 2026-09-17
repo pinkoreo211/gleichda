@@ -142,12 +142,86 @@
   "@profileSwitchToCustomer": {
     "description": "Button in the profile that switches from provider to customer mode."
   },
-  "profileAccountComingSoon": "Anmeldung, persönliche Daten und Einstellungen folgen in Kürze.",
+  "profileAccountComingSoon": "Persönliche Daten und Einstellungen folgen in Kürze.",
   "@profileAccountComingSoon": {
-    "description": "Placeholder note in the profile until accounts exist."
+    "description": "Placeholder note in the profile until profile editing exists."
   },
-  "profileRestartOnboarding": "Onboarding neu starten (nur Testversion)",
-  "@profileRestartOnboarding": {
-    "description": "Debug-only button that resets the role and shows onboarding again."
+  "profileSignedInAs": "Angemeldet als",
+  "@profileSignedInAs": {
+    "description": "Label above the signed-in email address in the profile."
+  },
+  "signOut": "Abmelden",
+  "@signOut": {
+    "description": "Button that signs the user out."
+  },
+  "loginTitle": "Anmelden oder registrieren",
+  "@loginTitle": {
+    "description": "Heading of the email step on the login screen. Works for new and existing users."
+  },
+  "loginEmailIntro": "Gib deine E-Mail-Adresse ein. Wir schicken dir einen Code – ganz ohne Passwort.",
+  "@loginEmailIntro": {
+    "description": "Explanation on the email step of the login screen."
+  },
+  "loginEmailLabel": "E-Mail-Adresse",
+  "@loginEmailLabel": {
+    "description": "Label of the email input field."
+  },
+  "loginSendCode": "Code senden",
+  "@loginSendCode": {
+    "description": "Button that sends the one-time code by email."
+  },
+  "loginCodeTitle": "Code eingeben",
+  "@loginCodeTitle": {
+    "description": "Heading of the code step on the login screen."
+  },
+  "loginCodeIntro": "Wir haben dir einen Code an {email} geschickt. Schau auch im Spam-Ordner nach.",
+  "@loginCodeIntro": {
+    "description": "Explanation on the code step of the login screen.",
+    "placeholders": {
+      "email": {
+        "type": "String",
+        "example": "anna@example.at"
+      }
+    }
+  },
+  "loginCodeLabel": "Code aus der E-Mail",
+  "@loginCodeLabel": {
+    "description": "Label of the one-time code input field."
+  },
+  "loginVerifyCode": "Bestätigen",
+  "@loginVerifyCode": {
+    "description": "Button that checks the entered code and signs in."
+  },
+  "loginResendCode": "Code erneut senden",
+  "@loginResendCode": {
+    "description": "Button that sends a new one-time code."
+  },
+  "loginCodeResent": "Neuer Code ist unterwegs.",
+  "@loginCodeResent": {
+    "description": "Confirmation after a new code was sent."
+  },
+  "loginChangeEmail": "Andere E-Mail-Adresse verwenden",
+  "@loginChangeEmail": {
+    "description": "Button that returns from the code step to the email step."
+  },
+  "errorInvalidEmail": "Bitte gib eine gültige E-Mail-Adresse ein.",
+  "@errorInvalidEmail": {
+    "description": "Error when the email address is not valid."
+  },
+  "errorInvalidOrExpiredCode": "Der Code ist falsch oder abgelaufen. Fordere bei Bedarf einen neuen an.",
+  "@errorInvalidOrExpiredCode": {
+    "description": "Error when the one-time code is wrong or expired."
+  },
+  "errorTooManyRequests": "Zu viele Versuche. Bitte warte kurz und versuche es dann erneut.",
+  "@errorTooManyRequests": {
+    "description": "Error when the backend rate limit was hit."
+  },
+  "errorEmailNotAuthorized": "An diese E-Mail-Adresse können wir derzeit keine E-Mails senden.",
+  "@errorEmailNotAuthorized": {
+    "description": "Error when the email service refuses the address (e.g. test email service limited to team members)."
+  },
+  "errorUnknown": "Das hat nicht geklappt. Bitte prüfe deine Internetverbindung und versuche es erneut.",
+  "@errorUnknown": {
+    "description": "Generic error message for unexpected problems."
   }
 }

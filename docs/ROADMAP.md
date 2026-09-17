@@ -11,7 +11,7 @@ Legend: ✅ done · 🔄 in progress · ⏳ open
 |---|---|---|---|
 | 0 | **Project setup:** clean Flutter project (Android + iOS), Git, packages, languages, design tokens, navigation base, brand/market config, docs | ✅ | Welcome screen builds for Android; tests pass |
 | 1 | **Onboarding & app shells:** role selection (customer / provider), role-based navigation, customer and provider menus with placeholder screens | ✅ | Clickable app skeleton for both roles; role remembered on the device; mode switch in profile |
-| 2 | **Backend setup:** Supabase account (EU region), dev + prod projects, environment config, login with email code, profiles, roles, security rules | ⏳ | Real sign-up and login; role stored on the server |
+| 2 | **Backend setup:** Supabase connected (dev project), environment config, login with email code, profiles, roles, security rules | 🔄 | App code done and tested. Owner: run SQL + email templates (`docs/supabase-setup.md`), then first real login on a device |
 | 3 | **Service catalog:** categories, services, price options, sample data for Vienna | ⏳ | Real categories loaded from Supabase |
 | 4 | **Provider onboarding & verification:** profile, services, prices, service area, availability, document upload, category-specific requirements | ⏳ | Provider submits documents; admin approves in Supabase |
 | 5 | **Discovery & fixed-price booking:** location, nearby verified providers, option → price → time → request | ⏳ | Customer books a cleaner in Vienna |
@@ -21,7 +21,7 @@ Legend: ✅ done · 🔄 in progress · ⏳ open
 | 9 | **Projects & offers:** project with photos/measurements/budget, offers, compare, accept | ⏳ | Paving project receives offers |
 | 10 | **Push notifications** | ⏳ | |
 | 11 | **Payments:** Stripe Connect in test mode (only when instructed) | ⏳ | Test payment, platform fee, payout, refund |
-| 12 | **Launch prep:** icon, splash, legal pages, account deletion, crash reporting, store listings, release signing, iOS build on a Mac, TestFlight + Play internal testing | ⏳ | Beta testers install the app |
+| 12 | **Launch prep:** separate prod Supabase project, own email service (SMTP), icon, splash, legal pages + consent at sign-up, account deletion, sign-in tokens in secure storage, crash reporting, store listings, release signing, iOS build on a Mac, TestFlight + Play internal testing | ⏳ | Beta testers install the app |
 | 13 | **Closed beta in Vienna**, fixes, public launch | ⏳ | |
 
 ## After the MVP
@@ -33,6 +33,9 @@ checks · insurance expiry reminders · milestone payments · more languages ·
 analytics.
 
 ## Open to-dos for the owner
+
+- [ ] Supabase: check EU region, run the SQL migration, switch email templates to codes (`docs/supabase-setup.md`)
+- [ ] First real sign-in on an emulator/phone with the email address of your Supabase account
 
 - [ ] Android Studio → SDK Manager → SDK Tools → install **Android SDK Command-line Tools**
 - [ ] Run `flutter doctor --android-licenses` and accept the licenses

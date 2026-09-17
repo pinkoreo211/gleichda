@@ -2,15 +2,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
 import 'package:app/core/config/brand_config.dart';
+import 'package:app/core/errors/app_failure_message.dart';
 import 'package:app/design_system/app_dimensions.dart';
+import 'package:app/design_system/widgets/button_progress.dart';
+import 'package:app/features/auth/presentation/sign_out_button.dart';
 import 'package:app/features/session/application/active_role_controller.dart';
 import 'package:app/features/session/domain/app_role.dart';
 import 'package:app/l10n/app_localizations.dart';
 
-/// Lets the user choose between customer and provider mode.
+/// Lets a signed-in user choose between customer and provider mode.
 ///
-/// Confirming only saves the role; the router then moves the user into the
-/// matching area automatically (see `route_guard.dart`).
+/// Confirming registers the role on the server and saves the mode; the router
+/// then moves the user into the matching area (see `route_guard.dart`).
 class RoleSelectionScreen extends ConsumerStatefulWidget {
   const RoleSelectionScreen({super.key});
 
@@ -21,6 +24,17 @@ class RoleSelectionScreen extends ConsumerStatefulWidget {
 
 class _RoleSelectionScreenState extends ConsumerState<RoleSelectionScreen> {
   AppRole? _selected;
+  bool _isBusy = false;
+
+  Future<void> _confirm(AppRole role) async {
+    setState(() => _isBusy = true);
+    try {
+      await ref.read(activeRoleProvider.notifier).activate(role);
+    } catch (error) {
+      if (mounted) showFailureSnackBar(context, error);
+    }
+    if (mounted) setState(() => _isBusy = false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +43,10 @@ class _RoleSelectionScreenState extends ConsumerState<RoleSelectionScreen> {
     final selected = _selected;
 
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        actions: const [SignOutButton()],
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(
@@ -75,12 +92,12 @@ class _RoleSelectionScreenState extends ConsumerState<RoleSelectionScreen> {
                 ),
               ),
               FilledButton(
-                onPressed: selected == null
+                onPressed: selected == null || _isBusy
                     ? null
-                    : () => ref
-                          .read(activeRoleProvider.notifier)
-                          .select(selected),
-                child: Text(l10n.roleSelectionContinue),
+                    : () => _confirm(selected),
+                child: _isBusy
+                    ? const ButtonProgress()
+                    : Text(l10n.roleSelectionContinue),
               ),
             ],
           ),

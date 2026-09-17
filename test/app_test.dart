@@ -29,27 +29,47 @@ void main() {
   });
 
   group('app start', () {
-    testWidgets('new users see the welcome screen', (tester) async {
+    testWidgets('signed-out users see the welcome screen', (tester) async {
       await pumpApp(tester);
 
       expect(find.text("Los geht's"), findsOneWidget);
       expect(find.byType(NavigationBar), findsNothing);
     });
 
-    testWidgets('a remembered customer opens directly in the customer area', (
+    testWidgets('signed-in users without a mode choose one first', (
       tester,
     ) async {
-      await pumpApp(tester, store: InMemorySessionStore(AppRole.customer));
+      await pumpSignedInApp(tester, role: null);
+
+      expect(find.text('Wie möchtest du GleichDa nutzen?'), findsOneWidget);
+    });
+
+    testWidgets('a returning customer opens directly in the customer area', (
+      tester,
+    ) async {
+      await pumpSignedInApp(tester, role: AppRole.customer);
 
       expect(find.text('Was brauchst du?'), findsOneWidget);
     });
 
-    testWidgets('a remembered provider opens directly in the provider area', (
+    testWidgets('a returning provider opens directly in the provider area', (
       tester,
     ) async {
-      await pumpApp(tester, store: InMemorySessionStore(AppRole.provider));
+      await pumpSignedInApp(tester, role: AppRole.provider);
 
       expect(find.text('Noch keine Aufträge'), findsOneWidget);
+    });
+
+    testWidgets('another account on the same phone does not inherit the mode', (
+      tester,
+    ) async {
+      await pumpSignedInApp(
+        tester,
+        role: null,
+        store: InMemorySessionStore({'someone-else': AppRole.provider}),
+      );
+
+      expect(find.text('Wie möchtest du GleichDa nutzen?'), findsOneWidget);
     });
   });
 }

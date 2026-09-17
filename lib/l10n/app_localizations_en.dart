@@ -124,9 +124,66 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get profileAccountComingSoon =>
-      'Sign-in, personal details and settings are coming soon.';
+      'Personal details and settings are coming soon.';
 
   @override
-  String get profileRestartOnboarding =>
-      'Restart onboarding (test builds only)';
+  String get profileSignedInAs => 'Signed in as';
+
+  @override
+  String get signOut => 'Sign out';
+
+  @override
+  String get loginTitle => 'Sign in or sign up';
+
+  @override
+  String get loginEmailIntro =>
+      'Enter your email address. We\'ll send you a code – no password needed.';
+
+  @override
+  String get loginEmailLabel => 'Email address';
+
+  @override
+  String get loginSendCode => 'Send code';
+
+  @override
+  String get loginCodeTitle => 'Enter code';
+
+  @override
+  String loginCodeIntro(String email) {
+    return 'We sent a code to $email. Please also check your spam folder.';
+  }
+
+  @override
+  String get loginCodeLabel => 'Code from the email';
+
+  @override
+  String get loginVerifyCode => 'Confirm';
+
+  @override
+  String get loginResendCode => 'Resend code';
+
+  @override
+  String get loginCodeResent => 'A new code is on its way.';
+
+  @override
+  String get loginChangeEmail => 'Use a different email address';
+
+  @override
+  String get errorInvalidEmail => 'Please enter a valid email address.';
+
+  @override
+  String get errorInvalidOrExpiredCode =>
+      'The code is wrong or has expired. Request a new one if needed.';
+
+  @override
+  String get errorTooManyRequests =>
+      'Too many attempts. Please wait a moment and try again.';
+
+  @override
+  String get errorEmailNotAuthorized =>
+      'We can\'t send emails to this address at the moment.';
+
+  @override
+  String get errorUnknown =>
+      'That didn\'t work. Please check your internet connection and try again.';
 }
