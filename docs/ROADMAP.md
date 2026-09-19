@@ -11,7 +11,8 @@ Legend: ✅ done · 🔄 in progress · ⏳ open
 |---|---|---|---|
 | 0 | **Project setup:** clean Flutter project (Android + iOS), Git, packages, languages, design tokens, navigation base, brand/market config, docs | ✅ | Welcome screen builds for Android; tests pass |
 | 1 | **Onboarding & app shells:** role selection (customer / provider), role-based navigation, customer and provider menus with placeholder screens | ✅ | Clickable app skeleton for both roles; role remembered on the device; mode switch in profile |
-| 2 | **Backend setup:** Supabase connected (dev project), environment config, login with email code, profiles, roles, security rules | 🔄 | App code done and tested. Owner: run SQL + email templates (`docs/supabase-setup.md`), then first real login on a device |
+| 2 | **Backend setup:** Supabase connected (dev project), environment config, login with email code, profiles, roles, security rules | ✅ | Verified end to end on a device: code email, sign-in, role, and profile read from Supabase |
+| 2b | **Customer request flow:** home with free-text request field, example requests, category cards; request screen with optional category, location/photo UI prepared, timing; request saved | ✅ | Customer describes a job in their own words and finds it again under "Deine Anfragen". Stored on the device only — no backend table yet |
 | 3 | **Service catalog:** categories, services, price options, sample data for Vienna | ⏳ | Real categories loaded from Supabase |
 | 4 | **Provider onboarding & verification:** profile, services, prices, service area, availability, document upload, category-specific requirements | ⏳ | Provider submits documents; admin approves in Supabase |
 | 5 | **Discovery & fixed-price booking:** location, nearby verified providers, option → price → time → request | ⏳ | Customer books a cleaner in Vienna |
@@ -34,10 +35,14 @@ analytics.
 
 ## Open to-dos for the owner
 
-- [ ] Supabase: check EU region, run the SQL migration, switch email templates to codes (`docs/supabase-setup.md`)
-- [ ] First real sign-in on an emulator/phone with the email address of your Supabase account
+- [x] Supabase: SQL migration run and verified (tables, RLS, policies, functions, triggers all present)
+- [x] Supabase: region confirmed EU (`eu-central-1`, Frankfurt)
+- [x] Own email sending: Gmail app password (`docs/supabase-setup.md`, section 3, Variante A)
+- [x] Supabase: SMTP settings entered (Gmail), template editing unlocked
+- [x] Supabase: email templates switched to codes — verified, a real code email arrived
+- [x] First real sign-in on a device — confirmed in the running app
 
-- [ ] Android Studio → SDK Manager → SDK Tools → install **Android SDK Command-line Tools**
-- [ ] Run `flutter doctor --android-licenses` and accept the licenses
-- [ ] Android Studio → Device Manager → create an emulator (or connect a phone)
+- [x] Android SDK Command-line Tools installed
+- [x] Android licences: Google replaced `sdkmanager --licenses`; `flutter doctor` still reports "unknown", which is a tooling mismatch, not a blocker — builds work
+- [x] Pixel 7 emulator created and running (Windows Hypervisor Platform enabled)
 - [ ] Free up disk space on C: (98% full)

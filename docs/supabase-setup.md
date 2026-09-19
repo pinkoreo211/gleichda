@@ -23,7 +23,100 @@ das ist dann harmlos, es wurde nichts verändert.
 Danach unter **Table Editor** prüfen: Es gibt die Tabellen `profiles` und
 `user_roles`, beide mit dem Hinweis „RLS enabled“.
 
-## 3. E-Mail-Vorlagen auf Code umstellen
+## 3. Eigenen E-Mail-Versand einrichten (kostenlos)
+
+Seit Juni 2026 lässt Supabase die E-Mail-Vorlagen bei neuen Gratis-Projekten
+nur noch ändern, wenn ein **eigener E-Mail-Versand (SMTP)** eingerichtet ist.
+Ohne das verschickt Supabase einen **Link** – unsere App braucht aber einen
+**Code**. Deshalb ist dieser Schritt Pflicht.
+
+Nebenbei löst es ein zweites Problem: Der eingebaute Versand von Supabase
+schickt nur an Mitglieder der eigenen Organisation. Mit eigenem Versand können
+später auch echte Testnutzer aus Wien Mails bekommen.
+
+Es gibt zwei kostenlose Wege. **Variante A ist für den Anfang einfacher.**
+
+---
+
+## Variante A: eigenes Gmail verwenden (am einfachsten)
+
+Die eigene Gmail-Adresse bringt bereits einen Mailserver mit. Supabase braucht
+nur die Erlaubnis, darüber zu verschicken.
+
+1. **Bestätigung in zwei Schritten** im Google-Konto einschalten
+   (Google-Konto → Sicherheit). Ohne das gibt es keine App-Passwörter.
+2. <https://myaccount.google.com/apppasswords> öffnen, App-Passwort anlegen,
+   Name z. B. `Supabase`. Google zeigt ein **16-stelliges Passwort** – kopieren.
+3. In Supabase unter **Authentication → Emails → Set up SMTP** eintragen:
+
+| Feld | Wert |
+|---|---|
+| Sender email | die eigene Gmail-Adresse |
+| Sender name | `GleichDa` |
+| Host | `smtp.gmail.com` |
+| Port | `587` |
+| Username | die eigene Gmail-Adresse |
+| Password | das 16-stellige **App-Passwort** (nicht das Gmail-Passwort) |
+
+Grenzen: 500 E-Mails pro Tag, und als Absender steht eine private
+Gmail-Adresse. Für Entwicklung und eine kleine Beta reicht das. Vor dem
+öffentlichen Start wechseln wir auf eine eigene Domain (Variante B).
+
+---
+
+## Variante B: Brevo (später, mit eigener Domain)
+
+300 E-Mails pro Tag, keine Kreditkarte, keine eigene Domain nötig. Sinnvoll,
+sobald die Mails nicht mehr von einer privaten Adresse kommen sollen.
+
+### 3a. Brevo-Konto anlegen
+
+1. <https://www.brevo.com> → **Sign up free**. Mit der eigenen E-Mail-Adresse
+   registrieren und die Bestätigungsmail anklicken.
+2. Neue Konten werden von Brevo **einmalig manuell freigeschaltet**. Wenn der
+   Versand am Anfang blockiert ist: kurz warten, das ist normal.
+
+### 3b. Absenderadresse bestätigen
+
+1. Links **Senders, Domains & Dedicated IPs** → Reiter **Senders**.
+2. **Add a sender**: Name (z. B. `GleichDa`) und die Absender-E-Mail eintragen.
+3. Brevo schickt einen **6-stelligen Code** an diese Adresse. Code eingeben →
+   der Absender ist bestätigt.
+
+Ohne eigene Domain funktioniert eine normale Adresse (z. B. Gmail). Vor dem
+öffentlichen Start ersetzen wir das durch eine eigene Domain, damit die Mails
+seriöser aussehen und zuverlässiger ankommen.
+
+### 3c. SMTP-Schlüssel erzeugen
+
+1. Oben rechts auf den Kontonamen → **SMTP & API**.
+2. Reiter **SMTP** → **Generate a new SMTP key**, Name z. B. `supabase`.
+3. Den Schlüssel **sofort kopieren** – er wird nur einmal angezeigt.
+
+Auf derselben Seite stehen auch **SMTP server** und **Login**. Beides wird
+gleich gebraucht.
+
+Wichtig: Es muss der **SMTP-Key** sein, nicht der API-Key und nicht das
+Konto-Passwort.
+
+### 3d. In Supabase eintragen
+
+**Authentication → Emails → Reiter SMTP Settings** (oder der Knopf
+**Set up SMTP** im blauen Hinweis), dann **Enable Custom SMTP** anschalten:
+
+| Feld | Wert |
+|---|---|
+| Sender email | die in 3b bestätigte Adresse |
+| Sender name | `GleichDa` |
+| Host | `smtp-relay.brevo.com` |
+| Port | `587` |
+| Username | der **SMTP login** aus 3c (nicht der Host!) |
+| Password | der **SMTP key** aus 3c |
+
+**Save** klicken. Danach ist der blaue Hinweis weg und die Vorlagen in
+Schritt 4 sind bearbeitbar.
+
+## 4. E-Mail-Vorlagen auf Code umstellen
 
 Die App meldet mit einem **Code** an, nicht mit einem Link. Supabase schickt
 standardmäßig aber einen Link. Deshalb:
@@ -44,7 +137,11 @@ hast, kannst du diese E-Mail ignorieren.</p>
 
 Wichtig ist nur, dass `{{ .Token }}` vorkommt. Jeweils **Save** klicken.
 
-## 4. Anmelde-Einstellungen prüfen
+Tipp: Wenn die Vorschau („Preview“) grau bleibt und „Verbindung verweigert“
+zeigt, ist das ein Anzeigefehler im Dashboard. Über den Knopf **Source**
+daneben lässt sich der Inhalt trotzdem sehen und bearbeiten.
+
+## 5. Anmelde-Einstellungen prüfen
 
 **Authentication → Sign In / Providers → Email**:
 
@@ -56,10 +153,9 @@ Wichtig ist nur, dass `{{ .Token }}` vorkommt. Jeweils **Save** klicken.
 
 ## Gut zu wissen
 
-- **Test-E-Mails:** Ohne eigenen E-Mail-Dienst verschickt Supabase nur wenige
-  E-Mails pro Stunde und nur an Adressen von Mitgliedern deiner Supabase-
-  Organisation. Zum Testen also die E-Mail-Adresse deines Supabase-Kontos
-  verwenden. Vor der Beta brauchen wir einen eigenen E-Mail-Dienst (SMTP).
+- **Test-E-Mails:** Solange kein eigener Versand (Schritt 3) eingerichtet ist,
+  verschickt Supabase nur wenige E-Mails pro Stunde und nur an Adressen von
+  Mitgliedern deiner Supabase-Organisation. Mit Brevo fällt beides weg.
 - **Admin-Rolle:** Die App kann niemals Admin-Rechte vergeben. Das geht nur
   hier im Dashboard (SQL Editor) durch das Team.
 - **Nie in die App:** `service_role`- oder `sb_secret_…`-Keys. In die App gehört
