@@ -15,6 +15,7 @@ import 'package:app/features/jobs/presentation/provider_jobs_screen.dart';
 import 'package:app/features/onboarding/presentation/role_selection_screen.dart';
 import 'package:app/features/onboarding/presentation/welcome_screen.dart';
 import 'package:app/features/profile/presentation/profile_screen.dart';
+import 'package:app/features/requests/presentation/service_request_screen.dart';
 import 'package:app/features/session/application/active_role_controller.dart';
 import 'package:app/features/session/domain/app_role.dart';
 import 'package:app/features/shell/presentation/role_shell.dart';
@@ -82,6 +83,7 @@ StatefulShellRoute _roleArea(AppRole role) {
             GoRoute(
               path: tab.path,
               builder: (context, state) => _tabScreen(tab),
+              routes: _tabSubRoutes(tab),
             ),
           ],
         ),
@@ -98,4 +100,16 @@ Widget _tabScreen(ShellTab tab) => switch (tab) {
   ShellTab.providerJobs => const ProviderJobsScreen(),
   ShellTab.providerCalendar => const AvailabilityScreen(),
   ShellTab.providerEarnings => const EarningsScreen(),
+};
+
+/// Screens that open on top of a tab. They stay inside the tab's branch, so
+/// the bottom navigation remains visible and the tab keeps its history.
+List<RouteBase> _tabSubRoutes(ShellTab tab) => switch (tab) {
+  ShellTab.customerHome => [
+    GoRoute(
+      path: 'request',
+      builder: (context, state) => const ServiceRequestScreen(),
+    ),
+  ],
+  _ => const [],
 };

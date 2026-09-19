@@ -1,11 +1,13 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:app/app.dart';
 import 'package:app/core/config/env.dart';
+import 'package:app/features/requests/data/service_request_repository.dart';
 import 'package:app/features/session/application/active_role_controller.dart';
 import 'package:app/features/session/data/session_store.dart';
 
@@ -19,6 +21,10 @@ Future<void> main() async {
 
   // Phone-first app: portrait only.
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
+  // Date names for the market's locale (Austrian German), independent of the
+  // interface language. See MarketConfig.
+  await initializeDateFormatting();
 
   // Restores a saved sign-in before the first frame, so returning users open
   // directly in their area.
@@ -40,6 +46,9 @@ Future<void> main() async {
       overrides: [
         sessionStoreProvider.overrideWithValue(
           SharedPreferencesSessionStore(preferences),
+        ),
+        serviceRequestRepositoryProvider.overrideWithValue(
+          LocalServiceRequestRepository(preferences),
         ),
       ],
       child: const App(),

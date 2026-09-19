@@ -17,6 +17,10 @@ abstract final class AppRoutes {
   static const String customerMessages = '/customer/messages';
   static const String customerProfile = '/customer/profile';
 
+  /// Second step of a request, inside the customer home tab so the bottom
+  /// navigation stays visible.
+  static const String customerRequest = '/customer/home/request';
+
   // Provider area
   static const String providerArea = '/provider';
   static const String providerJobs = '/provider/jobs';

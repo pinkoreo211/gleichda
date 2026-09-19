@@ -415,6 +415,258 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Das hat nicht geklappt. Bitte prüfe deine Internetverbindung und versuche es erneut.'**
   String get errorUnknown;
+
+  /// Hint inside the large request field on the customer home screen.
+  ///
+  /// In de, this message translates to:
+  /// **'Beschreibe, was du brauchst …'**
+  String get customerHomeInputHint;
+
+  /// Label above the tappable example requests on the customer home screen.
+  ///
+  /// In de, this message translates to:
+  /// **'Beispiele'**
+  String get customerHomeExamplesLabel;
+
+  /// Example request a customer can tap to fill the input field.
+  ///
+  /// In de, this message translates to:
+  /// **'Meine Waschmaschine verliert Wasser.'**
+  String get customerHomeExampleWashingMachine;
+
+  /// Example request a customer can tap to fill the input field.
+  ///
+  /// In de, this message translates to:
+  /// **'Ich brauche morgen jemanden zum Putzen.'**
+  String get customerHomeExampleCleaning;
+
+  /// Example request a customer can tap to fill the input field.
+  ///
+  /// In de, this message translates to:
+  /// **'Jemand soll meinen Fernseher montieren.'**
+  String get customerHomeExampleTv;
+
+  /// Example request a customer can tap to fill the input field.
+  ///
+  /// In de, this message translates to:
+  /// **'Mein Garten muss geschnitten werden.'**
+  String get customerHomeExampleGarden;
+
+  /// Button that opens the request screen with the typed text.
+  ///
+  /// In de, this message translates to:
+  /// **'Weiter'**
+  String get customerHomeContinue;
+
+  /// Section heading above the category cards on the customer home screen.
+  ///
+  /// In de, this message translates to:
+  /// **'Beliebte Services'**
+  String get customerHomePopularServices;
+
+  /// Section heading above the customer's upcoming bookings.
+  ///
+  /// In de, this message translates to:
+  /// **'Deine nächsten Buchungen'**
+  String get customerHomeUpcomingBookings;
+
+  /// Shown when the customer has no bookings yet.
+  ///
+  /// In de, this message translates to:
+  /// **'Buche deinen ersten Service über {appName}.'**
+  String customerHomeNoBookingsMessage(String appName);
+
+  /// Service category: repairs and handyman work.
+  ///
+  /// In de, this message translates to:
+  /// **'Handwerker'**
+  String get categoryHandyman;
+
+  /// Service category: cleaning.
+  ///
+  /// In de, this message translates to:
+  /// **'Reinigung'**
+  String get categoryCleaning;
+
+  /// Service category: moving and transport.
+  ///
+  /// In de, this message translates to:
+  /// **'Umzug & Transport'**
+  String get categoryMoving;
+
+  /// Service category: car services.
+  ///
+  /// In de, this message translates to:
+  /// **'Auto'**
+  String get categoryCar;
+
+  /// Service category: pet services.
+  ///
+  /// In de, this message translates to:
+  /// **'Haustiere'**
+  String get categoryPets;
+
+  /// Service category: beauty and personal care.
+  ///
+  /// In de, this message translates to:
+  /// **'Beauty'**
+  String get categoryBeauty;
+
+  /// Service category: renovation.
+  ///
+  /// In de, this message translates to:
+  /// **'Renovierung'**
+  String get categoryRenovation;
+
+  /// Service category: anything not covered by the others.
+  ///
+  /// In de, this message translates to:
+  /// **'Sonstiges'**
+  String get categoryOther;
+
+  /// Heading of the service request screen.
+  ///
+  /// In de, this message translates to:
+  /// **'Erzähl uns kurz, was du brauchst'**
+  String get requestTitle;
+
+  /// Label above the editable request text.
+  ///
+  /// In de, this message translates to:
+  /// **'Deine Anfrage'**
+  String get requestDescriptionLabel;
+
+  /// Error shown when the request text is empty.
+  ///
+  /// In de, this message translates to:
+  /// **'Bitte beschreibe kurz, was du brauchst.'**
+  String get requestDescriptionRequired;
+
+  /// Label above the optional category choice.
+  ///
+  /// In de, this message translates to:
+  /// **'Kategorie'**
+  String get requestCategoryLabel;
+
+  /// Explains that picking a category is not required.
+  ///
+  /// In de, this message translates to:
+  /// **'Optional – die passende Leistung erkennen wir später automatisch.'**
+  String get requestCategoryHint;
+
+  /// Label above the location choice on the request screen.
+  ///
+  /// In de, this message translates to:
+  /// **'Wo wird die Dienstleistung benötigt?'**
+  String get requestLocationLabel;
+
+  /// Button that will open the location picker once maps are integrated.
+  ///
+  /// In de, this message translates to:
+  /// **'Standort auswählen'**
+  String get requestLocationChoose;
+
+  /// Label above the timing options on the request screen.
+  ///
+  /// In de, this message translates to:
+  /// **'Wann brauchst du Hilfe?'**
+  String get requestTimingLabel;
+
+  /// Timing option: as soon as possible.
+  ///
+  /// In de, this message translates to:
+  /// **'So schnell wie möglich'**
+  String get requestTimingAsap;
+
+  /// Timing option: today.
+  ///
+  /// In de, this message translates to:
+  /// **'Heute'**
+  String get requestTimingToday;
+
+  /// Timing option: tomorrow.
+  ///
+  /// In de, this message translates to:
+  /// **'Morgen'**
+  String get requestTimingTomorrow;
+
+  /// Timing option that opens a date picker.
+  ///
+  /// In de, this message translates to:
+  /// **'Datum auswählen'**
+  String get requestTimingPickDate;
+
+  /// Label above the photo section on the request screen.
+  ///
+  /// In de, this message translates to:
+  /// **'Fotos'**
+  String get requestPhotosLabel;
+
+  /// Button that will attach a photo once file storage exists.
+  ///
+  /// In de, this message translates to:
+  /// **'Foto hinzufügen'**
+  String get requestAddPhoto;
+
+  /// Button that saves the request.
+  ///
+  /// In de, this message translates to:
+  /// **'Anfrage erstellen'**
+  String get requestSubmit;
+
+  /// Confirmation after a request was saved.
+  ///
+  /// In de, this message translates to:
+  /// **'Anfrage gespeichert.'**
+  String get requestSaved;
+
+  /// Honest note that saved requests stay on the device for now.
+  ///
+  /// In de, this message translates to:
+  /// **'Deine Anfrage wird noch nicht an Dienstleister gesendet – das kommt im nächsten Schritt.'**
+  String get requestNotSentYet;
+
+  /// Section heading above the customer's saved requests.
+  ///
+  /// In de, this message translates to:
+  /// **'Deine Anfragen'**
+  String get customerRequestsTitle;
+
+  /// Badge on a saved request that has not reached any provider yet.
+  ///
+  /// In de, this message translates to:
+  /// **'Noch nicht gesendet'**
+  String get customerRequestsNotSent;
+
+  /// Label of the display name in the profile.
+  ///
+  /// In de, this message translates to:
+  /// **'Name'**
+  String get profileName;
+
+  /// Shown instead of the name when the account has none yet.
+  ///
+  /// In de, this message translates to:
+  /// **'Noch nicht hinterlegt'**
+  String get profileNameMissing;
+
+  /// Profile entry that will open profile editing.
+  ///
+  /// In de, this message translates to:
+  /// **'Profil bearbeiten'**
+  String get profileEdit;
+
+  /// Profile entry that will open the app settings.
+  ///
+  /// In de, this message translates to:
+  /// **'Einstellungen'**
+  String get profileSettings;
+
+  /// Shown when a prepared button has no function yet.
+  ///
+  /// In de, this message translates to:
+  /// **'Diese Funktion folgt in Kürze.'**
+  String get comingSoon;
 }
 
 class _AppLocalizationsDelegate

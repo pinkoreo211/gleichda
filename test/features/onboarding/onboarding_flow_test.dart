@@ -120,6 +120,7 @@ void main() {
 
     await tester.tap(_navLabel('Profil'));
     await tester.pumpAndSettle();
+    await scrollTo(tester, find.widgetWithText(TextButton, 'Abmelden'));
     await tester.tap(find.widgetWithText(TextButton, 'Abmelden'));
     await tester.pumpAndSettle();
 

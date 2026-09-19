@@ -2,11 +2,15 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:material_ui/material_ui.dart';
 
 import 'package:app/app.dart';
 import 'package:app/core/errors/app_failure.dart';
 import 'package:app/features/auth/data/auth_repository.dart';
+import 'package:app/features/profile/data/profile_repository.dart';
+import 'package:app/features/requests/data/service_request_repository.dart';
+import 'package:app/features/requests/domain/service_request.dart';
 import 'package:app/features/session/application/active_role_controller.dart';
 import 'package:app/features/session/data/role_repository.dart';
 import 'package:app/features/session/data/session_store.dart';
@@ -85,6 +89,34 @@ class FakeRoleRepository implements RoleRepository {
   }
 }
 
+/// [ProfileRepository] without a backend.
+class FakeProfileRepository implements ProfileRepository {
+  FakeProfileRepository({this.displayName});
+
+  final String? displayName;
+
+  @override
+  Future<String?> myDisplayName() async => displayName;
+}
+
+/// [ServiceRequestRepository] that keeps requests in memory, per user.
+class InMemoryServiceRequestRepository implements ServiceRequestRepository {
+  final requests = <String, List<ServiceRequest>>{};
+
+  /// When set, [save] throws it.
+  AppFailure? failure;
+
+  @override
+  Future<List<ServiceRequest>> myRequests(String userId) async =>
+      List.unmodifiable(requests[userId] ?? const <ServiceRequest>[]);
+
+  @override
+  Future<void> save(String userId, ServiceRequest request) async {
+    if (failure case final failure?) throw failure;
+    requests.putIfAbsent(userId, () => <ServiceRequest>[]).insert(0, request);
+  }
+}
+
 /// [SessionStore] that keeps everything in memory.
 class InMemorySessionStore implements SessionStore {
   InMemorySessionStore([Map<String, AppRole>? activeRoles])
@@ -107,10 +139,16 @@ Future<void> pumpApp(
   FakeAuthRepository? auth,
   FakeRoleRepository? roles,
   InMemorySessionStore? store,
+  InMemoryServiceRequestRepository? requests,
+  FakeProfileRepository? profile,
   Locale locale = const Locale('de', 'AT'),
 }) async {
   tester.platformDispatcher.localesTestValue = [locale];
   addTearDown(tester.platformDispatcher.clearLocalesTestValue);
+
+  // Mirrors main(): dates are formatted for the market's locale, which needs
+  // its date names loaded first.
+  await initializeDateFormatting();
 
   await tester.pumpWidget(
     ProviderScope(
@@ -118,10 +156,32 @@ Future<void> pumpApp(
         authRepositoryProvider.overrideWithValue(auth ?? FakeAuthRepository()),
         roleRepositoryProvider.overrideWithValue(roles ?? FakeRoleRepository()),
         sessionStoreProvider.overrideWithValue(store ?? InMemorySessionStore()),
+        serviceRequestRepositoryProvider.overrideWithValue(
+          requests ?? InMemoryServiceRequestRepository(),
+        ),
+        profileRepositoryProvider.overrideWithValue(
+          profile ?? FakeProfileRepository(),
+        ),
       ],
       child: const App(),
     ),
   );
+  await tester.pumpAndSettle();
+}
+
+/// Scrolls the current screen until [finder] is on screen.
+///
+/// Screens grow over time, and a test should not fail only because a button
+/// moved below the fold on the small default test screen.
+Future<void> scrollTo(WidgetTester tester, Finder finder) async {
+  if (finder.evaluate().isEmpty) {
+    await tester.scrollUntilVisible(
+      finder,
+      120,
+      scrollable: find.byType(Scrollable).first,
+    );
+  }
+  await tester.ensureVisible(finder);
   await tester.pumpAndSettle();
 }
 
@@ -132,11 +192,15 @@ Future<void> pumpSignedInApp(
   FakeAuthRepository? auth,
   FakeRoleRepository? roles,
   InMemorySessionStore? store,
+  InMemoryServiceRequestRepository? requests,
+  FakeProfileRepository? profile,
 }) {
   return pumpApp(
     tester,
     auth: auth ?? FakeAuthRepository(signedIn: true),
     roles: roles ?? (FakeRoleRepository()..roles.addAll([?role])),
     store: store ?? InMemorySessionStore({testUserId: ?role}),
+    requests: requests,
+    profile: profile,
   );
 }

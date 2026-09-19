@@ -187,4 +187,138 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get errorUnknown =>
       'Das hat nicht geklappt. Bitte prüfe deine Internetverbindung und versuche es erneut.';
+
+  @override
+  String get customerHomeInputHint => 'Beschreibe, was du brauchst …';
+
+  @override
+  String get customerHomeExamplesLabel => 'Beispiele';
+
+  @override
+  String get customerHomeExampleWashingMachine =>
+      'Meine Waschmaschine verliert Wasser.';
+
+  @override
+  String get customerHomeExampleCleaning =>
+      'Ich brauche morgen jemanden zum Putzen.';
+
+  @override
+  String get customerHomeExampleTv => 'Jemand soll meinen Fernseher montieren.';
+
+  @override
+  String get customerHomeExampleGarden =>
+      'Mein Garten muss geschnitten werden.';
+
+  @override
+  String get customerHomeContinue => 'Weiter';
+
+  @override
+  String get customerHomePopularServices => 'Beliebte Services';
+
+  @override
+  String get customerHomeUpcomingBookings => 'Deine nächsten Buchungen';
+
+  @override
+  String customerHomeNoBookingsMessage(String appName) {
+    return 'Buche deinen ersten Service über $appName.';
+  }
+
+  @override
+  String get categoryHandyman => 'Handwerker';
+
+  @override
+  String get categoryCleaning => 'Reinigung';
+
+  @override
+  String get categoryMoving => 'Umzug & Transport';
+
+  @override
+  String get categoryCar => 'Auto';
+
+  @override
+  String get categoryPets => 'Haustiere';
+
+  @override
+  String get categoryBeauty => 'Beauty';
+
+  @override
+  String get categoryRenovation => 'Renovierung';
+
+  @override
+  String get categoryOther => 'Sonstiges';
+
+  @override
+  String get requestTitle => 'Erzähl uns kurz, was du brauchst';
+
+  @override
+  String get requestDescriptionLabel => 'Deine Anfrage';
+
+  @override
+  String get requestDescriptionRequired =>
+      'Bitte beschreibe kurz, was du brauchst.';
+
+  @override
+  String get requestCategoryLabel => 'Kategorie';
+
+  @override
+  String get requestCategoryHint =>
+      'Optional – die passende Leistung erkennen wir später automatisch.';
+
+  @override
+  String get requestLocationLabel => 'Wo wird die Dienstleistung benötigt?';
+
+  @override
+  String get requestLocationChoose => 'Standort auswählen';
+
+  @override
+  String get requestTimingLabel => 'Wann brauchst du Hilfe?';
+
+  @override
+  String get requestTimingAsap => 'So schnell wie möglich';
+
+  @override
+  String get requestTimingToday => 'Heute';
+
+  @override
+  String get requestTimingTomorrow => 'Morgen';
+
+  @override
+  String get requestTimingPickDate => 'Datum auswählen';
+
+  @override
+  String get requestPhotosLabel => 'Fotos';
+
+  @override
+  String get requestAddPhoto => 'Foto hinzufügen';
+
+  @override
+  String get requestSubmit => 'Anfrage erstellen';
+
+  @override
+  String get requestSaved => 'Anfrage gespeichert.';
+
+  @override
+  String get requestNotSentYet =>
+      'Deine Anfrage wird noch nicht an Dienstleister gesendet – das kommt im nächsten Schritt.';
+
+  @override
+  String get customerRequestsTitle => 'Deine Anfragen';
+
+  @override
+  String get customerRequestsNotSent => 'Noch nicht gesendet';
+
+  @override
+  String get profileName => 'Name';
+
+  @override
+  String get profileNameMissing => 'Noch nicht hinterlegt';
+
+  @override
+  String get profileEdit => 'Profil bearbeiten';
+
+  @override
+  String get profileSettings => 'Einstellungen';
+
+  @override
+  String get comingSoon => 'Diese Funktion folgt in Kürze.';
 }

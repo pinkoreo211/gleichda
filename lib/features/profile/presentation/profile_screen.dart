@@ -7,6 +7,7 @@ import 'package:app/design_system/widgets/button_progress.dart';
 import 'package:app/features/auth/application/current_user.dart';
 import 'package:app/features/auth/data/auth_repository.dart';
 import 'package:app/features/auth/presentation/sign_out_button.dart';
+import 'package:app/features/profile/application/my_display_name.dart';
 import 'package:app/features/session/application/active_role_controller.dart';
 import 'package:app/features/session/domain/app_role.dart';
 import 'package:app/l10n/app_localizations.dart';
@@ -23,6 +24,12 @@ class ProfileScreen extends ConsumerStatefulWidget {
 class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   bool _isSwitching = false;
 
+  void _showComingSoon() {
+    final l10n = AppLocalizations.of(context);
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(l10n.comingSoon)));
+  }
+
   Future<void> _switchTo(AppRole role) async {
     setState(() => _isSwitching = true);
     try {
@@ -36,10 +43,15 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final theme = Theme.of(context);
     // Watched so the screen updates when the account changes.
     ref.watch(currentUserIdProvider);
     final email = ref.read(authRepositoryProvider).currentEmail;
+    // While loading, or if reading it failed, the name simply reads as
+    // "not set" instead of blocking the whole profile.
+    final displayName = switch (ref.watch(myDisplayNameProvider)) {
+      AsyncData(:final value) => value,
+      _ => null,
+    };
     final role = ref.watch(activeRoleProvider);
     // Briefly null while leaving the area after sign-out.
     if (role == null) return const SizedBox.shrink();
@@ -67,6 +79,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             child: Column(
               children: [
                 ListTile(
+                  leading: const Icon(Icons.person_outline),
+                  title: Text(l10n.profileName),
+                  subtitle: Text(displayName ?? l10n.profileNameMissing),
+                ),
+                ListTile(
                   leading: const Icon(Icons.alternate_email),
                   title: Text(l10n.profileSignedInAs),
                   subtitle: Text(email ?? ''),
@@ -88,10 +105,23 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             label: Text(switchLabel),
           ),
           const SizedBox(height: AppSpacing.lg),
-          Text(
-            l10n.profileAccountComingSoon,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
+          Card(
+            margin: EdgeInsets.zero,
+            child: Column(
+              children: [
+                ListTile(
+                  leading: const Icon(Icons.edit_outlined),
+                  title: Text(l10n.profileEdit),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: _showComingSoon,
+                ),
+                ListTile(
+                  leading: const Icon(Icons.settings_outlined),
+                  title: Text(l10n.profileSettings),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: _showComingSoon,
+                ),
+              ],
             ),
           ),
           const SizedBox(height: AppSpacing.xl),

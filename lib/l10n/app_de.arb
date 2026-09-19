@@ -223,5 +223,179 @@
   "errorUnknown": "Das hat nicht geklappt. Bitte prüfe deine Internetverbindung und versuche es erneut.",
   "@errorUnknown": {
     "description": "Generic error message for unexpected problems."
+  },
+  "customerHomeInputHint": "Beschreibe, was du brauchst …",
+  "@customerHomeInputHint": {
+    "description": "Hint inside the large request field on the customer home screen."
+  },
+  "customerHomeExamplesLabel": "Beispiele",
+  "@customerHomeExamplesLabel": {
+    "description": "Label above the tappable example requests on the customer home screen."
+  },
+  "customerHomeExampleWashingMachine": "Meine Waschmaschine verliert Wasser.",
+  "@customerHomeExampleWashingMachine": {
+    "description": "Example request a customer can tap to fill the input field."
+  },
+  "customerHomeExampleCleaning": "Ich brauche morgen jemanden zum Putzen.",
+  "@customerHomeExampleCleaning": {
+    "description": "Example request a customer can tap to fill the input field."
+  },
+  "customerHomeExampleTv": "Jemand soll meinen Fernseher montieren.",
+  "@customerHomeExampleTv": {
+    "description": "Example request a customer can tap to fill the input field."
+  },
+  "customerHomeExampleGarden": "Mein Garten muss geschnitten werden.",
+  "@customerHomeExampleGarden": {
+    "description": "Example request a customer can tap to fill the input field."
+  },
+  "customerHomeContinue": "Weiter",
+  "@customerHomeContinue": {
+    "description": "Button that opens the request screen with the typed text."
+  },
+  "customerHomePopularServices": "Beliebte Services",
+  "@customerHomePopularServices": {
+    "description": "Section heading above the category cards on the customer home screen."
+  },
+  "customerHomeUpcomingBookings": "Deine nächsten Buchungen",
+  "@customerHomeUpcomingBookings": {
+    "description": "Section heading above the customer's upcoming bookings."
+  },
+  "customerHomeNoBookingsMessage": "Buche deinen ersten Service über {appName}.",
+  "@customerHomeNoBookingsMessage": {
+    "description": "Shown when the customer has no bookings yet.",
+    "placeholders": {
+      "appName": {
+        "type": "String",
+        "example": "GleichDa"
+      }
+    }
+  },
+  "categoryHandyman": "Handwerker",
+  "@categoryHandyman": {
+    "description": "Service category: repairs and handyman work."
+  },
+  "categoryCleaning": "Reinigung",
+  "@categoryCleaning": {
+    "description": "Service category: cleaning."
+  },
+  "categoryMoving": "Umzug & Transport",
+  "@categoryMoving": {
+    "description": "Service category: moving and transport."
+  },
+  "categoryCar": "Auto",
+  "@categoryCar": {
+    "description": "Service category: car services."
+  },
+  "categoryPets": "Haustiere",
+  "@categoryPets": {
+    "description": "Service category: pet services."
+  },
+  "categoryBeauty": "Beauty",
+  "@categoryBeauty": {
+    "description": "Service category: beauty and personal care."
+  },
+  "categoryRenovation": "Renovierung",
+  "@categoryRenovation": {
+    "description": "Service category: renovation."
+  },
+  "categoryOther": "Sonstiges",
+  "@categoryOther": {
+    "description": "Service category: anything not covered by the others."
+  },
+  "requestTitle": "Erzähl uns kurz, was du brauchst",
+  "@requestTitle": {
+    "description": "Heading of the service request screen."
+  },
+  "requestDescriptionLabel": "Deine Anfrage",
+  "@requestDescriptionLabel": {
+    "description": "Label above the editable request text."
+  },
+  "requestDescriptionRequired": "Bitte beschreibe kurz, was du brauchst.",
+  "@requestDescriptionRequired": {
+    "description": "Error shown when the request text is empty."
+  },
+  "requestCategoryLabel": "Kategorie",
+  "@requestCategoryLabel": {
+    "description": "Label above the optional category choice."
+  },
+  "requestCategoryHint": "Optional – die passende Leistung erkennen wir später automatisch.",
+  "@requestCategoryHint": {
+    "description": "Explains that picking a category is not required."
+  },
+  "requestLocationLabel": "Wo wird die Dienstleistung benötigt?",
+  "@requestLocationLabel": {
+    "description": "Label above the location choice on the request screen."
+  },
+  "requestLocationChoose": "Standort auswählen",
+  "@requestLocationChoose": {
+    "description": "Button that will open the location picker once maps are integrated."
+  },
+  "requestTimingLabel": "Wann brauchst du Hilfe?",
+  "@requestTimingLabel": {
+    "description": "Label above the timing options on the request screen."
+  },
+  "requestTimingAsap": "So schnell wie möglich",
+  "@requestTimingAsap": {
+    "description": "Timing option: as soon as possible."
+  },
+  "requestTimingToday": "Heute",
+  "@requestTimingToday": {
+    "description": "Timing option: today."
+  },
+  "requestTimingTomorrow": "Morgen",
+  "@requestTimingTomorrow": {
+    "description": "Timing option: tomorrow."
+  },
+  "requestTimingPickDate": "Datum auswählen",
+  "@requestTimingPickDate": {
+    "description": "Timing option that opens a date picker."
+  },
+  "requestPhotosLabel": "Fotos",
+  "@requestPhotosLabel": {
+    "description": "Label above the photo section on the request screen."
+  },
+  "requestAddPhoto": "Foto hinzufügen",
+  "@requestAddPhoto": {
+    "description": "Button that will attach a photo once file storage exists."
+  },
+  "requestSubmit": "Anfrage erstellen",
+  "@requestSubmit": {
+    "description": "Button that saves the request."
+  },
+  "requestSaved": "Anfrage gespeichert.",
+  "@requestSaved": {
+    "description": "Confirmation after a request was saved."
+  },
+  "requestNotSentYet": "Deine Anfrage wird noch nicht an Dienstleister gesendet – das kommt im nächsten Schritt.",
+  "@requestNotSentYet": {
+    "description": "Honest note that saved requests stay on the device for now."
+  },
+  "customerRequestsTitle": "Deine Anfragen",
+  "@customerRequestsTitle": {
+    "description": "Section heading above the customer's saved requests."
+  },
+  "customerRequestsNotSent": "Noch nicht gesendet",
+  "@customerRequestsNotSent": {
+    "description": "Badge on a saved request that has not reached any provider yet."
+  },
+  "profileName": "Name",
+  "@profileName": {
+    "description": "Label of the display name in the profile."
+  },
+  "profileNameMissing": "Noch nicht hinterlegt",
+  "@profileNameMissing": {
+    "description": "Shown instead of the name when the account has none yet."
+  },
+  "profileEdit": "Profil bearbeiten",
+  "@profileEdit": {
+    "description": "Profile entry that will open profile editing."
+  },
+  "profileSettings": "Einstellungen",
+  "@profileSettings": {
+    "description": "Profile entry that will open the app settings."
+  },
+  "comingSoon": "Diese Funktion folgt in Kürze.",
+  "@comingSoon": {
+    "description": "Shown when a prepared button has no function yet."
   }
 }
