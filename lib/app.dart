@@ -17,6 +17,9 @@ class App extends ConsumerWidget {
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light(),
       darkTheme: AppTheme.dark(),
+      // The phone decides: cream in light mode, near-black in dark mode.
+      // A manual override follows with the settings screen.
+      themeMode: ThemeMode.system,
       localizationsDelegates: const [
         AppLocalizations.delegate,
         // Built-in texts of Material and Cupertino widgets (from material_ui,
