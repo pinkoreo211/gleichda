@@ -1,11 +1,11 @@
 import 'package:app/features/requests/domain/request_timing.dart';
 import 'package:app/features/requests/domain/service_category.dart';
-import 'package:app/features/requests/domain/service_request.dart';
 
 /// A request while the customer is still writing it.
 ///
-/// Separate from [ServiceRequest] because a draft has no id and no creation
-/// time yet, and because it may be incomplete at any moment.
+/// Separate from a stored request because a draft has no id and no creation
+/// time yet — the server assigns both — and because it may be incomplete at
+/// any moment.
 class ServiceRequestDraft {
   const ServiceRequestDraft({
     this.description = '',
@@ -44,18 +44,6 @@ class ServiceRequestDraft {
           ? null
           : (preferredDate ?? this.preferredDate),
       locationLabel: locationLabel ?? this.locationLabel,
-    );
-  }
-
-  ServiceRequest toRequest({required String id, required DateTime createdAt}) {
-    return ServiceRequest(
-      id: id,
-      originalDescription: description.trim(),
-      createdAt: createdAt,
-      category: category,
-      timing: timing,
-      preferredDate: timing == RequestTiming.onDate ? preferredDate : null,
-      locationLabel: locationLabel,
     );
   }
 }

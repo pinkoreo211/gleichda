@@ -1,73 +1,83 @@
-import 'dart:convert';
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'package:app/core/backend/supabase_providers.dart';
 import 'package:app/core/errors/app_failure.dart';
+import 'package:app/features/requests/domain/request_timing.dart';
 import 'package:app/features/requests/domain/service_request.dart';
+import 'package:app/features/requests/domain/service_request_draft.dart';
 
-/// Stores the requests a customer created.
+/// The signed-in customer's service requests.
 ///
-/// Throws [AppFailure] on errors, so screens never see storage types.
+/// No user id is passed in: the backend's security rules already restrict
+/// every read and write to the caller's own rows, and the id of a new
+/// request is set by the server. Throws [AppFailure] on errors.
 abstract interface class ServiceRequestRepository {
   /// Newest first.
-  Future<List<ServiceRequest>> myRequests(String userId);
+  Future<List<ServiceRequest>> myRequests();
 
-  Future<void> save(String userId, ServiceRequest request);
+  /// Stores [draft] and returns the created request, including the id and
+  /// creation time the server assigned.
+  Future<ServiceRequest> create(ServiceRequestDraft draft);
 }
 
-/// Replaced with the real implementation in `main()` and with an in-memory
-/// one in tests.
 final serviceRequestRepositoryProvider = Provider<ServiceRequestRepository>(
-  (ref) => throw UnimplementedError(
-    'serviceRequestRepositoryProvider must be overridden',
-  ),
+  (ref) => SupabaseServiceRequestRepository(ref.watch(supabaseClientProvider)),
 );
 
-/// Keeps requests on the device only.
-///
-/// Deliberately temporary: there is no backend table for requests yet, so
-/// nothing is sent to providers. The stored JSON already uses the column
-/// names the future table will have, so switching to Supabase replaces this
-/// class without touching the screens.
-class LocalServiceRequestRepository implements ServiceRequestRepository {
-  LocalServiceRequestRepository(this._preferences);
+class SupabaseServiceRequestRepository implements ServiceRequestRepository {
+  SupabaseServiceRequestRepository(this._client);
 
-  final SharedPreferencesWithCache _preferences;
+  final SupabaseClient _client;
 
-  static String _key(String userId) => 'requests.$userId';
+  static const _table = 'service_requests';
+
+  /// The columns a client is allowed to read back. The AI columns are
+  /// included because reading them is fine — only writing them is not.
+  static const _columns = '*';
 
   @override
-  Future<List<ServiceRequest>> myRequests(String userId) async {
+  Future<List<ServiceRequest>> myRequests() async {
     try {
-      final stored = _preferences.getString(_key(userId));
-      if (stored == null || stored.isEmpty) return const [];
-      final decoded = jsonDecode(stored) as List;
-      final requests = decoded
-          .whereType<Map<String, dynamic>>()
-          .map(ServiceRequest.fromJson)
-          .toList();
-      requests.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-      return requests;
-    } catch (error) {
-      // A corrupt entry must not break the screen.
-      debugPrint('Could not read stored requests: $error');
-      return const [];
-    }
-  }
-
-  @override
-  Future<void> save(String userId, ServiceRequest request) async {
-    try {
-      final existing = await myRequests(userId);
-      final updated = [request, ...existing];
-      await _preferences.setString(
-        _key(userId),
-        jsonEncode([for (final r in updated) r.toJson()]),
-      );
+      final rows = await _client
+          .from(_table)
+          .select(_columns)
+          .order('created_at', ascending: false);
+      return [for (final row in rows) ServiceRequest.fromJson(row)];
     } catch (error) {
       throw AppFailure.fromError(error);
     }
   }
+
+  @override
+  Future<ServiceRequest> create(ServiceRequestDraft draft) async {
+    try {
+      // customer_id, id and the timestamps are deliberately absent: the
+      // server sets them, and a client is not permitted to write them.
+      final row = await _client
+          .from(_table)
+          .insert({
+            'original_description': draft.description.trim(),
+            'category': draft.category?.name,
+            'timing': draft.timing.name,
+            'preferred_date': draft.timing == RequestTiming.onDate
+                ? _asDate(draft.preferredDate)
+                : null,
+            'location_label': draft.locationLabel,
+          })
+          .select(_columns)
+          .single();
+      return ServiceRequest.fromJson(row);
+    } catch (error) {
+      throw AppFailure.fromError(error);
+    }
+  }
+
+  /// The column is a date, not a timestamp: "2026-09-20", no time zone, so
+  /// a request for "tomorrow" means the same day everywhere.
+  static String? _asDate(DateTime? date) => date == null
+      ? null
+      : '${date.year.toString().padLeft(4, '0')}-'
+            '${date.month.toString().padLeft(2, '0')}-'
+            '${date.day.toString().padLeft(2, '0')}';
 }

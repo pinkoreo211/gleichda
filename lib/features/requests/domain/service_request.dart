@@ -93,25 +93,6 @@ class ServiceRequest {
     );
   }
 
-  /// Field names match the columns the backend table will use, so moving
-  /// from device storage to Supabase does not change this shape.
-  Map<String, dynamic> toJson() => {
-    'id': id,
-    'original_description': originalDescription,
-    'created_at': createdAt.toIso8601String(),
-    'category': category?.name,
-    'timing': timing.name,
-    'preferred_date': preferredDate?.toIso8601String(),
-    'location_label': locationLabel,
-    'detected_service': detectedService,
-    'ai_confidence': aiConfidence,
-    'estimated_price_min_cents': estimatedPriceMinCents,
-    'estimated_price_max_cents': estimatedPriceMaxCents,
-    'estimated_duration_minutes': estimatedDurationMinutes,
-    'image_paths': imagePaths,
-    'video_paths': videoPaths,
-  };
-
   static ServiceRequest fromJson(Map<String, dynamic> json) {
     return ServiceRequest(
       id: json['id'] as String,

@@ -9,5 +9,5 @@ import 'package:app/features/requests/domain/service_request.dart';
 final myRequestsProvider = FutureProvider<List<ServiceRequest>>((ref) async {
   final userId = ref.watch(currentUserIdProvider);
   if (userId == null) return const [];
-  return ref.watch(serviceRequestRepositoryProvider).myRequests(userId);
+  return ref.watch(serviceRequestRepositoryProvider).myRequests();
 });

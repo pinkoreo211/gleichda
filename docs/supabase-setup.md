@@ -12,16 +12,34 @@ das Projekt außerhalb der EU, lieber jetzt ein neues Projekt anlegen.
 
 ## 2. Datenbank-Struktur anlegen
 
+Die Struktur der Datenbank liegt als Dateien im Ordner
+`supabase/migrations/`. Jede Datei wird **genau einmal** ausgeführt, und zwar
+**in der Reihenfolge ihrer Namen** (die Zahl vorne ist das Datum).
+
+Für jede Datei:
+
 1. Links **SQL Editor** öffnen → **New query**.
-2. Den kompletten Inhalt von
-   `supabase/migrations/20260917120000_profiles_and_roles.sql` hineinkopieren.
+2. Den kompletten Inhalt der Datei hineinkopieren.
 3. **Run** klicken. Erwartet: „Success. No rows returned“.
 
-Nur **einmal** ausführen. Ein zweites Mal meldet Fehler wie „already exists“ –
-das ist dann harmlos, es wurde nichts verändert.
+Bisher gibt es diese Dateien:
 
-Danach unter **Table Editor** prüfen: Es gibt die Tabellen `profiles` und
-`user_roles`, beide mit dem Hinweis „RLS enabled“.
+| Datei | Legt an | Ausgeführt |
+|---|---|---|
+| `20260917120000_profiles_and_roles.sql` | `profiles`, `user_roles` | ✅ |
+| `20260920120000_service_requests.sql` | `service_requests` | ⬜ |
+
+Ein zweites Ausführen derselben Datei meldet Fehler wie „already exists“ –
+das ist harmlos, es wurde dann nichts verändert.
+
+Danach unter **Table Editor** prüfen: Jede Tabelle trägt den Hinweis
+„RLS enabled“. Fehlt der, stimmt etwas nicht – dann bitte melden, denn ohne
+RLS könnte jeder die Daten aller anderen lesen.
+
+**Wichtig bei neuen Dateien:** Eine bereits ausgeführte Migrationsdatei wird
+nie mehr geändert. Änderungen an der Datenbank kommen immer als neue Datei.
+So bleibt diese Liste eine verlässliche Geschichte der Datenbank – was
+spätestens beim Anlegen des Produktivprojekts vor dem Start wichtig wird.
 
 ## 3. Eigenen E-Mail-Versand einrichten (kostenlos)
 

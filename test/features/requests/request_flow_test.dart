@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
+import 'package:app/core/errors/app_failure.dart';
 import 'package:app/features/requests/domain/request_timing.dart';
 import 'package:app/features/requests/domain/service_category.dart';
 import 'package:app/features/session/domain/app_role.dart';
@@ -101,9 +102,9 @@ void main() {
     await tester.tap(find.widgetWithText(FilledButton, 'Anfrage erstellen'));
     await tester.pumpAndSettle();
 
-    final stored = requests.requests[testUserId];
+    final stored = requests.requests;
     expect(stored, hasLength(1));
-    expect(stored!.single.originalDescription, _washingMachine);
+    expect(stored.single.originalDescription, _washingMachine);
     // Nothing is invented: no category was chosen, and no AI ran yet.
     expect(stored.single.category, isNull);
     expect(stored.single.timing, RequestTiming.asap);
@@ -132,10 +133,27 @@ void main() {
     await tester.tap(find.widgetWithText(FilledButton, 'Anfrage erstellen'));
     await tester.pumpAndSettle();
 
-    expect(
-      requests.requests[testUserId]!.single.category,
-      ServiceCategory.handyman,
-    );
+    expect(requests.requests.single.category, ServiceCategory.handyman);
+  });
+
+  testWidgets('a request that the server rejects is not lost', (tester) async {
+    final requests = InMemoryServiceRequestRepository()
+      ..failure = AppFailure.unknown;
+    await pumpSignedInApp(tester, role: AppRole.customer, requests: requests);
+
+    await tester.enterText(find.byType(TextField), _washingMachine);
+    await tester.pump();
+    await tester.tap(find.widgetWithText(FilledButton, 'Weiter'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(FilledButton, 'Anfrage erstellen'));
+    await tester.pumpAndSettle();
+
+    // The customer stays on the form with their text intact and is told why,
+    // instead of losing what they wrote.
+    expect(find.textContaining('Das hat nicht geklappt'), findsOneWidget);
+    expect(find.text('Erzähl uns kurz, was du brauchst'), findsOneWidget);
+    expect(find.text(_washingMachine), findsOneWidget);
+    expect(requests.requests, isEmpty);
   });
 
   testWidgets('bookings stay empty when no request was created', (

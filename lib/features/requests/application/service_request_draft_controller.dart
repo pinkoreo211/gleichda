@@ -45,21 +45,16 @@ class ServiceRequestDraftController extends Notifier<ServiceRequestDraft> {
 
   void clear() => state = const ServiceRequestDraft();
 
-  /// Saves the draft. Returns `false` if it was empty or storing failed.
+  /// Stores the draft on the server. Returns `false` if it was empty or
+  /// nobody is signed in.
   ///
-  /// The request is stored on this device only; nothing is sent to providers
-  /// yet. Throws [AppFailure] so the screen can show the usual message.
+  /// The request is saved, but no provider sees it yet — matching comes
+  /// later. Throws [AppFailure] so the screen can show the usual message.
   Future<bool> submit() async {
     if (!state.isSubmittable) return false;
-    final userId = ref.read(currentUserIdProvider);
-    if (userId == null) return false;
+    if (ref.read(currentUserIdProvider) == null) return false;
 
-    final now = DateTime.now();
-    final request = state.toRequest(
-      id: 'req-${now.microsecondsSinceEpoch}',
-      createdAt: now,
-    );
-    await ref.read(serviceRequestRepositoryProvider).save(userId, request);
+    await ref.read(serviceRequestRepositoryProvider).create(state);
 
     if (ref.mounted) {
       ref.invalidate(myRequestsProvider);

@@ -7,7 +7,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:app/app.dart';
 import 'package:app/core/config/env.dart';
-import 'package:app/features/requests/data/service_request_repository.dart';
 import 'package:app/features/session/application/active_role_controller.dart';
 import 'package:app/features/session/data/session_store.dart';
 
@@ -46,9 +45,6 @@ Future<void> main() async {
       overrides: [
         sessionStoreProvider.overrideWithValue(
           SharedPreferencesSessionStore(preferences),
-        ),
-        serviceRequestRepositoryProvider.overrideWithValue(
-          LocalServiceRequestRepository(preferences),
         ),
       ],
       child: const App(),

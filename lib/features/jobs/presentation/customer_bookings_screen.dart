@@ -12,9 +12,9 @@ import 'package:app/l10n/app_localizations.dart';
 
 /// The customer's requests and, later, their booked jobs.
 ///
-/// Requests shown here are real ones the customer created; they are stored
-/// on this device only and marked as not sent, because there is no backend
-/// table for them yet. Bookings stay empty until booking exists — none are
+/// Requests shown here are the customer's own, read back from the backend.
+/// They are marked as not sent because no provider sees them yet: matching
+/// comes later. Bookings stay empty until booking exists — none are
 /// invented.
 class CustomerBookingsScreen extends ConsumerWidget {
   const CustomerBookingsScreen({super.key});

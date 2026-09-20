@@ -10,7 +10,9 @@ import 'package:app/core/errors/app_failure.dart';
 import 'package:app/features/auth/data/auth_repository.dart';
 import 'package:app/features/profile/data/profile_repository.dart';
 import 'package:app/features/requests/data/service_request_repository.dart';
+import 'package:app/features/requests/domain/request_timing.dart';
 import 'package:app/features/requests/domain/service_request.dart';
+import 'package:app/features/requests/domain/service_request_draft.dart';
 import 'package:app/features/session/application/active_role_controller.dart';
 import 'package:app/features/session/data/role_repository.dart';
 import 'package:app/features/session/data/session_store.dart';
@@ -99,21 +101,38 @@ class FakeProfileRepository implements ProfileRepository {
   Future<String?> myDisplayName() async => displayName;
 }
 
-/// [ServiceRequestRepository] that keeps requests in memory, per user.
+/// [ServiceRequestRepository] that keeps requests in memory.
+///
+/// Stands in for the backend, including the parts the server owns: it
+/// assigns the id and the creation time, exactly as the database does.
 class InMemoryServiceRequestRepository implements ServiceRequestRepository {
-  final requests = <String, List<ServiceRequest>>{};
+  /// Newest first, like the real repository.
+  final requests = <ServiceRequest>[];
 
-  /// When set, [save] throws it.
+  /// When set, [create] throws it.
   AppFailure? failure;
 
   @override
-  Future<List<ServiceRequest>> myRequests(String userId) async =>
-      List.unmodifiable(requests[userId] ?? const <ServiceRequest>[]);
+  Future<List<ServiceRequest>> myRequests() async =>
+      List.unmodifiable(requests);
 
   @override
-  Future<void> save(String userId, ServiceRequest request) async {
+  Future<ServiceRequest> create(ServiceRequestDraft draft) async {
     if (failure case final failure?) throw failure;
-    requests.putIfAbsent(userId, () => <ServiceRequest>[]).insert(0, request);
+    final request = ServiceRequest(
+      id: 'request-${requests.length + 1}',
+      originalDescription: draft.description.trim(),
+      // Fixed, increasing times keep test expectations stable.
+      createdAt: DateTime(2026, 1, 1).add(Duration(minutes: requests.length)),
+      category: draft.category,
+      timing: draft.timing,
+      preferredDate: draft.timing == RequestTiming.onDate
+          ? draft.preferredDate
+          : null,
+      locationLabel: draft.locationLabel,
+    );
+    requests.insert(0, request);
+    return request;
   }
 }
 
