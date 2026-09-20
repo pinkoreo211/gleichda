@@ -5,17 +5,19 @@ import 'package:material_ui/material_ui.dart';
 import 'package:app/core/config/brand_config.dart';
 import 'package:app/core/routing/app_routes.dart';
 import 'package:app/design_system/app_dimensions.dart';
+import 'package:app/features/catalog/application/catalog_providers.dart';
+import 'package:app/features/catalog/domain/service_category.dart';
+import 'package:app/features/catalog/presentation/widgets/catalog_async.dart';
+import 'package:app/features/catalog/presentation/widgets/category_icon.dart';
 import 'package:app/features/requests/application/service_request_draft_controller.dart';
-import 'package:app/features/requests/domain/service_category.dart';
-import 'package:app/features/requests/presentation/widgets/service_category_display.dart';
 import 'package:app/l10n/app_localizations.dart';
 
-/// Customer start screen: describe the problem in your own words, or start
-/// from a category.
+/// Customer start screen, offering the two ways into the marketplace:
+/// describe the problem in your own words, or browse the catalog.
 ///
-/// The text is deliberately not interpreted here. Whatever the customer
-/// writes is carried over unchanged; recognising the actual service from it
-/// happens in a later AI step.
+/// Both end up at the same catalog — the free text via the AI step later,
+/// the categories directly. The categories come from the backend, so the
+/// app shows however many exist without a new release.
 class CustomerHomeScreen extends ConsumerStatefulWidget {
   const CustomerHomeScreen({super.key});
 
@@ -39,10 +41,10 @@ class _CustomerHomeScreenState extends ConsumerState<CustomerHomeScreen> {
     super.dispose();
   }
 
-  Future<void> _openRequest({ServiceCategory? category}) async {
+  Future<void> _openRequest() async {
     ref
         .read(serviceRequestDraftProvider.notifier)
-        .start(description: _controller.text, category: category);
+        .start(description: _controller.text);
     await context.push(AppRoutes.customerRequest);
     if (!mounted) return;
     // The request screen may have changed or cleared the text.
@@ -74,9 +76,7 @@ class _CustomerHomeScreenState extends ConsumerState<CustomerHomeScreen> {
             ValueListenableBuilder<TextEditingValue>(
               valueListenable: _controller,
               builder: (context, value, _) => FilledButton(
-                onPressed: value.text.trim().isEmpty
-                    ? null
-                    : () => _openRequest(),
+                onPressed: value.text.trim().isEmpty ? null : _openRequest,
                 child: Text(l10n.customerHomeContinue),
               ),
             ),
@@ -88,9 +88,7 @@ class _CustomerHomeScreenState extends ConsumerState<CustomerHomeScreen> {
               style: theme.textTheme.titleMedium,
             ),
             const SizedBox(height: AppSpacing.md),
-            _CategoryGrid(
-              onSelected: (category) => _openRequest(category: category),
-            ),
+            const _CategoryGrid(),
             const SizedBox(height: AppSpacing.xl),
             Text(
               l10n.customerHomeUpcomingBookings,
@@ -175,56 +173,84 @@ class _Examples extends StatelessWidget {
   }
 }
 
-/// The eight service areas as compact cards.
-class _CategoryGrid extends StatelessWidget {
-  const _CategoryGrid({required this.onSelected});
-
-  final ValueChanged<ServiceCategory> onSelected;
+/// The catalog's categories, however many the backend holds.
+class _CategoryGrid extends ConsumerWidget {
+  const _CategoryGrid();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
 
-    return GridView.count(
-      crossAxisCount: 2,
-      // Wide, short tiles: two fit next to each other even on a 320pt screen,
-      // with room for a two-line label at the larger body text size.
-      childAspectRatio: 2.0,
-      mainAxisSpacing: AppSpacing.sm,
-      crossAxisSpacing: AppSpacing.sm,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      children: [
-        for (final category in ServiceCategory.values)
-          Card(
-            margin: EdgeInsets.zero,
-            clipBehavior: Clip.antiAlias,
-            child: InkWell(
-              onTap: () => onSelected(category),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.md,
-                  vertical: AppSpacing.sm,
-                ),
-                child: Row(
-                  children: [
-                    Icon(category.icon, color: theme.colorScheme.primary),
-                    const SizedBox(width: AppSpacing.sm),
-                    Expanded(
-                      child: Text(
-                        category.label(l10n),
-                        style: theme.textTheme.bodyMedium,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
+    return CatalogAsync<List<ServiceCategory>>(
+      value: ref.watch(serviceCategoriesProvider),
+      onRetry: () => ref.invalidate(serviceCategoriesProvider),
+      builder: (categories) {
+        if (categories.isEmpty) {
+          return Text(
+            l10n.catalogEmptyMessage,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          );
+        }
+        return GridView.count(
+          crossAxisCount: 2,
+          // Wide, short tiles: two fit next to each other even on a 320pt
+          // screen, with room for a two-line label.
+          childAspectRatio: 2.0,
+          mainAxisSpacing: AppSpacing.sm,
+          crossAxisSpacing: AppSpacing.sm,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          children: [
+            for (final category in categories)
+              _CategoryCard(category: category),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _CategoryCard extends StatelessWidget {
+  const _CategoryCard({required this.category});
+
+  final ServiceCategory category;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final language = Localizations.localeOf(context).languageCode;
+
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: () => context.push(AppRoutes.customerCategory(category.slug)),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.md,
+            vertical: AppSpacing.sm,
+          ),
+          child: Row(
+            children: [
+              Icon(
+                iconForCategory(category.iconKey),
+                color: theme.colorScheme.primary,
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: Text(
+                  category.nameFor(language),
+                  style: theme.textTheme.bodyMedium,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
-            ),
+            ],
           ),
-      ],
+        ),
+      ),
     );
   }
 }
@@ -239,7 +265,6 @@ class _NoBookingsCard extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Card(
-      margin: EdgeInsets.zero,
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),
         child: Row(

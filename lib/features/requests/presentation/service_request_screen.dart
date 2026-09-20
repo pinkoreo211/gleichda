@@ -3,14 +3,16 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
 import 'package:app/core/errors/app_failure_message.dart';
+import 'package:app/features/catalog/application/catalog_providers.dart';
+import 'package:app/features/catalog/presentation/widgets/catalog_async.dart';
+import 'package:app/features/catalog/presentation/widgets/category_icon.dart';
 import 'package:app/design_system/app_dimensions.dart';
 import 'package:app/design_system/widgets/button_progress.dart';
 import 'package:app/features/requests/application/service_request_draft_controller.dart';
 import 'package:app/features/requests/domain/request_timing.dart';
-import 'package:app/features/requests/domain/service_category.dart';
+import 'package:app/features/catalog/domain/service_category.dart';
 import 'package:app/features/requests/domain/service_request_draft.dart';
 import 'package:app/features/requests/presentation/widgets/request_timing_display.dart';
-import 'package:app/features/requests/presentation/widgets/service_category_display.dart';
 import 'package:app/l10n/app_localizations.dart';
 
 /// Second step of a request: review and enrich what the customer wrote.
@@ -187,8 +189,9 @@ class _SectionLabel extends StatelessWidget {
       Text(text, style: Theme.of(context).textTheme.titleSmall);
 }
 
-/// Category choice. Tapping the selected chip again clears it, because "no
-/// category" stays a valid answer.
+/// Category choice, offering exactly the categories the catalog holds.
+/// Tapping the selected chip again clears it, because "no category" stays a
+/// valid answer — the AI step can fill it in later.
 class _CategoryChips extends ConsumerWidget {
   const _CategoryChips({required this.selected});
 
@@ -196,22 +199,26 @@ class _CategoryChips extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context);
     final controller = ref.read(serviceRequestDraftProvider.notifier);
+    final language = Localizations.localeOf(context).languageCode;
 
-    return Wrap(
-      spacing: AppSpacing.sm,
-      runSpacing: AppSpacing.sm,
-      children: [
-        for (final category in ServiceCategory.values)
-          FilterChip(
-            avatar: Icon(category.icon, size: 18),
-            label: Text(category.label(l10n)),
-            selected: category == selected,
-            onSelected: (isSelected) =>
-                controller.setCategory(isSelected ? category : null),
-          ),
-      ],
+    return CatalogAsync<List<ServiceCategory>>(
+      value: ref.watch(serviceCategoriesProvider),
+      onRetry: () => ref.invalidate(serviceCategoriesProvider),
+      builder: (categories) => Wrap(
+        spacing: AppSpacing.sm,
+        runSpacing: AppSpacing.sm,
+        children: [
+          for (final category in categories)
+            FilterChip(
+              avatar: Icon(iconForCategory(category.iconKey), size: 18),
+              label: Text(category.nameFor(language)),
+              selected: category.id == selected?.id,
+              onSelected: (isSelected) =>
+                  controller.setCategory(isSelected ? category : null),
+            ),
+        ],
+      ),
     );
   }
 }

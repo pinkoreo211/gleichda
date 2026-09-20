@@ -5,7 +5,7 @@ import 'package:app/features/auth/application/current_user.dart';
 import 'package:app/features/requests/application/my_requests.dart';
 import 'package:app/features/requests/data/service_request_repository.dart';
 import 'package:app/features/requests/domain/request_timing.dart';
-import 'package:app/features/requests/domain/service_category.dart';
+import 'package:app/features/catalog/domain/service_category.dart';
 import 'package:app/features/requests/domain/service_request_draft.dart';
 
 /// The request the customer is currently writing.

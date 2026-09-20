@@ -14,7 +14,7 @@ Legend: ✅ done · 🔄 in progress · ⏳ open
 | 2 | **Backend setup:** Supabase connected (dev project), environment config, login with email code, profiles, roles, security rules | ✅ | Verified end to end on a device: code email, sign-in, role, and profile read from Supabase |
 | 2b | **Customer request flow:** home with free-text request field, example requests, category cards; request screen with optional category, location/photo UI prepared, timing | ✅ | Customer describes a job in their own words and finds it again under "Deine Anfragen" |
 | 2c | **Requests in the backend:** `service_requests` table with RLS, column grants that keep AI fields out of reach of clients, Supabase repository | ✅ | Requests survive reinstalling the app and are readable only by their own customer |
-| 3 | **Service catalog:** categories, services, price options, sample data for Vienna | ⏳ | Real categories loaded from Supabase |
+| 3 | **Service catalog:** categories, services, price options, sample data for Vienna; category and service screens | ✅ | The app shows whatever the backend holds — adding a category needs no release |
 | 4 | **Provider onboarding & verification:** profile, services, prices, service area, availability, document upload, category-specific requirements | ⏳ | Provider submits documents; admin approves in Supabase |
 | 5 | **Discovery & fixed-price booking:** location, nearby verified providers, option → price → time → request | ⏳ | Customer books a cleaner in Vienna |
 | 6 | **Job flow:** accept/decline, on the way, in progress, done, customer confirms, navigation button | ⏳ | Full job lifecycle between two test accounts |
@@ -43,6 +43,7 @@ analytics.
 - [x] Supabase: email templates switched to codes — verified, a real code email arrived
 - [x] First real sign-in on a device — confirmed in the running app
 - [x] Supabase: `20260920120000_service_requests.sql` run — verified by creating a real request that survived an app restart
+- [ ] **Supabase: run `supabase/migrations/20260920140000_service_catalog.sql`** (`docs/supabase-setup.md`, section 2). Until this is done, the home screen shows no categories
 
 - [x] Android SDK Command-line Tools installed
 - [x] Android licences: Google replaced `sdkmanager --licenses`; `flutter doctor` still reports "unknown", which is a tooling mismatch, not a blocker — builds work

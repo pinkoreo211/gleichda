@@ -1,5 +1,5 @@
 import 'package:app/features/requests/domain/request_timing.dart';
-import 'package:app/features/requests/domain/service_category.dart';
+import 'package:app/features/catalog/domain/service_category.dart';
 
 /// A request while the customer is still writing it.
 ///

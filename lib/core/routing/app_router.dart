@@ -7,6 +7,8 @@ import 'package:app/core/routing/route_guard.dart';
 import 'package:app/features/auth/application/current_user.dart';
 import 'package:app/features/auth/presentation/login_screen.dart';
 import 'package:app/features/availability/presentation/availability_screen.dart';
+import 'package:app/features/catalog/presentation/category_screen.dart';
+import 'package:app/features/catalog/presentation/service_detail_screen.dart';
 import 'package:app/features/chat/presentation/conversations_screen.dart';
 import 'package:app/features/discovery/presentation/customer_home_screen.dart';
 import 'package:app/features/earnings/presentation/earnings_screen.dart';
@@ -109,6 +111,21 @@ List<RouteBase> _tabSubRoutes(ShellTab tab) => switch (tab) {
     GoRoute(
       path: 'request',
       builder: (context, state) => const ServiceRequestScreen(),
+    ),
+    GoRoute(
+      path: 'category/:categorySlug',
+      builder: (context, state) =>
+          CategoryScreen(slug: state.pathParameters['categorySlug']!),
+      routes: [
+        // Nested, so "back" from a service returns to its category.
+        GoRoute(
+          path: 'service/:serviceId',
+          builder: (context, state) => ServiceDetailScreen(
+            categorySlug: state.pathParameters['categorySlug']!,
+            serviceId: state.pathParameters['serviceId']!,
+          ),
+        ),
+      ],
     ),
   ],
   _ => const [],

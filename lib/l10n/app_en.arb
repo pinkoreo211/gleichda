@@ -94,5 +94,19 @@
   "profileNameMissing": "Not set yet",
   "profileEdit": "Edit profile",
   "profileSettings": "Settings",
-  "comingSoon": "This feature is coming soon."
+  "comingSoon": "This feature is coming soon.",
+  "catalogLoading": "Loading services …",
+  "catalogErrorMessage": "Services could not be loaded.",
+  "catalogRetry": "Try again",
+  "catalogEmptyTitle": "No services available",
+  "catalogEmptyMessage": "No services are available right now. Please check back later.",
+  "categoryServicesEmptyMessage": "This category has no services yet.",
+  "servicePriceFrom": "from {price}",
+  "serviceQuoteBadge": "Quote",
+  "servicePriceOptionsTitle": "Price options",
+  "serviceQuoteHint": "For this service you create a request and receive matching offers.",
+  "servicePricesExampleHint": "Example prices. The final price is agreed with the provider.",
+  "serviceContinue": "Continue",
+  "serviceNotFound": "This service is no longer available.",
+  "serviceDurationMinutes": "approx. {minutes} min"
 }

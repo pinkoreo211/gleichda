@@ -318,4 +318,54 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get comingSoon => 'This feature is coming soon.';
+
+  @override
+  String get catalogLoading => 'Loading services …';
+
+  @override
+  String get catalogErrorMessage => 'Services could not be loaded.';
+
+  @override
+  String get catalogRetry => 'Try again';
+
+  @override
+  String get catalogEmptyTitle => 'No services available';
+
+  @override
+  String get catalogEmptyMessage =>
+      'No services are available right now. Please check back later.';
+
+  @override
+  String get categoryServicesEmptyMessage =>
+      'This category has no services yet.';
+
+  @override
+  String servicePriceFrom(String price) {
+    return 'from $price';
+  }
+
+  @override
+  String get serviceQuoteBadge => 'Quote';
+
+  @override
+  String get servicePriceOptionsTitle => 'Price options';
+
+  @override
+  String get serviceQuoteHint =>
+      'For this service you create a request and receive matching offers.';
+
+  @override
+  String get servicePricesExampleHint =>
+      'Example prices. The final price is agreed with the provider.';
+
+  @override
+  String get serviceContinue => 'Continue';
+
+  @override
+  String get serviceNotFound => 'This service is no longer available.';
+
+  @override
+  String serviceDurationMinutes(int minutes) {
+    return 'approx. $minutes min';
+  }
 }

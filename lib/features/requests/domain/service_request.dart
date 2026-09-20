@@ -1,5 +1,5 @@
 import 'package:app/features/requests/domain/request_timing.dart';
-import 'package:app/features/requests/domain/service_category.dart';
+import 'package:app/features/catalog/domain/service_category.dart';
 
 /// One customer request: "what do you need?" in the customer's own words,
 /// plus whatever details they chose to add.
@@ -100,7 +100,12 @@ class ServiceRequest {
       createdAt:
           DateTime.tryParse(json['created_at'] as String? ?? '') ??
           DateTime.fromMillisecondsSinceEpoch(0),
-      category: ServiceCategory.byName(json['category'] as String?),
+      // Loaded together with the request, so the list can show the category
+      // name without a second query. Null when none was chosen.
+      category: switch (json['service_categories']) {
+        final Map<String, dynamic> row => ServiceCategory.fromJson(row),
+        _ => null,
+      },
       timing: RequestTiming.byName(json['timing'] as String?),
       preferredDate: DateTime.tryParse(json['preferred_date'] as String? ?? ''),
       locationLabel: json['location_label'] as String?,

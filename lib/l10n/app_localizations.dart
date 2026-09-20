@@ -667,6 +667,90 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Diese Funktion folgt in Kürze.'**
   String get comingSoon;
+
+  /// Shown while the service catalog is being fetched.
+  ///
+  /// In de, this message translates to:
+  /// **'Services werden geladen …'**
+  String get catalogLoading;
+
+  /// Shown when the catalog could not be fetched.
+  ///
+  /// In de, this message translates to:
+  /// **'Services konnten nicht geladen werden.'**
+  String get catalogErrorMessage;
+
+  /// Button that retries loading after an error.
+  ///
+  /// In de, this message translates to:
+  /// **'Erneut versuchen'**
+  String get catalogRetry;
+
+  /// Empty state title when the catalog has no entries.
+  ///
+  /// In de, this message translates to:
+  /// **'Keine Services verfügbar'**
+  String get catalogEmptyTitle;
+
+  /// Empty state text when the catalog has no entries.
+  ///
+  /// In de, this message translates to:
+  /// **'Momentan sind keine Services verfügbar. Schau später noch einmal vorbei.'**
+  String get catalogEmptyMessage;
+
+  /// Empty state text on a category screen without services.
+  ///
+  /// In de, this message translates to:
+  /// **'In dieser Kategorie gibt es noch keine Leistungen.'**
+  String get categoryServicesEmptyMessage;
+
+  /// Lowest price of a service, e.g. 'ab € 59,00'.
+  ///
+  /// In de, this message translates to:
+  /// **'ab {price}'**
+  String servicePriceFrom(String price);
+
+  /// Shown instead of a price when a service is quoted individually.
+  ///
+  /// In de, this message translates to:
+  /// **'Angebot'**
+  String get serviceQuoteBadge;
+
+  /// Heading above the price options of a service.
+  ///
+  /// In de, this message translates to:
+  /// **'Preisoptionen'**
+  String get servicePriceOptionsTitle;
+
+  /// Explains that a quote service has no fixed price.
+  ///
+  /// In de, this message translates to:
+  /// **'Für diese Leistung erstellst du eine Anfrage und erhältst passende Angebote.'**
+  String get serviceQuoteHint;
+
+  /// Makes clear that catalog prices are not binding.
+  ///
+  /// In de, this message translates to:
+  /// **'Beispielpreise. Der endgültige Preis wird mit dem Dienstleister vereinbart.'**
+  String get servicePricesExampleHint;
+
+  /// Button that carries the chosen service into the request form.
+  ///
+  /// In de, this message translates to:
+  /// **'Weiter'**
+  String get serviceContinue;
+
+  /// Shown when a service was removed or deactivated.
+  ///
+  /// In de, this message translates to:
+  /// **'Diese Leistung ist nicht mehr verfügbar.'**
+  String get serviceNotFound;
+
+  /// Rough duration of a price option.
+  ///
+  /// In de, this message translates to:
+  /// **'ca. {minutes} Min.'**
+  String serviceDurationMinutes(int minutes);
 }
 
 class _AppLocalizationsDelegate

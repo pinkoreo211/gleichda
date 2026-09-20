@@ -21,6 +21,14 @@ abstract final class AppRoutes {
   /// navigation stays visible.
   static const String customerRequest = '/customer/home/request';
 
+  /// Catalog screens, also inside the home tab. The slug and the id come
+  /// from the backend, so a link keeps working when names change.
+  static String customerCategory(String categorySlug) =>
+      '/customer/home/category/$categorySlug';
+
+  static String customerService(String categorySlug, String serviceId) =>
+      '/customer/home/category/$categorySlug/service/$serviceId';
+
   // Provider area
   static const String providerArea = '/provider';
   static const String providerJobs = '/provider/jobs';

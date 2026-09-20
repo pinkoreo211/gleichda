@@ -34,7 +34,9 @@ class SupabaseServiceRequestRepository implements ServiceRequestRepository {
 
   /// The columns a client is allowed to read back. The AI columns are
   /// included because reading them is fine — only writing them is not.
-  static const _columns = '*';
+  /// The request plus the name and icon of its category, in one request.
+  static const _columns =
+      '*, service_categories(id, slug, name, name_en, icon)';
 
   @override
   Future<List<ServiceRequest>> myRequests() async {
@@ -58,7 +60,7 @@ class SupabaseServiceRequestRepository implements ServiceRequestRepository {
           .from(_table)
           .insert({
             'original_description': draft.description.trim(),
-            'category': draft.category?.name,
+            'category_id': draft.category?.id,
             'timing': draft.timing.name,
             'preferred_date': draft.timing == RequestTiming.onDate
                 ? _asDate(draft.preferredDate)

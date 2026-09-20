@@ -7,7 +7,7 @@ import 'package:app/design_system/widgets/empty_state.dart';
 import 'package:app/features/requests/application/my_requests.dart';
 import 'package:app/features/requests/domain/service_request.dart';
 import 'package:app/features/requests/presentation/widgets/request_timing_display.dart';
-import 'package:app/features/requests/presentation/widgets/service_category_display.dart';
+import 'package:app/features/catalog/presentation/widgets/category_icon.dart';
 import 'package:app/l10n/app_localizations.dart';
 
 /// The customer's requests and, later, their booked jobs.
@@ -28,7 +28,7 @@ class CustomerBookingsScreen extends ConsumerWidget {
       appBar: AppBar(title: Text(l10n.tabBookings)),
       body: requests.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        // Reading local storage failing is not worth its own error screen.
+        // A failed read is not worth its own error screen here.
         error: (_, _) => _emptyState(l10n),
         data: (list) =>
             list.isEmpty ? _emptyState(l10n) : _RequestList(requests: list),
@@ -105,7 +105,12 @@ class _RequestCard extends StatelessWidget {
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
                 if (category != null)
-                  _Detail(icon: category.icon, text: category.label(l10n)),
+                  _Detail(
+                    icon: iconForCategory(category.iconKey),
+                    text: category.nameFor(
+                      Localizations.localeOf(context).languageCode,
+                    ),
+                  ),
                 _Detail(
                   icon: Icons.schedule,
                   text: request.timing.label(l10n, date: request.preferredDate),

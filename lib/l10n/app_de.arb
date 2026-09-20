@@ -397,5 +397,73 @@
   "comingSoon": "Diese Funktion folgt in Kürze.",
   "@comingSoon": {
     "description": "Shown when a prepared button has no function yet."
+  },
+  "catalogLoading": "Services werden geladen …",
+  "@catalogLoading": {
+    "description": "Shown while the service catalog is being fetched."
+  },
+  "catalogErrorMessage": "Services konnten nicht geladen werden.",
+  "@catalogErrorMessage": {
+    "description": "Shown when the catalog could not be fetched."
+  },
+  "catalogRetry": "Erneut versuchen",
+  "@catalogRetry": {
+    "description": "Button that retries loading after an error."
+  },
+  "catalogEmptyTitle": "Keine Services verfügbar",
+  "@catalogEmptyTitle": {
+    "description": "Empty state title when the catalog has no entries."
+  },
+  "catalogEmptyMessage": "Momentan sind keine Services verfügbar. Schau später noch einmal vorbei.",
+  "@catalogEmptyMessage": {
+    "description": "Empty state text when the catalog has no entries."
+  },
+  "categoryServicesEmptyMessage": "In dieser Kategorie gibt es noch keine Leistungen.",
+  "@categoryServicesEmptyMessage": {
+    "description": "Empty state text on a category screen without services."
+  },
+  "servicePriceFrom": "ab {price}",
+  "@servicePriceFrom": {
+    "description": "Lowest price of a service, e.g. 'ab € 59,00'.",
+    "placeholders": {
+      "price": {
+        "type": "String",
+        "example": "€ 59,00"
+      }
+    }
+  },
+  "serviceQuoteBadge": "Angebot",
+  "@serviceQuoteBadge": {
+    "description": "Shown instead of a price when a service is quoted individually."
+  },
+  "servicePriceOptionsTitle": "Preisoptionen",
+  "@servicePriceOptionsTitle": {
+    "description": "Heading above the price options of a service."
+  },
+  "serviceQuoteHint": "Für diese Leistung erstellst du eine Anfrage und erhältst passende Angebote.",
+  "@serviceQuoteHint": {
+    "description": "Explains that a quote service has no fixed price."
+  },
+  "servicePricesExampleHint": "Beispielpreise. Der endgültige Preis wird mit dem Dienstleister vereinbart.",
+  "@servicePricesExampleHint": {
+    "description": "Makes clear that catalog prices are not binding."
+  },
+  "serviceContinue": "Weiter",
+  "@serviceContinue": {
+    "description": "Button that carries the chosen service into the request form."
+  },
+  "serviceNotFound": "Diese Leistung ist nicht mehr verfügbar.",
+  "@serviceNotFound": {
+    "description": "Shown when a service was removed or deactivated."
+  },
+  "serviceDurationMinutes": "ca. {minutes} Min.",
+  "@serviceDurationMinutes": {
+    "description": "Rough duration of a price option.",
+    "placeholders": {
+      "minutes": {
+        "type": "int",
+        "example": "120"
+      }
+    }
   }
 }

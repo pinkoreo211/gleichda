@@ -8,6 +8,10 @@ import 'package:material_ui/material_ui.dart';
 import 'package:app/app.dart';
 import 'package:app/core/errors/app_failure.dart';
 import 'package:app/features/auth/data/auth_repository.dart';
+import 'package:app/features/catalog/data/catalog_repository.dart';
+import 'package:app/features/catalog/domain/service.dart';
+import 'package:app/features/catalog/domain/service_category.dart';
+import 'package:app/features/catalog/domain/service_price_option.dart';
 import 'package:app/features/profile/data/profile_repository.dart';
 import 'package:app/features/requests/data/service_request_repository.dart';
 import 'package:app/features/requests/domain/request_timing.dart';
@@ -101,6 +105,96 @@ class FakeProfileRepository implements ProfileRepository {
   Future<String?> myDisplayName() async => displayName;
 }
 
+/// A small stand-in catalog: two categories, three services, one of them
+/// priced. Enough to exercise browsing without depending on the real data.
+const testCleaningCategory = ServiceCategory(
+  id: 'cat-cleaning',
+  slug: 'cleaning',
+  name: 'Reinigung',
+  nameEn: 'Cleaning',
+  iconKey: 'cleaning',
+);
+
+const testHandymanCategory = ServiceCategory(
+  id: 'cat-handyman',
+  slug: 'handyman',
+  name: 'Handwerker',
+  nameEn: 'Handyman',
+  iconKey: 'handyman',
+);
+
+final testFlatCleaning = Service(
+  id: 'svc-flat-cleaning',
+  categoryId: testCleaningCategory.id,
+  slug: 'wohnungsreinigung',
+  name: 'Wohnungsreinigung',
+  shortDescription: 'Einmalige Reinigung der Wohnung',
+  serviceType: ServiceType.fixedPrice,
+  priceOptions: const [
+    ServicePriceOption(id: 'opt-small', name: 'bis 50 m²', priceCents: 5900),
+    ServicePriceOption(id: 'opt-large', name: '51–80 m²', priceCents: 8900),
+  ],
+);
+
+final testMoveOutCleaning = Service(
+  id: 'svc-move-out',
+  categoryId: testCleaningCategory.id,
+  slug: 'umzugsreinigung',
+  name: 'Umzugsreinigung',
+  serviceType: ServiceType.quote,
+);
+
+final testFurnitureAssembly = Service(
+  id: 'svc-assembly',
+  categoryId: testHandymanCategory.id,
+  slug: 'moebelmontage',
+  name: 'Möbelmontage',
+  serviceType: ServiceType.quote,
+);
+
+/// [CatalogRepository] without a backend.
+class FakeCatalogRepository implements CatalogRepository {
+  FakeCatalogRepository({
+    List<ServiceCategory>? categories,
+    List<Service>? services,
+    this.failure,
+  }) : categoryList =
+           categories ?? [testCleaningCategory, testHandymanCategory],
+       serviceList =
+           services ??
+           [testFlatCleaning, testMoveOutCleaning, testFurnitureAssembly];
+
+  final List<ServiceCategory> categoryList;
+  final List<Service> serviceList;
+
+  /// When set, every read throws it.
+  final AppFailure? failure;
+
+  @override
+  Future<List<ServiceCategory>> categories() async {
+    if (failure case final failure?) throw failure;
+    return List.unmodifiable(categoryList);
+  }
+
+  @override
+  Future<List<Service>> servicesInCategory(String categoryId) async {
+    if (failure case final failure?) throw failure;
+    return [
+      for (final service in serviceList)
+        if (service.categoryId == categoryId) service,
+    ];
+  }
+
+  @override
+  Future<Service?> serviceById(String id) async {
+    if (failure case final failure?) throw failure;
+    for (final service in serviceList) {
+      if (service.id == id) return service;
+    }
+    return null;
+  }
+}
+
 /// [ServiceRequestRepository] that keeps requests in memory.
 ///
 /// Stands in for the backend, including the parts the server owns: it
@@ -159,6 +253,7 @@ Future<void> pumpApp(
   FakeRoleRepository? roles,
   InMemorySessionStore? store,
   InMemoryServiceRequestRepository? requests,
+  FakeCatalogRepository? catalog,
   FakeProfileRepository? profile,
   Locale locale = const Locale('de', 'AT'),
 }) async {
@@ -180,6 +275,9 @@ Future<void> pumpApp(
         ),
         profileRepositoryProvider.overrideWithValue(
           profile ?? FakeProfileRepository(),
+        ),
+        catalogRepositoryProvider.overrideWithValue(
+          catalog ?? FakeCatalogRepository(),
         ),
       ],
       child: const App(),
@@ -212,6 +310,7 @@ Future<void> pumpSignedInApp(
   FakeRoleRepository? roles,
   InMemorySessionStore? store,
   InMemoryServiceRequestRepository? requests,
+  FakeCatalogRepository? catalog,
   FakeProfileRepository? profile,
 }) {
   return pumpApp(
@@ -221,5 +320,6 @@ Future<void> pumpSignedInApp(
     store: store ?? InMemorySessionStore({testUserId: ?role}),
     requests: requests,
     profile: profile,
+    catalog: catalog,
   );
 }
