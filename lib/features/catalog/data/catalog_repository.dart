@@ -38,14 +38,18 @@ class SupabaseCatalogRepository implements CatalogRepository {
   /// list of services costs one request instead of one per row.
   static const _serviceColumns = '*, service_price_options(*)';
 
+  /// `ascending` is spelled out on every order below on purpose: the
+  /// Supabase client sorts *descending* by default, which silently turns a
+  /// curated order upside down.
+
   @override
   Future<List<ServiceCategory>> categories() async {
     try {
       final rows = await _client
           .from('service_categories')
           .select()
-          .order('sort_order')
-          .order('name');
+          .order('sort_order', ascending: true)
+          .order('name', ascending: true);
       return [for (final row in rows) ServiceCategory.fromJson(row)];
     } catch (error) {
       throw AppFailure.fromError(error);
@@ -59,9 +63,13 @@ class SupabaseCatalogRepository implements CatalogRepository {
           .from('services')
           .select(_serviceColumns)
           .eq('category_id', categoryId)
-          .order('sort_order')
-          .order('name')
-          .order('sort_order', referencedTable: 'service_price_options');
+          .order('sort_order', ascending: true)
+          .order('name', ascending: true)
+          .order(
+            'sort_order',
+            referencedTable: 'service_price_options',
+            ascending: true,
+          );
       return [for (final row in rows) Service.fromJson(row)];
     } catch (error) {
       throw AppFailure.fromError(error);
@@ -75,7 +83,11 @@ class SupabaseCatalogRepository implements CatalogRepository {
           .from('services')
           .select(_serviceColumns)
           .eq('id', id)
-          .order('sort_order', referencedTable: 'service_price_options')
+          .order(
+            'sort_order',
+            referencedTable: 'service_price_options',
+            ascending: true,
+          )
           .maybeSingle();
       return row == null ? null : Service.fromJson(row);
     } catch (error) {
