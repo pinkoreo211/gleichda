@@ -27,7 +27,7 @@ Bisher gibt es diese Dateien:
 | Datei | Legt an | Ausgeführt |
 |---|---|---|
 | `20260917120000_profiles_and_roles.sql` | `profiles`, `user_roles` | ✅ |
-| `20260920120000_service_requests.sql` | `service_requests` | ⬜ |
+| `20260920120000_service_requests.sql` | `service_requests` | ✅ |
 
 Ein zweites Ausführen derselben Datei meldet Fehler wie „already exists“ –
 das ist harmlos, es wurde dann nichts verändert.

@@ -42,7 +42,7 @@ analytics.
 - [x] Supabase: SMTP settings entered (Gmail), template editing unlocked
 - [x] Supabase: email templates switched to codes — verified, a real code email arrived
 - [x] First real sign-in on a device — confirmed in the running app
-- [ ] **Supabase: run `supabase/migrations/20260920120000_service_requests.sql`** (`docs/supabase-setup.md`, section 2). Until this is done, creating a request fails
+- [x] Supabase: `20260920120000_service_requests.sql` run — verified by creating a real request that survived an app restart
 
 - [x] Android SDK Command-line Tools installed
 - [x] Android licences: Google replaced `sdkmanager --licenses`; `flutter doctor` still reports "unknown", which is a tooling mismatch, not a blocker — builds work
