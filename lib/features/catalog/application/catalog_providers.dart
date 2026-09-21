@@ -40,3 +40,8 @@ final servicesInCategoryProvider = FutureProvider.family<List<Service>, String>(
 final serviceByIdProvider = FutureProvider.family<Service?, String>((ref, id) {
   return ref.watch(catalogRepositoryProvider).serviceById(id);
 });
+
+/// Every service in the catalog, for screens that show all of them at once.
+final allServicesProvider = FutureProvider<List<Service>>(
+  (ref) => ref.watch(catalogRepositoryProvider).allServices(),
+);

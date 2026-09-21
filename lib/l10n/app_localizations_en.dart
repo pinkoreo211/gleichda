@@ -368,4 +368,138 @@ class AppLocalizationsEn extends AppLocalizations {
   String serviceDurationMinutes(int minutes) {
     return 'approx. $minutes min';
   }
+
+  @override
+  String providerOnboardingStep(int current, int total) {
+    return 'Step $current of $total';
+  }
+
+  @override
+  String get providerPersonalTitle => 'Tell us a little about yourself.';
+
+  @override
+  String get providerFirstNameLabel => 'First name';
+
+  @override
+  String get providerLastNameLabel => 'Last name';
+
+  @override
+  String get providerPhotoAdd => 'Add profile photo';
+
+  @override
+  String get providerBusinessTitle =>
+      'Do you work for yourself or for a company?';
+
+  @override
+  String get providerKindSelfEmployed => 'Self-employed';
+
+  @override
+  String get providerKindCompany => 'Company';
+
+  @override
+  String get providerCompanyNameLabel => 'Company name';
+
+  @override
+  String get providerTradingNameLabel => 'Your trading name';
+
+  @override
+  String get providerServicesTitle => 'Which services do you offer?';
+
+  @override
+  String get providerServicesHint =>
+      'Pick everything you offer. You can change this at any time.';
+
+  @override
+  String get providerAreaTitle => 'Where do you want to take jobs?';
+
+  @override
+  String get providerCityLabel => 'City';
+
+  @override
+  String get providerPostalCodeLabel => 'Postal code';
+
+  @override
+  String providerRadiusLabel(int km) {
+    return 'Radius: $km km';
+  }
+
+  @override
+  String get providerFinishTitle => 'Almost there.';
+
+  @override
+  String get providerFinishMessage =>
+      'Your profile is set up. As soon as there are jobs near you, they appear in your area.';
+
+  @override
+  String get providerFinishButton => 'Finish profile';
+
+  @override
+  String get providerBack => 'Back';
+
+  @override
+  String get providerVerificationTitle => 'Verification';
+
+  @override
+  String get providerVerificationUnverified => 'Not verified';
+
+  @override
+  String get providerVerificationPending => 'In review';
+
+  @override
+  String get providerVerificationVerified => 'Verified';
+
+  @override
+  String get providerVerificationRejected => 'Rejected';
+
+  @override
+  String get providerVerificationExplanation =>
+      'We check your documents before customers see you as verified. Which documents are needed depends on your services. Uploading is coming soon.';
+
+  @override
+  String providerHomeGreeting(String name) {
+    return 'Hello, $name';
+  }
+
+  @override
+  String get providerHomeGreetingPlain => 'Hello';
+
+  @override
+  String get providerHomeSubtitle => 'Ready for your next job?';
+
+  @override
+  String get providerHomeNoJobs => 'You have no jobs yet.';
+
+  @override
+  String get providerHomeMyServices => 'My services';
+
+  @override
+  String get providerHomeAvailability => 'My availability';
+
+  @override
+  String providerServicesCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count services',
+      one: '1 service',
+      zero: 'No service selected yet',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get errorFirstNameRequired => 'Please enter your first name.';
+
+  @override
+  String get errorLastNameRequired => 'Please enter your last name.';
+
+  @override
+  String get errorBusinessNameRequired =>
+      'Please enter the name of your business.';
+
+  @override
+  String get errorServicesRequired => 'Please select at least one service.';
+
+  @override
+  String get errorCityRequired => 'Please enter your city.';
 }

@@ -31,6 +31,13 @@ abstract final class AppRoutes {
 
   // Provider area
   static const String providerArea = '/provider';
+
+  /// Full-screen onboarding, outside the tab shell: one thing at a time.
+  /// It lives inside the provider area so the guard treats it as allowed.
+  static const String providerOnboarding = '/provider/onboarding';
+
+  /// The provider's own services, opened from their home.
+  static const String providerServices = '/provider/jobs/services';
   static const String providerJobs = '/provider/jobs';
   static const String providerCalendar = '/provider/calendar';
   static const String providerMessages = '/provider/messages';

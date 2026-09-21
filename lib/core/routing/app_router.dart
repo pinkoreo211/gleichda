@@ -17,6 +17,9 @@ import 'package:app/features/jobs/presentation/provider_jobs_screen.dart';
 import 'package:app/features/onboarding/presentation/role_selection_screen.dart';
 import 'package:app/features/onboarding/presentation/welcome_screen.dart';
 import 'package:app/features/profile/presentation/profile_screen.dart';
+import 'package:app/features/provider/application/provider_profile_providers.dart';
+import 'package:app/features/provider/presentation/provider_onboarding_screen.dart';
+import 'package:app/features/provider/presentation/provider_services_screen.dart';
 import 'package:app/features/requests/presentation/service_request_screen.dart';
 import 'package:app/features/session/application/active_role_controller.dart';
 import 'package:app/features/session/domain/app_role.dart';
@@ -32,6 +35,8 @@ final appRouterProvider = Provider<GoRouter>((ref) {
   final refresh = _RouterRefresh();
   ref.listen(currentUserIdProvider, (_, _) => refresh.notify());
   ref.listen(activeRoleProvider, (_, _) => refresh.notify());
+  // Re-runs the guard once the provider's onboarding state is known.
+  ref.listen(providerOnboardingCompletedProvider, (_, _) => refresh.notify());
 
   final router = GoRouter(
     initialLocation: AppRoutes.welcome,
@@ -40,6 +45,9 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       isSignedIn: ref.read(currentUserIdProvider) != null,
       activeRole: ref.read(activeRoleProvider),
       location: state.matchedLocation,
+      providerOnboardingCompleted: ref.read(
+        providerOnboardingCompletedProvider,
+      ),
     ),
     routes: [
       GoRoute(
@@ -57,6 +65,12 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.roleSelection,
         builder: (context, state) => const RoleSelectionScreen(),
+      ),
+      // Outside the tab shell: onboarding is one thing at a time, with no
+      // navigation bar to wander off into.
+      GoRoute(
+        path: AppRoutes.providerOnboarding,
+        builder: (context, state) => const ProviderOnboardingScreen(),
       ),
       for (final role in AppRole.values) _roleArea(role),
     ],
@@ -126,6 +140,12 @@ List<RouteBase> _tabSubRoutes(ShellTab tab) => switch (tab) {
           ),
         ),
       ],
+    ),
+  ],
+  ShellTab.providerJobs => [
+    GoRoute(
+      path: 'services',
+      builder: (context, state) => const ProviderServicesScreen(),
     ),
   ],
   _ => const [],

@@ -13,6 +13,8 @@ import 'package:app/features/catalog/domain/service.dart';
 import 'package:app/features/catalog/domain/service_category.dart';
 import 'package:app/features/catalog/domain/service_price_option.dart';
 import 'package:app/features/profile/data/profile_repository.dart';
+import 'package:app/features/provider/data/provider_repository.dart';
+import 'package:app/features/provider/domain/provider_profile.dart';
 import 'package:app/features/requests/data/service_request_repository.dart';
 import 'package:app/features/requests/domain/request_timing.dart';
 import 'package:app/features/requests/domain/service_request.dart';
@@ -186,12 +188,96 @@ class FakeCatalogRepository implements CatalogRepository {
   }
 
   @override
+  Future<List<Service>> allServices() async {
+    if (failure case final failure?) throw failure;
+    return List.unmodifiable(serviceList);
+  }
+
+  @override
   Future<Service?> serviceById(String id) async {
     if (failure case final failure?) throw failure;
     for (final service in serviceList) {
       if (service.id == id) return service;
     }
     return null;
+  }
+}
+
+const testProviderId = 'provider-1';
+
+/// [ProviderRepository] without a backend.
+///
+/// Holds the profile as a row map, like the database does, so applying a
+/// step's changes works exactly as the real update would.
+class FakeProviderRepository implements ProviderRepository {
+  FakeProviderRepository({
+    bool hasProfile = false,
+    ProviderOnboardingStatus status = ProviderOnboardingStatus.started,
+    ProviderVerificationStatus verification =
+        ProviderVerificationStatus.unverified,
+    Map<String, dynamic>? fields,
+    Set<String>? serviceIds,
+  }) : serviceIds = {...?serviceIds},
+       _row = hasProfile
+           ? {
+               'id': testProviderId,
+               'onboarding_status': status.dbName,
+               'verification_status': verification.name,
+               ...?fields,
+             }
+           : null;
+
+  Map<String, dynamic>? _row;
+
+  /// The services the provider offers, updated by [setServices].
+  final Set<String> serviceIds;
+
+  /// When set, every call throws it.
+  AppFailure? failure;
+
+  /// The stored profile, for assertions.
+  ProviderProfile? get profile =>
+      _row == null ? null : ProviderProfile.fromJson(_row!);
+
+  @override
+  Future<ProviderProfile?> myProfile() async {
+    if (failure case final failure?) throw failure;
+    return profile;
+  }
+
+  @override
+  Future<ProviderProfile> startProfile() async {
+    if (failure case final failure?) throw failure;
+    _row = {
+      'id': testProviderId,
+      'onboarding_status': ProviderOnboardingStatus.profileIncomplete.dbName,
+      'verification_status': ProviderVerificationStatus.unverified.name,
+    };
+    return profile!;
+  }
+
+  @override
+  Future<ProviderProfile> updateProfile(
+    String providerId,
+    Map<String, dynamic> changes,
+  ) async {
+    if (failure case final failure?) throw failure;
+    _row = {...?_row, ...changes};
+    return profile!;
+  }
+
+  @override
+  Future<Set<String>> myServiceIds(String providerId) async {
+    if (failure case final failure?) throw failure;
+    return {...serviceIds};
+  }
+
+  @override
+  Future<void> setServices(String providerId, Set<String> ids) async {
+    if (failure case final failure?) throw failure;
+    serviceIds
+      ..clear()
+      ..addAll(ids);
   }
 }
 
@@ -255,6 +341,7 @@ Future<void> pumpApp(
   InMemoryServiceRequestRepository? requests,
   FakeCatalogRepository? catalog,
   FakeProfileRepository? profile,
+  FakeProviderRepository? provider,
   Locale locale = const Locale('de', 'AT'),
 }) async {
   tester.platformDispatcher.localesTestValue = [locale];
@@ -278,6 +365,9 @@ Future<void> pumpApp(
         ),
         catalogRepositoryProvider.overrideWithValue(
           catalog ?? FakeCatalogRepository(),
+        ),
+        providerRepositoryProvider.overrideWithValue(
+          provider ?? FakeProviderRepository(),
         ),
       ],
       child: const App(),
@@ -312,6 +402,7 @@ Future<void> pumpSignedInApp(
   InMemoryServiceRequestRepository? requests,
   FakeCatalogRepository? catalog,
   FakeProfileRepository? profile,
+  FakeProviderRepository? provider,
 }) {
   return pumpApp(
     tester,
@@ -321,5 +412,16 @@ Future<void> pumpSignedInApp(
     requests: requests,
     profile: profile,
     catalog: catalog,
+    // A signed-in provider is an established one unless a test says
+    // otherwise, so the guard does not send every provider test into
+    // onboarding.
+    provider:
+        provider ??
+        (role == AppRole.provider
+            ? FakeProviderRepository(
+                hasProfile: true,
+                status: ProviderOnboardingStatus.completed,
+              )
+            : null),
   );
 }

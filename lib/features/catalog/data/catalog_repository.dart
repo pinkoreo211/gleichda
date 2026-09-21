@@ -23,6 +23,10 @@ abstract interface class CatalogRepository {
 
   /// One service with its price options, or null if it is gone or inactive.
   Future<Service?> serviceById(String id);
+
+  /// Every active service, for screens that show the whole catalog at once —
+  /// one request instead of one per category.
+  Future<List<Service>> allServices();
 }
 
 final catalogRepositoryProvider = Provider<CatalogRepository>(
@@ -70,6 +74,20 @@ class SupabaseCatalogRepository implements CatalogRepository {
             referencedTable: 'service_price_options',
             ascending: true,
           );
+      return [for (final row in rows) Service.fromJson(row)];
+    } catch (error) {
+      throw AppFailure.fromError(error);
+    }
+  }
+
+  @override
+  Future<List<Service>> allServices() async {
+    try {
+      final rows = await _client
+          .from('services')
+          .select(_serviceColumns)
+          .order('sort_order', ascending: true)
+          .order('name', ascending: true);
       return [for (final row in rows) Service.fromJson(row)];
     } catch (error) {
       throw AppFailure.fromError(error);

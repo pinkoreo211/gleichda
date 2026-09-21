@@ -95,4 +95,51 @@ void main() {
       expect(redirect(AppRoutes.welcome), AppRoutes.providerJobs);
     });
   });
+
+  group('provider onboarding', () {
+    String? redirect(String location, {bool? completed}) => resolveRedirect(
+      isSignedIn: true,
+      activeRole: AppRole.provider,
+      location: location,
+      providerOnboardingCompleted: completed,
+    );
+
+    test('keeps an unfinished provider in onboarding', () {
+      expect(
+        redirect(AppRoutes.providerJobs, completed: false),
+        AppRoutes.providerOnboarding,
+      );
+      expect(
+        redirect(AppRoutes.providerProfile, completed: false),
+        AppRoutes.providerOnboarding,
+      );
+      expect(redirect(AppRoutes.providerOnboarding, completed: false), isNull);
+    });
+
+    test('does not send a finished provider back into onboarding', () {
+      expect(
+        redirect(AppRoutes.providerOnboarding, completed: true),
+        AppRoutes.providerJobs,
+      );
+      expect(redirect(AppRoutes.providerJobs, completed: true), isNull);
+    });
+
+    test('stays put while the onboarding state is still unknown', () {
+      // A slow connection must not bounce someone out of their screen.
+      expect(redirect(AppRoutes.providerJobs), isNull);
+      expect(redirect(AppRoutes.providerOnboarding), isNull);
+    });
+
+    test('never applies to customers', () {
+      expect(
+        resolveRedirect(
+          isSignedIn: true,
+          activeRole: AppRole.customer,
+          location: AppRoutes.customerHome,
+          providerOnboardingCompleted: false,
+        ),
+        isNull,
+      );
+    });
+  });
 }

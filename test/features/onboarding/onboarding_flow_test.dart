@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
 import 'package:app/core/errors/app_failure.dart';
+import 'package:app/features/provider/domain/provider_profile.dart';
 import 'package:app/features/session/domain/app_role.dart';
 
 import '../../helpers/pump_app.dart';
@@ -77,6 +78,12 @@ void main() {
       role: AppRole.customer,
       roles: roles,
       store: store,
+      // Someone who already finished provider onboarding lands in their
+      // area; the case without a profile is covered separately.
+      provider: FakeProviderRepository(
+        hasProfile: true,
+        status: ProviderOnboardingStatus.completed,
+      ),
     );
 
     await tester.tap(_navLabel('Profil'));

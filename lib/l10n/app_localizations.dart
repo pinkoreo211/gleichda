@@ -751,6 +751,234 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'ca. {minutes} Min.'**
   String serviceDurationMinutes(int minutes);
+
+  /// Progress line above each onboarding step.
+  ///
+  /// In de, this message translates to:
+  /// **'Schritt {current} von {total}'**
+  String providerOnboardingStep(int current, int total);
+
+  /// Heading of onboarding step 1.
+  ///
+  /// In de, this message translates to:
+  /// **'Erzähl uns kurz etwas über dich.'**
+  String get providerPersonalTitle;
+
+  /// Label of the first name field.
+  ///
+  /// In de, this message translates to:
+  /// **'Vorname'**
+  String get providerFirstNameLabel;
+
+  /// Label of the last name field.
+  ///
+  /// In de, this message translates to:
+  /// **'Nachname'**
+  String get providerLastNameLabel;
+
+  /// Button that will add a profile photo once file upload exists.
+  ///
+  /// In de, this message translates to:
+  /// **'Profilbild hinzufügen'**
+  String get providerPhotoAdd;
+
+  /// Heading of onboarding step 2.
+  ///
+  /// In de, this message translates to:
+  /// **'Arbeitest du selbstständig oder für ein Unternehmen?'**
+  String get providerBusinessTitle;
+
+  /// Option for sole traders.
+  ///
+  /// In de, this message translates to:
+  /// **'Selbstständig'**
+  String get providerKindSelfEmployed;
+
+  /// Option for companies.
+  ///
+  /// In de, this message translates to:
+  /// **'Unternehmen'**
+  String get providerKindCompany;
+
+  /// Label of the company name field.
+  ///
+  /// In de, this message translates to:
+  /// **'Firmenname'**
+  String get providerCompanyNameLabel;
+
+  /// Label of the trading name for sole traders.
+  ///
+  /// In de, this message translates to:
+  /// **'Name deines Betriebs'**
+  String get providerTradingNameLabel;
+
+  /// Heading of onboarding step 3.
+  ///
+  /// In de, this message translates to:
+  /// **'Welche Leistungen bietest du an?'**
+  String get providerServicesTitle;
+
+  /// Explains that the choice is not final.
+  ///
+  /// In de, this message translates to:
+  /// **'Wähle alles aus, was du anbietest. Du kannst das später jederzeit ändern.'**
+  String get providerServicesHint;
+
+  /// Heading of onboarding step 4.
+  ///
+  /// In de, this message translates to:
+  /// **'Wo möchtest du Aufträge annehmen?'**
+  String get providerAreaTitle;
+
+  /// Label of the city field.
+  ///
+  /// In de, this message translates to:
+  /// **'Stadt'**
+  String get providerCityLabel;
+
+  /// Label of the postal code field.
+  ///
+  /// In de, this message translates to:
+  /// **'Postleitzahl'**
+  String get providerPostalCodeLabel;
+
+  /// Current service radius.
+  ///
+  /// In de, this message translates to:
+  /// **'Umkreis: {km} km'**
+  String providerRadiusLabel(int km);
+
+  /// Heading of the last onboarding step.
+  ///
+  /// In de, this message translates to:
+  /// **'Fast geschafft.'**
+  String get providerFinishTitle;
+
+  /// Explains what happens after onboarding.
+  ///
+  /// In de, this message translates to:
+  /// **'Dein Profil ist angelegt. Sobald es Aufträge in deiner Nähe gibt, siehst du sie in deinem Bereich.'**
+  String get providerFinishMessage;
+
+  /// Button that completes onboarding.
+  ///
+  /// In de, this message translates to:
+  /// **'Profil fertigstellen'**
+  String get providerFinishButton;
+
+  /// Button that returns to the previous onboarding step.
+  ///
+  /// In de, this message translates to:
+  /// **'Zurück'**
+  String get providerBack;
+
+  /// Heading of the verification section.
+  ///
+  /// In de, this message translates to:
+  /// **'Verifizierung'**
+  String get providerVerificationTitle;
+
+  /// Verification status: nothing checked yet.
+  ///
+  /// In de, this message translates to:
+  /// **'Nicht verifiziert'**
+  String get providerVerificationUnverified;
+
+  /// Verification status: documents are being reviewed.
+  ///
+  /// In de, this message translates to:
+  /// **'In Prüfung'**
+  String get providerVerificationPending;
+
+  /// Verification status: checked and approved.
+  ///
+  /// In de, this message translates to:
+  /// **'Verifiziert'**
+  String get providerVerificationVerified;
+
+  /// Verification status: rejected.
+  ///
+  /// In de, this message translates to:
+  /// **'Abgelehnt'**
+  String get providerVerificationRejected;
+
+  /// Honest explanation that nothing has been checked yet and requirements differ per service.
+  ///
+  /// In de, this message translates to:
+  /// **'Wir prüfen deine Nachweise, bevor dich Kundinnen und Kunden als geprüft sehen. Welche Nachweise nötig sind, hängt von deinen Leistungen ab. Das Hochladen folgt in Kürze.'**
+  String get providerVerificationExplanation;
+
+  /// Greeting on the provider home screen.
+  ///
+  /// In de, this message translates to:
+  /// **'Hallo, {name}'**
+  String providerHomeGreeting(String name);
+
+  /// Greeting when no name is stored yet.
+  ///
+  /// In de, this message translates to:
+  /// **'Hallo'**
+  String get providerHomeGreetingPlain;
+
+  /// Line below the greeting on the provider home screen.
+  ///
+  /// In de, this message translates to:
+  /// **'Bereit für deinen nächsten Auftrag?'**
+  String get providerHomeSubtitle;
+
+  /// Empty state for the provider's jobs.
+  ///
+  /// In de, this message translates to:
+  /// **'Du hast noch keine Aufträge.'**
+  String get providerHomeNoJobs;
+
+  /// Entry that opens the provider's own services.
+  ///
+  /// In de, this message translates to:
+  /// **'Meine Leistungen'**
+  String get providerHomeMyServices;
+
+  /// Entry that opens the provider's availability.
+  ///
+  /// In de, this message translates to:
+  /// **'Meine Verfügbarkeit'**
+  String get providerHomeAvailability;
+
+  /// How many services the provider offers.
+  ///
+  /// In de, this message translates to:
+  /// **'{count, plural, =0{Noch keine Leistung ausgewählt} =1{1 Leistung} other{{count} Leistungen}}'**
+  String providerServicesCount(int count);
+
+  /// Validation error for the first name.
+  ///
+  /// In de, this message translates to:
+  /// **'Bitte gib deinen Vornamen ein.'**
+  String get errorFirstNameRequired;
+
+  /// Validation error for the last name.
+  ///
+  /// In de, this message translates to:
+  /// **'Bitte gib deinen Nachnamen ein.'**
+  String get errorLastNameRequired;
+
+  /// Validation error for the business name.
+  ///
+  /// In de, this message translates to:
+  /// **'Bitte gib den Namen deines Betriebs ein.'**
+  String get errorBusinessNameRequired;
+
+  /// Validation error when no service was picked.
+  ///
+  /// In de, this message translates to:
+  /// **'Bitte wähle mindestens eine Leistung aus.'**
+  String get errorServicesRequired;
+
+  /// Validation error for the city.
+  ///
+  /// In de, this message translates to:
+  /// **'Bitte gib deine Stadt ein.'**
+  String get errorCityRequired;
 }
 
 class _AppLocalizationsDelegate
