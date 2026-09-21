@@ -32,9 +32,10 @@ class SupabaseServiceRequestRepository implements ServiceRequestRepository {
 
   static const _table = 'service_requests';
 
-  /// The columns a client is allowed to read back. The AI columns are
-  /// included because reading them is fine — only writing them is not.
   /// The request plus the name and icon of its category, in one request.
+  ///
+  /// The AI columns are read back too: reading them is fine, only writing
+  /// them is refused by the backend.
   static const _columns =
       '*, service_categories(id, slug, name, name_en, icon)';
 
