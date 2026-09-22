@@ -50,6 +50,9 @@ class _ServiceDetailScreenState extends ConsumerState<ServiceDetailScreen> {
         .start(
           description: description,
           category: ref.read(categoryBySlugProvider(widget.categorySlug)),
+          // The customer picked this service, so the request knows it from
+          // the start -- no guessing needed later.
+          service: service,
         );
     context.push(AppRoutes.customerRequest);
   }
@@ -80,6 +83,8 @@ class _ServiceDetailScreenState extends ConsumerState<ServiceDetailScreen> {
               selected: _selected,
               onSelect: (option) => setState(() => _selected = option),
               onContinue: () => _continueToRequest(value),
+              onShowProviders: () =>
+                  context.push(AppRoutes.customerProviders(value.id)),
             );
           },
         ),
@@ -95,6 +100,7 @@ class _Details extends StatelessWidget {
     required this.selected,
     required this.onSelect,
     required this.onContinue,
+    required this.onShowProviders,
   });
 
   final Service service;
@@ -102,6 +108,7 @@ class _Details extends StatelessWidget {
   final ServicePriceOption? selected;
   final ValueChanged<ServicePriceOption> onSelect;
   final VoidCallback onContinue;
+  final VoidCallback onShowProviders;
 
   @override
   Widget build(BuildContext context) {
@@ -168,6 +175,12 @@ class _Details extends StatelessWidget {
               ],
             ),
           ),
+          OutlinedButton.icon(
+            onPressed: onShowProviders,
+            icon: const Icon(Icons.person_search_outlined),
+            label: Text(l10n.providerMatchesShow),
+          ),
+          const SizedBox(height: AppSpacing.sm),
           FilledButton(
             onPressed: onContinue,
             child: Text(l10n.serviceContinue),

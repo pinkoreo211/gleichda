@@ -1093,6 +1093,42 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Bitte gib einen gültigen Preis ein.'**
   String get errorPriceInvalid;
+
+  /// Heading of the provider results list.
+  ///
+  /// In de, this message translates to:
+  /// **'Anbieter für diese Leistung'**
+  String get providerMatchesTitle;
+
+  /// Button that opens the provider results for a service.
+  ///
+  /// In de, this message translates to:
+  /// **'Anbieter anzeigen'**
+  String get providerMatchesShow;
+
+  /// Empty state title when no provider offers the service.
+  ///
+  /// In de, this message translates to:
+  /// **'Noch niemand verfügbar'**
+  String get providerMatchesEmptyTitle;
+
+  /// Honest empty state: the marketplace has no providers for this service yet.
+  ///
+  /// In de, this message translates to:
+  /// **'Für diese Leistung ist noch kein Dienstleister eingetragen. Deine Anfrage bleibt gespeichert — sobald sich jemand einträgt, findest du ihn hier.'**
+  String get providerMatchesEmptyMessage;
+
+  /// Fallback when a provider stored no name.
+  ///
+  /// In de, this message translates to:
+  /// **'Dienstleister'**
+  String get providerUnnamed;
+
+  /// Shown when a provider has not set a price for this service.
+  ///
+  /// In de, this message translates to:
+  /// **'Preis auf Anfrage'**
+  String get providerNoPriceGiven;
 }
 
 class _AppLocalizationsDelegate

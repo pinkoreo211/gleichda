@@ -29,6 +29,11 @@ abstract final class AppRoutes {
   static String customerService(String categorySlug, String serviceId) =>
       '/customer/home/category/$categorySlug/service/$serviceId';
 
+  /// Providers who offer one service. Reachable from the catalog, and later
+  /// from a request once it names a service.
+  static String customerProviders(String serviceId) =>
+      '/customer/home/providers/$serviceId';
+
   // Provider area
   static const String providerArea = '/provider';
 

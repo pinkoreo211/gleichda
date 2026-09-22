@@ -1,4 +1,5 @@
 import 'package:app/features/requests/domain/request_timing.dart';
+import 'package:app/features/catalog/domain/service.dart';
 import 'package:app/features/catalog/domain/service_category.dart';
 
 /// A request while the customer is still writing it.
@@ -10,6 +11,7 @@ class ServiceRequestDraft {
   const ServiceRequestDraft({
     this.description = '',
     this.category,
+    this.service,
     this.timing = RequestTiming.asap,
     this.preferredDate,
     this.locationLabel,
@@ -19,6 +21,11 @@ class ServiceRequestDraft {
   final String description;
 
   final ServiceCategory? category;
+
+  /// The catalog service, once it is known. Set when the customer picked
+  /// one; the AI step fills it in for free text later.
+  final Service? service;
+
   final RequestTiming timing;
   final DateTime? preferredDate;
   final String? locationLabel;
@@ -31,6 +38,7 @@ class ServiceRequestDraft {
     String? description,
     ServiceCategory? category,
     bool clearCategory = false,
+    Service? service,
     RequestTiming? timing,
     DateTime? preferredDate,
     bool clearPreferredDate = false,
@@ -39,6 +47,7 @@ class ServiceRequestDraft {
     return ServiceRequestDraft(
       description: description ?? this.description,
       category: clearCategory ? null : (category ?? this.category),
+      service: service ?? this.service,
       timing: timing ?? this.timing,
       preferredDate: clearPreferredDate
           ? null

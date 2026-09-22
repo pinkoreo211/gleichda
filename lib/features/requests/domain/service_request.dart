@@ -1,4 +1,5 @@
 import 'package:app/features/requests/domain/request_timing.dart';
+import 'package:app/features/catalog/domain/service.dart';
 import 'package:app/features/catalog/domain/service_category.dart';
 
 /// One customer request: "what do you need?" in the customer's own words,
@@ -14,6 +15,7 @@ class ServiceRequest {
     required this.originalDescription,
     required this.createdAt,
     this.category,
+    this.service,
     this.timing = RequestTiming.asap,
     this.preferredDate,
     this.locationLabel,
@@ -35,6 +37,10 @@ class ServiceRequest {
 
   /// Optional: the customer may pick one, or leave it to the AI.
   final ServiceCategory? category;
+
+  /// The concrete catalog service, once known. Null while the request is
+  /// only free text.
+  final Service? service;
 
   final RequestTiming timing;
 
@@ -78,6 +84,7 @@ class ServiceRequest {
       originalDescription: originalDescription ?? this.originalDescription,
       createdAt: createdAt,
       category: clearCategory ? null : (category ?? this.category),
+      service: service,
       timing: timing ?? this.timing,
       preferredDate: clearPreferredDate
           ? null
@@ -104,6 +111,10 @@ class ServiceRequest {
       // name without a second query. Null when none was chosen.
       category: switch (json['service_categories']) {
         final Map<String, dynamic> row => ServiceCategory.fromJson(row),
+        _ => null,
+      },
+      service: switch (json['services']) {
+        final Map<String, dynamic> row => Service.fromJson(row),
         _ => null,
       },
       timing: RequestTiming.byName(json['timing'] as String?),

@@ -165,5 +165,11 @@
   "providerPricesEmpty": "You have not set a price for this service yet.",
   "providerServicesEmpty": "You do not offer any services yet.",
   "errorPriceNameRequired": "Please enter a label.",
-  "errorPriceInvalid": "Please enter a valid price."
+  "errorPriceInvalid": "Please enter a valid price.",
+  "providerMatchesTitle": "Providers for this service",
+  "providerMatchesShow": "Show providers",
+  "providerMatchesEmptyTitle": "Nobody available yet",
+  "providerMatchesEmptyMessage": "No provider offers this service yet. Your request stays saved — as soon as someone signs up, you will find them here.",
+  "providerUnnamed": "Provider",
+  "providerNoPriceGiven": "Price on request"
 }

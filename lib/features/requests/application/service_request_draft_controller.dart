@@ -5,6 +5,7 @@ import 'package:app/features/auth/application/current_user.dart';
 import 'package:app/features/requests/application/my_requests.dart';
 import 'package:app/features/requests/data/service_request_repository.dart';
 import 'package:app/features/requests/domain/request_timing.dart';
+import 'package:app/features/catalog/domain/service.dart';
 import 'package:app/features/catalog/domain/service_category.dart';
 import 'package:app/features/requests/domain/service_request_draft.dart';
 
@@ -22,8 +23,16 @@ class ServiceRequestDraftController extends Notifier<ServiceRequestDraft> {
   ServiceRequestDraft build() => const ServiceRequestDraft();
 
   /// Starts a new request, either from typed text or from a category card.
-  void start({String description = '', ServiceCategory? category}) {
-    state = ServiceRequestDraft(description: description, category: category);
+  void start({
+    String description = '',
+    ServiceCategory? category,
+    Service? service,
+  }) {
+    state = ServiceRequestDraft(
+      description: description,
+      category: category,
+      service: service,
+    );
   }
 
   void setDescription(String description) =>

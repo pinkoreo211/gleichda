@@ -1,3 +1,4 @@
+| 4c | **Matching, Grundlage:** requests carry a service_id; one security-definer function returns only public provider data; results list with verified badge and own price | ✅ | A customer opens a service and sees who offers it, verified first then cheapest |
 # Roadmap
 
 Each step ends with something testable on a phone. The owner confirms before
@@ -48,6 +49,7 @@ analytics.
 - [x] Supabase: `20260920140000_service_catalog.sql` run — verified against the live catalog on a device
 - [x] Supabase: providers migration run — provider onboarding verified end to end on a device
 - [ ] **Supabase: run the provider prices migration** (see docs/supabase-setup.md, section 2). Until then, providers cannot save prices
+- [ ] **Supabase: run the matching migration** (see docs/supabase-setup.md, section 2). Until then, requests cannot store a service and the provider search does not exist
 
 - [x] Android SDK Command-line Tools installed
 - [x] Android licences: Google replaced `sdkmanager --licenses`; `flutter doctor` still reports "unknown", which is a tooling mismatch, not a blocker — builds work

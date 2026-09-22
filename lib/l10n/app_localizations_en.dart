@@ -561,4 +561,23 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorPriceInvalid => 'Please enter a valid price.';
+
+  @override
+  String get providerMatchesTitle => 'Providers for this service';
+
+  @override
+  String get providerMatchesShow => 'Show providers';
+
+  @override
+  String get providerMatchesEmptyTitle => 'Nobody available yet';
+
+  @override
+  String get providerMatchesEmptyMessage =>
+      'No provider offers this service yet. Your request stays saved — as soon as someone signs up, you will find them here.';
+
+  @override
+  String get providerUnnamed => 'Provider';
+
+  @override
+  String get providerNoPriceGiven => 'Price on request';
 }

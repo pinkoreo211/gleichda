@@ -13,6 +13,7 @@ import 'package:app/features/chat/presentation/conversations_screen.dart';
 import 'package:app/features/discovery/presentation/customer_home_screen.dart';
 import 'package:app/features/earnings/presentation/earnings_screen.dart';
 import 'package:app/features/jobs/presentation/customer_bookings_screen.dart';
+import 'package:app/features/matching/presentation/provider_matches_screen.dart';
 import 'package:app/features/jobs/presentation/provider_jobs_screen.dart';
 import 'package:app/features/onboarding/presentation/role_selection_screen.dart';
 import 'package:app/features/onboarding/presentation/welcome_screen.dart';
@@ -127,6 +128,11 @@ List<RouteBase> _tabSubRoutes(ShellTab tab) => switch (tab) {
     GoRoute(
       path: 'request',
       builder: (context, state) => const ServiceRequestScreen(),
+    ),
+    GoRoute(
+      path: 'providers/:serviceId',
+      builder: (context, state) =>
+          ProviderMatchesScreen(serviceId: state.pathParameters['serviceId']!),
     ),
     GoRoute(
       path: 'category/:categorySlug',

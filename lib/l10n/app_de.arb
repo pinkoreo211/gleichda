@@ -594,5 +594,17 @@
   "errorPriceNameRequired": "Bitte gib eine Bezeichnung ein.",
   "@errorPriceNameRequired": { "description": "Validation error for the price option name." },
   "errorPriceInvalid": "Bitte gib einen gültigen Preis ein.",
-  "@errorPriceInvalid": { "description": "Validation error for the price amount." }
+  "@errorPriceInvalid": { "description": "Validation error for the price amount." },
+  "providerMatchesTitle": "Anbieter für diese Leistung",
+  "@providerMatchesTitle": { "description": "Heading of the provider results list." },
+  "providerMatchesShow": "Anbieter anzeigen",
+  "@providerMatchesShow": { "description": "Button that opens the provider results for a service." },
+  "providerMatchesEmptyTitle": "Noch niemand verfügbar",
+  "@providerMatchesEmptyTitle": { "description": "Empty state title when no provider offers the service." },
+  "providerMatchesEmptyMessage": "Für diese Leistung ist noch kein Dienstleister eingetragen. Deine Anfrage bleibt gespeichert — sobald sich jemand einträgt, findest du ihn hier.",
+  "@providerMatchesEmptyMessage": { "description": "Honest empty state: the marketplace has no providers for this service yet." },
+  "providerUnnamed": "Dienstleister",
+  "@providerUnnamed": { "description": "Fallback when a provider stored no name." },
+  "providerNoPriceGiven": "Preis auf Anfrage",
+  "@providerNoPriceGiven": { "description": "Shown when a provider has not set a price for this service." }
 }

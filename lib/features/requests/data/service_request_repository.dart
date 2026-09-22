@@ -37,7 +37,7 @@ class SupabaseServiceRequestRepository implements ServiceRequestRepository {
   /// The AI columns are read back too: reading them is fine, only writing
   /// them is refused by the backend.
   static const _columns =
-      '*, service_categories(id, slug, name, name_en, icon)';
+      '*, service_categories(id, slug, name, name_en, icon), services(*)';
 
   @override
   Future<List<ServiceRequest>> myRequests() async {
@@ -62,6 +62,7 @@ class SupabaseServiceRequestRepository implements ServiceRequestRepository {
           .insert({
             'original_description': draft.description.trim(),
             'category_id': draft.category?.id,
+            'service_id': draft.service?.id,
             'timing': draft.timing.name,
             'preferred_date': draft.timing == RequestTiming.onDate
                 ? _asDate(draft.preferredDate)

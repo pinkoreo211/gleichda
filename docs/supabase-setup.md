@@ -31,6 +31,7 @@ Bisher gibt es diese Dateien:
 | `20260920140000_service_catalog.sql` | Servicekatalog (Kategorien, Leistungen, Preise) | ✅ |
 | `20260921120000_providers.sql` | Dienstleister-Profile, ihre Leistungen und Dokumente | ✅ |
 | `20260921140000_provider_prices.sql` | Eigene Preise der Anbieter je Leistung | ⬜ |
+| `20260922120000_matching.sql` | Anfrage mit Leistung verknüpfen; Suchfunktion für passende Anbieter | ⬜ |
 
 Ein zweites Ausführen derselben Datei meldet Fehler wie „already exists“ –
 das ist harmlos, es wurde dann nichts verändert.

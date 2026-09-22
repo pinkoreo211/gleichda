@@ -12,6 +12,8 @@ import 'package:app/features/catalog/data/catalog_repository.dart';
 import 'package:app/features/catalog/domain/service.dart';
 import 'package:app/features/catalog/domain/service_category.dart';
 import 'package:app/features/catalog/domain/service_price_option.dart';
+import 'package:app/features/matching/data/matching_repository.dart';
+import 'package:app/features/matching/domain/provider_match.dart';
 import 'package:app/features/profile/data/profile_repository.dart';
 import 'package:app/features/provider/data/provider_repository.dart';
 import 'package:app/features/provider/domain/provider_profile.dart';
@@ -204,6 +206,31 @@ class FakeCatalogRepository implements CatalogRepository {
   }
 }
 
+/// [MatchingRepository] without a backend.
+///
+/// Returns whatever it was given. The real ordering -- verified first, then
+/// cheapest -- lives in SQL, so asserting it here would only test the fake.
+class FakeMatchingRepository implements MatchingRepository {
+  FakeMatchingRepository({List<ProviderMatch>? matches, this.failure})
+    : matches = matches ?? const [];
+
+  final List<ProviderMatch> matches;
+  final AppFailure? failure;
+
+  /// The service ids that were asked for, for assertions.
+  final askedFor = <String>[];
+
+  @override
+  Future<List<ProviderMatch>> providersForService(
+    String serviceId, {
+    String? city,
+  }) async {
+    if (failure case final failure?) throw failure;
+    askedFor.add(serviceId);
+    return List.unmodifiable(matches);
+  }
+}
+
 const testProviderId = 'provider-1';
 
 /// [ProviderRepository] without a backend.
@@ -389,6 +416,7 @@ class InMemoryServiceRequestRepository implements ServiceRequestRepository {
       // Fixed, increasing times keep test expectations stable.
       createdAt: DateTime(2026, 1, 1).add(Duration(minutes: requests.length)),
       category: draft.category,
+      service: draft.service,
       timing: draft.timing,
       preferredDate: draft.timing == RequestTiming.onDate
           ? draft.preferredDate
@@ -426,6 +454,7 @@ Future<void> pumpApp(
   FakeCatalogRepository? catalog,
   FakeProfileRepository? profile,
   FakeProviderRepository? provider,
+  FakeMatchingRepository? matching,
   Locale locale = const Locale('de', 'AT'),
 }) async {
   tester.platformDispatcher.localesTestValue = [locale];
@@ -452,6 +481,9 @@ Future<void> pumpApp(
         ),
         providerRepositoryProvider.overrideWithValue(
           provider ?? FakeProviderRepository(),
+        ),
+        matchingRepositoryProvider.overrideWithValue(
+          matching ?? FakeMatchingRepository(),
         ),
       ],
       child: const App(),
@@ -487,6 +519,7 @@ Future<void> pumpSignedInApp(
   FakeCatalogRepository? catalog,
   FakeProfileRepository? profile,
   FakeProviderRepository? provider,
+  FakeMatchingRepository? matching,
 }) {
   return pumpApp(
     tester,
@@ -499,6 +532,7 @@ Future<void> pumpSignedInApp(
     // A signed-in provider is an established one unless a test says
     // otherwise, so the guard does not send every provider test into
     // onboarding.
+    matching: matching,
     provider:
         provider ??
         (role == AppRole.provider
