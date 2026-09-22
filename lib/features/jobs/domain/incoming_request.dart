@@ -1,3 +1,4 @@
+import 'package:app/features/requests/domain/request_contact_status.dart';
 import 'package:app/features/requests/domain/request_timing.dart';
 
 /// A customer request that reached this provider.
@@ -12,6 +13,7 @@ class IncomingRequest {
     required this.requestId,
     required this.description,
     required this.sentAt,
+    this.status = RequestContactStatus.sent,
     this.serviceName,
     this.serviceNameEn,
     this.city,
@@ -28,6 +30,10 @@ class IncomingRequest {
   final String description;
 
   final DateTime sentAt;
+
+  /// What this provider answered. Only the backend ever changes it, and
+  /// only once — the app shows it, it does not decide it.
+  final RequestContactStatus status;
 
   /// The catalog service the request is about. Null only if the service was
   /// removed from the catalog afterwards.
@@ -69,6 +75,9 @@ class IncomingRequest {
     sentAt:
         DateTime.tryParse(json['sent_at'] as String? ?? '') ??
         DateTime.fromMillisecondsSinceEpoch(0),
+    status:
+        RequestContactStatus.fromDb(json['status'] as String?) ??
+        RequestContactStatus.sent,
     serviceName: json['service_name'] as String?,
     serviceNameEn: json['service_name_en'] as String?,
     city: json['city'] as String?,

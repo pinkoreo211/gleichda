@@ -37,12 +37,12 @@ class SupabaseServiceRequestRepository implements ServiceRequestRepository {
   /// The AI columns are read back too: reading them is fine, only writing
   /// them is refused by the backend.
   ///
-  /// `request_contacts(count)` is how many providers already have this
-  /// request. The backend counts only rows the customer may see, so the
-  /// number cannot be inflated by another account's contacts.
+  /// `request_contacts(status)` is what each provider who received this
+  /// request has answered. The backend returns only rows the customer may
+  /// see, so another account's contacts can never appear here.
   static const _columns =
       '*, service_categories(id, slug, name, name_en, icon), services(*), '
-      'request_contacts(count)';
+      'request_contacts(status)';
 
   @override
   Future<List<ServiceRequest>> myRequests() async {

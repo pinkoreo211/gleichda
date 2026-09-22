@@ -662,6 +662,59 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get providerIncomingNoReplyYet =>
-      'Antworten und Zusagen folgen im nächsten Schritt.';
+  String get providerIncomingAccept => 'Annehmen';
+
+  @override
+  String get providerIncomingDecline => 'Ablehnen';
+
+  @override
+  String get providerIncomingAccepted => 'Du hast angenommen';
+
+  @override
+  String get providerIncomingDeclined => 'Du hast abgelehnt';
+
+  @override
+  String get providerIncomingAcceptedToast => 'Anfrage angenommen.';
+
+  @override
+  String get providerIncomingDeclinedToast => 'Anfrage abgelehnt.';
+
+  @override
+  String get providerIncomingNoContactYet =>
+      'Antworten geht, der Chat kommt später.';
+
+  @override
+  String get requestStatusOpen => 'Noch offen';
+
+  @override
+  String get requestStatusAccepted => 'Angenommen';
+
+  @override
+  String get requestStatusDeclined => 'Abgelehnt';
+
+  @override
+  String customerRequestsAcceptedCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Anbieter haben angenommen',
+      one: '1 Anbieter hat angenommen',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String customerRequestsDeclinedCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Anbieter haben abgelehnt',
+      one: '1 Anbieter hat abgelehnt',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get errorRequestAlreadyAnswered =>
+      'Diese Anfrage wurde bereits beantwortet.';
 }

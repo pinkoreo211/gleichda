@@ -21,6 +21,7 @@ import 'package:app/features/provider/data/provider_repository.dart';
 import 'package:app/features/provider/domain/provider_profile.dart';
 import 'package:app/features/provider/domain/provider_service_offering.dart';
 import 'package:app/features/requests/data/service_request_repository.dart';
+import 'package:app/features/requests/domain/request_contact_status.dart';
 import 'package:app/features/requests/domain/request_timing.dart';
 import 'package:app/features/requests/domain/service_request.dart';
 import 'package:app/features/requests/domain/service_request_draft.dart';
@@ -208,6 +209,56 @@ class FakeCatalogRepository implements CatalogRepository {
   }
 }
 
+/// Stands in for the `request_contacts` table.
+///
+/// One store shared by every fake that reads or writes it, exactly as one
+/// table is shared by the real functions. That is what lets a test follow a
+/// request from the customer who sent it to the provider who answers it,
+/// and see the answer come back on the customer's side.
+class FakeRequestContacts {
+  /// request id -> provider id -> status.
+  final _rows = <String, Map<String, RequestContactStatus>>{};
+  final _byContactId = <String, (String request, String provider)>{};
+
+  Map<String, RequestContactStatus> forRequest(String requestId) =>
+      Map.unmodifiable(_rows[requestId] ?? const {});
+
+  /// Which providers each request reached, for assertions.
+  Map<String, List<String>> get sent => {
+    for (final entry in _rows.entries) entry.key: entry.value.keys.toList(),
+  };
+
+  String contactId(String requestId, String providerId) =>
+      'contact-$requestId-$providerId';
+
+  void send({required String requestId, required String providerId}) {
+    _rows.putIfAbsent(requestId, () => {})[providerId] =
+        RequestContactStatus.sent;
+    _byContactId[contactId(requestId, providerId)] = (requestId, providerId);
+  }
+
+  /// Answers once, like the backend: a second answer is refused rather than
+  /// quietly overwriting the first.
+  void respond(String id, RequestContactStatus status) {
+    final row = _byContactId[id];
+    if (row == null) throw AppFailure.unknown;
+    final current = _rows[row.$1]?[row.$2];
+    if (current == null) throw AppFailure.unknown;
+    if (!current.isOpen) throw AppFailure.requestAlreadyAnswered;
+    _rows[row.$1]![row.$2] = status;
+  }
+
+  /// Every contact belonging to [providerId], newest request first.
+  Iterable<(String request, RequestContactStatus status)> forProvider(
+    String providerId,
+  ) sync* {
+    for (final entry in _rows.entries) {
+      final status = entry.value[providerId];
+      if (status != null) yield (entry.key, status);
+    }
+  }
+}
+
 /// [MatchingRepository] without a backend.
 ///
 /// Returns whatever it was given. The real ordering -- verified first, then
@@ -216,15 +267,17 @@ class FakeMatchingRepository implements MatchingRepository {
   FakeMatchingRepository({
     List<ProviderMatch>? matches,
     this.failure,
-    this.requests,
-  }) : matches = matches ?? const [];
+    InMemoryServiceRequestRepository? requests,
+    FakeRequestContacts? contacts,
+  }) : matches = matches ?? const [],
+       contacts = contacts ?? requests?.contacts ?? FakeRequestContacts();
 
   final List<ProviderMatch> matches;
   final AppFailure? failure;
 
-  /// When given, sending also bumps that request's contact count, the way
-  /// the backend does because both read the same rows.
-  final InMemoryServiceRequestRepository? requests;
+  /// The one contact store. Passing the request repository shares its own,
+  /// so what was sent shows up on the customer's request list too.
+  final FakeRequestContacts contacts;
 
   /// The service ids that were asked for, for assertions.
   final askedFor = <String>[];
@@ -232,8 +285,8 @@ class FakeMatchingRepository implements MatchingRepository {
   /// The request ids that were asked for, for assertions.
   final askedForRequest = <String>[];
 
-  /// Which providers each request was sent to, mirroring request_contacts.
-  final sent = <String, List<String>>{};
+  /// Which providers each request was sent to, for assertions.
+  Map<String, List<String>> get sent => contacts.sent;
 
   @override
   Future<List<ProviderMatch>> providersForService(
@@ -249,23 +302,24 @@ class FakeMatchingRepository implements MatchingRepository {
   Future<List<ProviderMatch>> providersForRequest(String requestId) async {
     if (failure case final failure?) throw failure;
     askedForRequest.add(requestId);
-    final contacted = sent[requestId] ?? const <String>[];
-    // Like the real function: whether a provider was already contacted is
-    // read back from stored rows, not remembered by the screen.
+    final stored = contacts.forRequest(requestId);
+    // Like the real function: what a provider answered is read back from
+    // the stored row, never remembered by the screen.
     return [
       for (final match in matches)
-        match.alreadyContacted || contacted.contains(match.providerId)
-            ? ProviderMatch(
-                providerId: match.providerId,
-                displayName: match.displayName,
-                description: match.description,
-                city: match.city,
-                verificationStatus: match.verificationStatus,
-                lowestPriceCents: match.lowestPriceCents,
-                currency: match.currency,
-                alreadyContacted: true,
-              )
-            : match,
+        if (stored[match.providerId] ?? match.contactStatus case final status?)
+          ProviderMatch(
+            providerId: match.providerId,
+            displayName: match.displayName,
+            description: match.description,
+            city: match.city,
+            verificationStatus: match.verificationStatus,
+            lowestPriceCents: match.lowestPriceCents,
+            currency: match.currency,
+            contactStatus: status,
+          )
+        else
+          match,
     ];
   }
 
@@ -275,27 +329,27 @@ class FakeMatchingRepository implements MatchingRepository {
     required String providerId,
   }) async {
     if (failure case final failure?) throw failure;
-    sent.putIfAbsent(requestId, () => <String>[]).add(providerId);
-    requests?.markSent(requestId);
+    contacts.send(requestId: requestId, providerId: providerId);
   }
 }
 
 /// [IncomingRequestsRepository] without a backend.
 ///
-/// With [from] and [requests] it derives what one provider received from
-/// what was actually sent, so a test can follow a request all the way from
-/// the customer to the provider instead of pretending at the halfway mark.
+/// Given [requests], it derives what this provider received from what was
+/// actually sent, so a test can follow a request all the way from the
+/// customer to the provider instead of pretending at the halfway mark.
 class FakeIncomingRequestsRepository implements IncomingRequestsRepository {
   FakeIncomingRequestsRepository({
     List<IncomingRequest>? seeded,
-    this.from,
     this.requests,
+    FakeRequestContacts? contacts,
     this.providerId = testProviderId,
-  }) : seeded = seeded ?? const [];
+  }) : seeded = seeded ?? const [],
+       contacts = contacts ?? requests?.contacts ?? FakeRequestContacts();
 
   final List<IncomingRequest> seeded;
-  final FakeMatchingRepository? from;
   final InMemoryServiceRequestRepository? requests;
+  final FakeRequestContacts contacts;
 
   /// Which provider this repository speaks for. The real function works it
   /// out from the signed-in account.
@@ -303,27 +357,33 @@ class FakeIncomingRequestsRepository implements IncomingRequestsRepository {
 
   @override
   Future<List<IncomingRequest>> myIncomingRequests() async {
-    final matching = from;
-    if (matching == null) return List.unmodifiable(seeded);
+    final store = requests;
+    if (store == null) return List.unmodifiable(seeded);
     return [
       ...seeded,
-      for (final entry in matching.sent.entries)
-        // Only what was sent to this provider, like the backend's filter.
-        if (entry.value.contains(providerId))
-          if (requests?.byId(entry.key) case final request?)
-            IncomingRequest(
-              contactId: 'contact-${entry.key}',
-              requestId: request.id,
-              description: request.originalDescription,
-              sentAt: request.createdAt,
-              serviceName: request.service?.name,
-              city: request.city,
-              postalCode: request.postalCode,
-              timing: request.timing,
-              preferredDate: request.preferredDate,
-            ),
+      // Only what was sent to this provider, like the backend's filter.
+      for (final (requestId, status) in contacts.forProvider(providerId))
+        if (store.byId(requestId) case final request?)
+          IncomingRequest(
+            contactId: contacts.contactId(requestId, providerId),
+            requestId: request.id,
+            description: request.originalDescription,
+            sentAt: request.createdAt,
+            status: status,
+            serviceName: request.service?.name,
+            city: request.city,
+            postalCode: request.postalCode,
+            timing: request.timing,
+            preferredDate: request.preferredDate,
+          ),
     ];
   }
+
+  @override
+  Future<void> respond({
+    required String contactId,
+    required RequestContactStatus status,
+  }) async => contacts.respond(contactId, status);
 }
 
 const testProviderId = 'provider-1';
@@ -498,9 +558,19 @@ class InMemoryServiceRequestRepository implements ServiceRequestRepository {
   /// When set, [create] throws it.
   AppFailure? failure;
 
+  /// Stands in for `request_contacts`, which the real repository reads back
+  /// with every request.
+  final contacts = FakeRequestContacts();
+
   @override
-  Future<List<ServiceRequest>> myRequests() async =>
-      List.unmodifiable(requests);
+  Future<List<ServiceRequest>> myRequests() async => [
+    // The statuses are read from the contact store on every read, exactly
+    // as the backend embeds them -- never patched into the list by a screen.
+    for (final request in requests)
+      request.copyWith(
+        contactStatuses: contacts.forRequest(request.id).values.toList(),
+      ),
+  ];
 
   @override
   Future<ServiceRequest> create(ServiceRequestDraft draft) async {
@@ -528,17 +598,6 @@ class InMemoryServiceRequestRepository implements ServiceRequestRepository {
 
   ServiceRequest? byId(String id) =>
       requests.where((request) => request.id == id).firstOrNull;
-
-  /// Mirrors the database, where the count comes from the contact rows:
-  /// sending bumps it, the list is not patched by the screen.
-  void markSent(String requestId) {
-    final index = requests.indexWhere((request) => request.id == requestId);
-    if (index < 0) return;
-    final request = requests[index];
-    requests[index] = request.copyWith(
-      sentToProviderCount: request.sentToProviderCount + 1,
-    );
-  }
 }
 
 /// [SessionStore] that keeps everything in memory.

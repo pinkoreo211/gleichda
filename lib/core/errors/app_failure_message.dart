@@ -17,6 +17,7 @@ extension AppFailureMessage on AppFailure {
     AppFailure.invalidOrExpiredCode => l10n.errorInvalidOrExpiredCode,
     AppFailure.tooManyRequests => l10n.errorTooManyRequests,
     AppFailure.emailNotAuthorized => l10n.errorEmailNotAuthorized,
+    AppFailure.requestAlreadyAnswered => l10n.errorRequestAlreadyAnswered,
     AppFailure.unknown => l10n.errorUnknown,
   };
 }

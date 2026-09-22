@@ -1232,11 +1232,83 @@ abstract class AppLocalizations {
   /// **'{count, plural, =0{Keine Anfragen} =1{1 Anfrage} other{{count} Anfragen}}'**
   String providerIncomingCount(int count);
 
-  /// Says plainly that a provider cannot answer a request yet.
+  /// Button a provider uses to accept a received request.
   ///
   /// In de, this message translates to:
-  /// **'Antworten und Zusagen folgen im nächsten Schritt.'**
-  String get providerIncomingNoReplyYet;
+  /// **'Annehmen'**
+  String get providerIncomingAccept;
+
+  /// Button a provider uses to decline a received request.
+  ///
+  /// In de, this message translates to:
+  /// **'Ablehnen'**
+  String get providerIncomingDecline;
+
+  /// Shown on a request this provider accepted.
+  ///
+  /// In de, this message translates to:
+  /// **'Du hast angenommen'**
+  String get providerIncomingAccepted;
+
+  /// Shown on a request this provider declined.
+  ///
+  /// In de, this message translates to:
+  /// **'Du hast abgelehnt'**
+  String get providerIncomingDeclined;
+
+  /// Confirmation after accepting a request.
+  ///
+  /// In de, this message translates to:
+  /// **'Anfrage angenommen.'**
+  String get providerIncomingAcceptedToast;
+
+  /// Confirmation after declining a request.
+  ///
+  /// In de, this message translates to:
+  /// **'Anfrage abgelehnt.'**
+  String get providerIncomingDeclinedToast;
+
+  /// Says plainly that answering exists but talking to the customer does not.
+  ///
+  /// In de, this message translates to:
+  /// **'Antworten geht, der Chat kommt später.'**
+  String get providerIncomingNoContactYet;
+
+  /// A request that reached a provider who has not answered.
+  ///
+  /// In de, this message translates to:
+  /// **'Noch offen'**
+  String get requestStatusOpen;
+
+  /// A request a provider accepted.
+  ///
+  /// In de, this message translates to:
+  /// **'Angenommen'**
+  String get requestStatusAccepted;
+
+  /// A request a provider declined.
+  ///
+  /// In de, this message translates to:
+  /// **'Abgelehnt'**
+  String get requestStatusDeclined;
+
+  /// How many providers accepted a saved request.
+  ///
+  /// In de, this message translates to:
+  /// **'{count, plural, =1{1 Anbieter hat angenommen} other{{count} Anbieter haben angenommen}}'**
+  String customerRequestsAcceptedCount(int count);
+
+  /// How many providers declined a saved request, when none accepted.
+  ///
+  /// In de, this message translates to:
+  /// **'{count, plural, =1{1 Anbieter hat abgelehnt} other{{count} Anbieter haben abgelehnt}}'**
+  String customerRequestsDeclinedCount(int count);
+
+  /// Shown when a request was answered elsewhere before this tap arrived.
+  ///
+  /// In de, this message translates to:
+  /// **'Diese Anfrage wurde bereits beantwortet.'**
+  String get errorRequestAlreadyAnswered;
 }
 
 class _AppLocalizationsDelegate

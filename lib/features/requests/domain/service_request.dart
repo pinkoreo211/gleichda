@@ -1,3 +1,4 @@
+import 'package:app/features/requests/domain/request_contact_status.dart';
 import 'package:app/features/requests/domain/request_timing.dart';
 import 'package:app/features/catalog/domain/service.dart';
 import 'package:app/features/catalog/domain/service_category.dart';
@@ -28,7 +29,7 @@ class ServiceRequest {
     this.estimatedDurationMinutes,
     this.imagePaths = const [],
     this.videoPaths = const [],
-    this.sentToProviderCount = 0,
+    this.contactStatuses = const [],
   });
 
   final String id;
@@ -62,12 +63,17 @@ class ServiceRequest {
   /// True once the request names a service, which is what matching needs.
   bool get canBeMatched => service != null;
 
-  /// How many providers this request has been sent to. Counted by the
-  /// backend over rows the customer is allowed to see, so it is never a
+  /// What every provider who received this request has answered, read back
+  /// from the backend over rows the customer is allowed to see. Never a
   /// guess made on the phone.
-  final int sentToProviderCount;
+  final List<RequestContactStatus> contactStatuses;
 
-  bool get wasSent => sentToProviderCount > 0;
+  int get sentToProviderCount => contactStatuses.length;
+
+  bool get wasSent => contactStatuses.isNotEmpty;
+
+  int countOf(RequestContactStatus status) =>
+      contactStatuses.where((value) => value == status).length;
 
   // --- Filled by the AI step later; always null for now. ---
 
@@ -96,7 +102,7 @@ class ServiceRequest {
     DateTime? preferredDate,
     bool clearPreferredDate = false,
     String? locationLabel,
-    int? sentToProviderCount,
+    List<RequestContactStatus>? contactStatuses,
   }) {
     return ServiceRequest(
       id: id,
@@ -118,7 +124,7 @@ class ServiceRequest {
       estimatedDurationMinutes: estimatedDurationMinutes,
       imagePaths: imagePaths,
       videoPaths: videoPaths,
-      sentToProviderCount: sentToProviderCount ?? this.sentToProviderCount,
+      contactStatuses: contactStatuses ?? this.contactStatuses,
     );
   }
 
@@ -155,16 +161,19 @@ class ServiceRequest {
       videoPaths:
           (json['video_paths'] as List?)?.whereType<String>().toList() ??
           const [],
-      sentToProviderCount: _countOf(json['request_contacts']),
+      contactStatuses: _statusesOf(json['request_contacts']),
     );
   }
 
-  /// PostgREST returns a counted relation as `[{"count": 2}]`.
-  static int _countOf(Object? value) => switch (value) {
-    final List<dynamic> rows when rows.isNotEmpty => switch (rows.first) {
-      final Map<String, dynamic> row => (row['count'] as num?)?.toInt() ?? 0,
-      _ => 0,
-    },
-    _ => 0,
-  };
+  /// PostgREST returns an embedded relation as a list of rows, here one per
+  /// provider the request reached. A row whose status the app does not know
+  /// is dropped rather than guessed at.
+  static List<RequestContactStatus> _statusesOf(Object? value) =>
+      switch (value) {
+        final List<dynamic> rows => [
+          for (final row in rows.whereType<Map<String, dynamic>>())
+            ?RequestContactStatus.fromDb(row['status'] as String?),
+        ],
+        _ => const [],
+      };
 }

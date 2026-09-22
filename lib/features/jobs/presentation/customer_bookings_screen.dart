@@ -7,6 +7,7 @@ import 'package:app/core/routing/app_routes.dart';
 import 'package:app/design_system/app_dimensions.dart';
 import 'package:app/design_system/widgets/empty_state.dart';
 import 'package:app/features/requests/application/my_requests.dart';
+import 'package:app/features/requests/domain/request_contact_status.dart';
 import 'package:app/features/requests/domain/service_request.dart';
 import 'package:app/features/requests/presentation/widgets/request_timing_display.dart';
 import 'package:app/features/catalog/presentation/widgets/category_icon.dart';
@@ -130,14 +131,7 @@ class _RequestCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: AppSpacing.sm),
-            Text(
-              l10n.customerRequestsSentCount(request.sentToProviderCount),
-              style: theme.textTheme.labelSmall?.copyWith(
-                color: request.wasSent
-                    ? theme.colorScheme.primary
-                    : theme.colorScheme.onSurfaceVariant,
-              ),
-            ),
+            _Status(request: request),
             // Only requests that name a service can be matched; offering
             // the button on the others would lead to an empty screen.
             if (request.canBeMatched) ...[
@@ -152,6 +146,42 @@ class _RequestCard extends StatelessWidget {
             ],
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// Where a request stands, in one line.
+///
+/// An acceptance is the news worth reading, so it wins over everything
+/// else. Otherwise the line reports what is actually true — waiting, turned
+/// down, or not sent at all — rather than the most hopeful reading of it.
+class _Status extends StatelessWidget {
+  const _Status({required this.request});
+
+  final ServiceRequest request;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    final accepted = request.countOf(RequestContactStatus.accepted);
+    final open = request.countOf(RequestContactStatus.sent);
+    final declined = request.countOf(RequestContactStatus.declined);
+
+    final (text, isGoodNews) = switch ((accepted, open, declined)) {
+      (> 0, _, _) => (l10n.customerRequestsAcceptedCount(accepted), true),
+      (_, > 0, _) => (l10n.customerRequestsSentCount(open), true),
+      (_, _, > 0) => (l10n.customerRequestsDeclinedCount(declined), false),
+      _ => (l10n.customerRequestsSentCount(0), false),
+    };
+
+    return Text(
+      text,
+      style: theme.textTheme.labelSmall?.copyWith(
+        color: isGoodNews
+            ? theme.colorScheme.primary
+            : theme.colorScheme.onSurfaceVariant,
       ),
     );
   }

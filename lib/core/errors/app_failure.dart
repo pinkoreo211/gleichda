@@ -10,10 +10,18 @@ enum AppFailure implements Exception {
 
   /// The default Supabase email service only sends to team members' addresses.
   emailNotAuthorized,
+
+  /// Somebody answered this request before this tap arrived — from another
+  /// device, or from a screen that had not refreshed yet.
+  requestAlreadyAnswered,
   unknown;
 
   static AppFailure fromError(Object error) {
     if (error is AppFailure) return error;
+    if (error is PostgrestException &&
+        error.message.contains('already answered')) {
+      return requestAlreadyAnswered;
+    }
     if (error is AuthException) {
       switch (error.code) {
         case 'otp_expired':

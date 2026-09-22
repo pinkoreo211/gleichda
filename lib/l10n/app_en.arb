@@ -189,5 +189,17 @@
   "providerIncomingFrom": "from {name}",
   "providerIncomingCustomerUnknown": "Customer",
   "providerIncomingCount": "{count, plural, =0{No requests} =1{1 request} other{{count} requests}}",
-  "providerIncomingNoReplyYet": "Replying and accepting follow in the next step."
+  "providerIncomingAccept": "Accept",
+  "providerIncomingDecline": "Decline",
+  "providerIncomingAccepted": "You accepted",
+  "providerIncomingDeclined": "You declined",
+  "providerIncomingAcceptedToast": "Request accepted.",
+  "providerIncomingDeclinedToast": "Request declined.",
+  "providerIncomingNoContactYet": "You can answer; the chat comes later.",
+  "requestStatusOpen": "Still open",
+  "requestStatusAccepted": "Accepted",
+  "requestStatusDeclined": "Declined",
+  "customerRequestsAcceptedCount": "{count, plural, =1{1 provider accepted} other{{count} providers accepted}}",
+  "customerRequestsDeclinedCount": "{count, plural, =1{1 provider declined} other{{count} providers declined}}",
+  "errorRequestAlreadyAnswered": "This request has already been answered."
 }

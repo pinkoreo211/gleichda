@@ -653,6 +653,36 @@
     "description": "Number of requests a provider has received.",
     "placeholders": { "count": { "type": "int" } }
   },
-  "providerIncomingNoReplyYet": "Antworten und Zusagen folgen im nächsten Schritt.",
-  "@providerIncomingNoReplyYet": { "description": "Says plainly that a provider cannot answer a request yet." }
+  "providerIncomingAccept": "Annehmen",
+  "@providerIncomingAccept": { "description": "Button a provider uses to accept a received request." },
+  "providerIncomingDecline": "Ablehnen",
+  "@providerIncomingDecline": { "description": "Button a provider uses to decline a received request." },
+  "providerIncomingAccepted": "Du hast angenommen",
+  "@providerIncomingAccepted": { "description": "Shown on a request this provider accepted." },
+  "providerIncomingDeclined": "Du hast abgelehnt",
+  "@providerIncomingDeclined": { "description": "Shown on a request this provider declined." },
+  "providerIncomingAcceptedToast": "Anfrage angenommen.",
+  "@providerIncomingAcceptedToast": { "description": "Confirmation after accepting a request." },
+  "providerIncomingDeclinedToast": "Anfrage abgelehnt.",
+  "@providerIncomingDeclinedToast": { "description": "Confirmation after declining a request." },
+  "providerIncomingNoContactYet": "Antworten geht, der Chat kommt später.",
+  "@providerIncomingNoContactYet": { "description": "Says plainly that answering exists but talking to the customer does not." },
+  "requestStatusOpen": "Noch offen",
+  "@requestStatusOpen": { "description": "A request that reached a provider who has not answered." },
+  "requestStatusAccepted": "Angenommen",
+  "@requestStatusAccepted": { "description": "A request a provider accepted." },
+  "requestStatusDeclined": "Abgelehnt",
+  "@requestStatusDeclined": { "description": "A request a provider declined." },
+  "customerRequestsAcceptedCount": "{count, plural, =1{1 Anbieter hat angenommen} other{{count} Anbieter haben angenommen}}",
+  "@customerRequestsAcceptedCount": {
+    "description": "How many providers accepted a saved request.",
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "customerRequestsDeclinedCount": "{count, plural, =1{1 Anbieter hat abgelehnt} other{{count} Anbieter haben abgelehnt}}",
+  "@customerRequestsDeclinedCount": {
+    "description": "How many providers declined a saved request, when none accepted.",
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "errorRequestAlreadyAnswered": "Diese Anfrage wurde bereits beantwortet.",
+  "@errorRequestAlreadyAnswered": { "description": "Shown when a request was answered elsewhere before this tap arrived." }
 }

@@ -4,6 +4,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:app/core/errors/app_failure.dart';
 import 'package:app/features/matching/domain/provider_match.dart';
 import 'package:app/features/provider/domain/provider_profile.dart';
+import 'package:app/features/requests/domain/service_request_draft.dart';
 import 'package:app/features/session/domain/app_role.dart';
 
 import '../../helpers/pump_app.dart';
@@ -174,10 +175,7 @@ void main() {
       matching: matching,
       // Derived from what was actually sent, so this test follows one
       // request all the way from the customer to the provider.
-      incoming: FakeIncomingRequestsRepository(
-        from: matching,
-        requests: requests,
-      ),
+      incoming: FakeIncomingRequestsRepository(requests: requests),
       provider: FakeProviderRepository(
         hasProfile: true,
         status: ProviderOnboardingStatus.completed,
@@ -198,9 +196,9 @@ void main() {
     expect(find.text('Wohnungsreinigung'), findsNWidgets(2));
     expect(find.text('Wien, 1070'), findsOneWidget);
     expect(find.text('1 Anfrage'), findsOneWidget);
-    // Answering does not exist yet, and the screen says so rather than
-    // showing a button that would do nothing.
-    expect(find.textContaining('folgen im nächsten Schritt'), findsOneWidget);
+    // Open, so both answers are offered and neither has been taken.
+    expect(find.widgetWithText(FilledButton, 'Annehmen'), findsOneWidget);
+    expect(find.widgetWithText(OutlinedButton, 'Ablehnen'), findsOneWidget);
   });
 
   testWidgets('a provider without requests is told so plainly', (tester) async {
@@ -216,15 +214,16 @@ void main() {
     tester,
   ) async {
     final requests = InMemoryServiceRequestRepository();
-    final matching = FakeMatchingRepository(
-      matches: [_maxMontagen],
-      requests: requests,
+    final stored = await requests.create(
+      const ServiceRequestDraft(description: 'Wohnung reinigen'),
     );
+    // A real contact exists -- it just belongs to someone else.
+    requests.contacts.send(requestId: stored.id, providerId: testProviderId);
+
     await pumpSignedInApp(
       tester,
       role: AppRole.provider,
       incoming: FakeIncomingRequestsRepository(
-        from: matching,
         requests: requests,
         // Somebody else's profile.
         providerId: 'provider-2',
@@ -232,6 +231,7 @@ void main() {
     );
 
     expect(find.textContaining('noch keine Anfragen erhalten'), findsOneWidget);
+    expect(find.text('Wohnung reinigen'), findsNothing);
   });
 
   testWidgets('a failure while sending is shown, not swallowed', (

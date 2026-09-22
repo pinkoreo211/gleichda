@@ -1,4 +1,5 @@
 import 'package:app/features/provider/domain/provider_profile.dart';
+import 'package:app/features/requests/domain/request_contact_status.dart';
 
 /// A provider who offers a service, as a customer may see them.
 ///
@@ -14,7 +15,7 @@ class ProviderMatch {
     this.city,
     this.lowestPriceCents,
     this.currency = 'EUR',
-    this.alreadyContacted = false,
+    this.contactStatus,
   });
 
   final String providerId;
@@ -36,9 +37,12 @@ class ProviderMatch {
 
   final String currency;
 
-  /// Whether this request already reached this provider. Comes from the
-  /// server, so it is still right after the app was closed and reopened.
-  final bool alreadyContacted;
+  /// What this provider answered to this request. Null means the request
+  /// never reached them. Comes from the server, so it is still right after
+  /// the app was closed and reopened.
+  final RequestContactStatus? contactStatus;
+
+  bool get alreadyContacted => contactStatus != null;
 
   static ProviderMatch fromJson(Map<String, dynamic> json) => ProviderMatch(
     providerId: json['provider_id'] as String,
@@ -50,6 +54,8 @@ class ProviderMatch {
     ),
     lowestPriceCents: (json['lowest_price_cents'] as num?)?.toInt(),
     currency: json['currency'] as String? ?? 'EUR',
-    alreadyContacted: json['already_contacted'] as bool? ?? false,
+    contactStatus: RequestContactStatus.fromDb(
+      json['contact_status'] as String?,
+    ),
   );
 }

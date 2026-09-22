@@ -33,6 +33,7 @@ Bisher gibt es diese Dateien:
 | `20260921140000_provider_prices.sql` | Eigene Preise der Anbieter je Leistung | ✅ |
 | `20260922120000_matching.sql` | Anfrage mit Leistung verknüpfen; Suchfunktion für passende Anbieter | ✅ |
 | `20260922140000_request_contacts.sql` | Ort bei der Anfrage; Anfrage an einen Anbieter senden; der Anbieter sieht sie | ✅ |
+| `20260922160000_request_responses.sql` | Anbieter nimmt eine Anfrage an oder lehnt sie ab; Kunde sieht den Status | ⬜ |
 
 Ein zweites Ausführen derselben Datei meldet Fehler wie „already exists“ –
 das ist harmlos, es wurde dann nichts verändert.

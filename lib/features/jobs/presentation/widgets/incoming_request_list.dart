@@ -1,26 +1,70 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
+import 'package:app/core/errors/app_failure_message.dart';
 import 'package:app/core/formatting/app_date_format.dart';
 import 'package:app/design_system/app_dimensions.dart';
+import 'package:app/design_system/widgets/button_progress.dart';
 import 'package:app/features/jobs/application/incoming_requests.dart';
+import 'package:app/features/jobs/data/incoming_requests_repository.dart';
 import 'package:app/features/jobs/domain/incoming_request.dart';
+import 'package:app/features/requests/domain/request_contact_status.dart';
+import 'package:app/features/requests/presentation/widgets/request_status_display.dart';
 import 'package:app/features/requests/presentation/widgets/request_timing_display.dart';
 import 'package:app/l10n/app_localizations.dart';
 
-/// The requests customers sent to this provider.
+/// The requests customers sent to this provider, and the answer to them.
 ///
 /// Read through one backend function that only ever returns the requests
 /// handed to the caller's own profile — a provider cannot see requests that
 /// went to someone else, or requests nobody sent them.
 ///
-/// Answering a request does not exist yet, and the list says so rather than
-/// showing buttons that would do nothing.
-class IncomingRequestList extends ConsumerWidget {
+/// Accepting or declining goes through a second function that answers once
+/// and only for the right provider, so the decision cannot be taken twice
+/// or taken by anyone else.
+class IncomingRequestList extends ConsumerStatefulWidget {
   const IncomingRequestList({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<IncomingRequestList> createState() =>
+      _IncomingRequestListState();
+}
+
+class _IncomingRequestListState extends ConsumerState<IncomingRequestList> {
+  /// The request currently being answered, so only its own buttons wait.
+  String? _answering;
+
+  Future<void> _respond(
+    IncomingRequest request,
+    RequestContactStatus status,
+  ) async {
+    final l10n = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    setState(() => _answering = request.contactId);
+    try {
+      await ref
+          .read(incomingRequestsRepositoryProvider)
+          .respond(contactId: request.contactId, status: status);
+      if (!mounted) return;
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(
+            status == RequestContactStatus.accepted
+                ? l10n.providerIncomingAcceptedToast
+                : l10n.providerIncomingDeclinedToast,
+          ),
+        ),
+      );
+      // Re-read: the answer that counts is the one the server stored.
+      ref.invalidate(myIncomingRequestsProvider);
+    } catch (error) {
+      if (mounted) showFailureSnackBar(context, error);
+    }
+    if (mounted) setState(() => _answering = null);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final requests = ref.watch(myIncomingRequestsProvider);
@@ -85,11 +129,19 @@ class IncomingRequestList extends ConsumerWidget {
           )
         else ...[
           for (final request in list) ...[
-            _IncomingRequestCard(request: request),
+            _IncomingRequestCard(
+              request: request,
+              isAnswering: _answering == request.contactId,
+              // One at a time: a second decision while the first is on its
+              // way would only confuse.
+              onRespond: _answering == null
+                  ? (status) => _respond(request, status)
+                  : null,
+            ),
             const SizedBox(height: AppSpacing.sm),
           ],
           Text(
-            l10n.providerIncomingNoReplyYet,
+            l10n.providerIncomingNoContactYet,
             style: theme.textTheme.bodySmall?.copyWith(
               color: theme.colorScheme.onSurfaceVariant,
             ),
@@ -101,9 +153,17 @@ class IncomingRequestList extends ConsumerWidget {
 }
 
 class _IncomingRequestCard extends StatelessWidget {
-  const _IncomingRequestCard({required this.request});
+  const _IncomingRequestCard({
+    required this.request,
+    required this.isAnswering,
+    required this.onRespond,
+  });
 
   final IncomingRequest request;
+  final bool isAnswering;
+
+  /// Null while another request is being answered.
+  final ValueChanged<RequestContactStatus>? onRespond;
 
   @override
   Widget build(BuildContext context) {
@@ -153,9 +213,80 @@ class _IncomingRequestCard extends StatelessWidget {
                 ),
               ],
             ),
+            const SizedBox(height: AppSpacing.md),
+            if (request.status.isOpen)
+              _Decision(isAnswering: isAnswering, onRespond: onRespond)
+            else
+              // Answered: what was decided, and no way to decide again.
+              // The backend refuses a second answer either way.
+              _Answered(status: request.status),
           ],
         ),
       ),
+    );
+  }
+}
+
+/// Accept or decline, side by side and equally weighted: neither answer is
+/// the one the app would rather have.
+class _Decision extends StatelessWidget {
+  const _Decision({required this.isAnswering, required this.onRespond});
+
+  final bool isAnswering;
+  final ValueChanged<RequestContactStatus>? onRespond;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
+    return Row(
+      children: [
+        Expanded(
+          child: OutlinedButton(
+            onPressed: isAnswering
+                ? null
+                : () => onRespond?.call(RequestContactStatus.declined),
+            child: Text(l10n.providerIncomingDecline),
+          ),
+        ),
+        const SizedBox(width: AppSpacing.sm),
+        Expanded(
+          child: FilledButton(
+            onPressed: isAnswering
+                ? null
+                : () => onRespond?.call(RequestContactStatus.accepted),
+            child: isAnswering
+                ? const ButtonProgress()
+                : Text(l10n.providerIncomingAccept),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _Answered extends StatelessWidget {
+  const _Answered({required this.status});
+
+  final RequestContactStatus status;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    final color = status.color(theme.colorScheme);
+
+    return Row(
+      children: [
+        Icon(status.icon, size: AppIconSize.sm, color: color),
+        const SizedBox(width: AppSpacing.xs),
+        Text(
+          status == RequestContactStatus.accepted
+              ? l10n.providerIncomingAccepted
+              : l10n.providerIncomingDeclined,
+          style: theme.textTheme.labelLarge?.copyWith(color: color),
+        ),
+      ],
     );
   }
 }

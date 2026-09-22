@@ -4,6 +4,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:app/core/backend/supabase_providers.dart';
 import 'package:app/core/errors/app_failure.dart';
 import 'package:app/features/jobs/domain/incoming_request.dart';
+import 'package:app/features/requests/domain/request_contact_status.dart';
 
 /// The requests a provider has received.
 ///
@@ -13,6 +14,16 @@ import 'package:app/features/jobs/domain/incoming_request.dart';
 abstract interface class IncomingRequestsRepository {
   /// Newest first.
   Future<List<IncomingRequest>> myIncomingRequests();
+
+  /// Answers one received request with [status], which must be
+  /// [RequestContactStatus.accepted] or [RequestContactStatus.declined].
+  ///
+  /// The backend refuses an answer to a request that is not this provider's
+  /// or that was already answered, so the decision cannot be taken twice.
+  Future<void> respond({
+    required String contactId,
+    required RequestContactStatus status,
+  });
 }
 
 final incomingRequestsRepositoryProvider = Provider<IncomingRequestsRepository>(
@@ -33,6 +44,21 @@ class SupabaseIncomingRequestsRepository implements IncomingRequestsRepository {
         for (final row in rows.whereType<Map<String, dynamic>>())
           IncomingRequest.fromJson(row),
       ];
+    } catch (error) {
+      throw AppFailure.fromError(error);
+    }
+  }
+
+  @override
+  Future<void> respond({
+    required String contactId,
+    required RequestContactStatus status,
+  }) async {
+    try {
+      await _client.rpc<dynamic>(
+        'respond_to_request',
+        params: {'target_contact_id': contactId, 'new_status': status.name},
+      );
     } catch (error) {
       throw AppFailure.fromError(error);
     }
