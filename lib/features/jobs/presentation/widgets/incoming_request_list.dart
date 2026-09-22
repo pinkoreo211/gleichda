@@ -33,7 +33,9 @@ class IncomingRequestList extends ConsumerWidget {
     };
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      // Stretch, not start: a card that shrinks to its text would sit
+      // narrower than everything else on the screen.
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Row(
           children: [

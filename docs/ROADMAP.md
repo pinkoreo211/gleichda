@@ -51,7 +51,7 @@ analytics.
 - [x] Supabase: providers migration run — provider onboarding verified end to end on a device
 - [x] Supabase: provider prices migration run — verified by saving a real price on a device
 - [x] Supabase: matching migration run — verified on a device: the price a provider saved appeared for a customer as "ab € 39,99", with no verified badge, because that profile is not verified
-- [ ] **Supabase: run `20260922140000_request_contacts.sql`** (see docs/supabase-setup.md, section 2). Until then, a request cannot be sent to a provider and the provider's home stays empty
+- [x] Supabase: request contacts migration run — verified on a device: a request from Wien reached the provider, who sees it under "Requests for you"
 
 - [x] Android SDK Command-line Tools installed
 - [x] Android licences: Google replaced `sdkmanager --licenses`; `flutter doctor` still reports "unknown", which is a tooling mismatch, not a blocker — builds work
