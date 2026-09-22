@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
 import 'package:app/core/errors/app_failure_message.dart';
+import 'package:app/core/routing/app_routes.dart';
 import 'package:app/features/catalog/application/catalog_providers.dart';
 import 'package:app/features/catalog/presentation/widgets/catalog_async.dart';
 import 'package:app/features/catalog/presentation/widgets/category_icon.dart';
@@ -30,6 +31,8 @@ class ServiceRequestScreen extends ConsumerStatefulWidget {
 
 class _ServiceRequestScreenState extends ConsumerState<ServiceRequestScreen> {
   late final TextEditingController _controller;
+  late final TextEditingController _city;
+  late final TextEditingController _postalCode;
   bool _isSaving = false;
 
   ServiceRequestDraftController get _draft =>
@@ -38,14 +41,17 @@ class _ServiceRequestScreenState extends ConsumerState<ServiceRequestScreen> {
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController(
-      text: ref.read(serviceRequestDraftProvider).description,
-    );
+    final draft = ref.read(serviceRequestDraftProvider);
+    _controller = TextEditingController(text: draft.description);
+    _city = TextEditingController(text: draft.city);
+    _postalCode = TextEditingController(text: draft.postalCode);
   }
 
   @override
   void dispose() {
     _controller.dispose();
+    _city.dispose();
+    _postalCode.dispose();
     super.dispose();
   }
 
@@ -74,9 +80,12 @@ class _ServiceRequestScreenState extends ConsumerState<ServiceRequestScreen> {
     try {
       final saved = await _draft.submit();
       if (!mounted) return;
-      if (saved) {
+      if (saved != null) {
         messenger.showSnackBar(SnackBar(content: Text(l10n.requestSaved)));
-        context.pop();
+        // Replace rather than push: going back from the provider list
+        // should return to the home screen, not to a form that was already
+        // saved and cleared.
+        context.pushReplacement(AppRoutes.customerRequestProviders(saved.id));
         return;
       }
     } catch (error) {
@@ -136,11 +145,43 @@ class _ServiceRequestScreenState extends ConsumerState<ServiceRequestScreen> {
                     _CategoryChips(selected: draft.category),
                     const SizedBox(height: AppSpacing.lg),
                     _SectionLabel(l10n.requestLocationLabel),
+                    const SizedBox(height: AppSpacing.xs),
+                    Text(
+                      l10n.requestLocationHint,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
                     const SizedBox(height: AppSpacing.sm),
-                    OutlinedButton.icon(
-                      onPressed: _showComingSoon,
-                      icon: const Icon(Icons.place_outlined),
-                      label: Text(l10n.requestLocationChoose),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          flex: 2,
+                          child: TextField(
+                            controller: _city,
+                            textCapitalization: TextCapitalization.words,
+                            onChanged: _draft.setCity,
+                            decoration: InputDecoration(
+                              filled: true,
+                              labelText: l10n.requestCityLabel,
+                              hintText: l10n.requestCityPlaceholder,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: AppSpacing.sm),
+                        Expanded(
+                          child: TextField(
+                            controller: _postalCode,
+                            keyboardType: TextInputType.number,
+                            onChanged: _draft.setPostalCode,
+                            decoration: InputDecoration(
+                              filled: true,
+                              labelText: l10n.requestPostalCodeLabel,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: AppSpacing.lg),
                     _SectionLabel(l10n.requestTimingLabel),

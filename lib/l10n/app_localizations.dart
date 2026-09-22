@@ -620,10 +620,10 @@ abstract class AppLocalizations {
   /// **'Anfrage gespeichert.'**
   String get requestSaved;
 
-  /// Honest note that saved requests stay on the device for now.
+  /// Says that saving a request does not send it: the customer picks the provider.
   ///
   /// In de, this message translates to:
-  /// **'Deine Anfrage wird noch nicht an Dienstleister gesendet – das kommt im nächsten Schritt.'**
+  /// **'Nach dem Speichern zeigen wir dir passende Anbieter. Gesendet wird erst, wenn du einen auswählst.'**
   String get requestNotSentYet;
 
   /// Section heading above the customer's saved requests.
@@ -1129,6 +1129,114 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Preis auf Anfrage'**
   String get providerNoPriceGiven;
+
+  /// Label of the city field on the request screen.
+  ///
+  /// In de, this message translates to:
+  /// **'Ort'**
+  String get requestCityLabel;
+
+  /// Example city inside the request form.
+  ///
+  /// In de, this message translates to:
+  /// **'z. B. Wien'**
+  String get requestCityPlaceholder;
+
+  /// Label of the postal code field on the request screen.
+  ///
+  /// In de, this message translates to:
+  /// **'PLZ'**
+  String get requestPostalCodeLabel;
+
+  /// Explains that leaving the city empty widens the search instead of narrowing it.
+  ///
+  /// In de, this message translates to:
+  /// **'Ohne Ort zeigen wir dir Anbieter aus allen Orten.'**
+  String get requestLocationHint;
+
+  /// Heading of the provider list belonging to one saved request.
+  ///
+  /// In de, this message translates to:
+  /// **'Passende Anbieter'**
+  String get requestMatchesTitle;
+
+  /// Empty state when a saved request names no catalog service.
+  ///
+  /// In de, this message translates to:
+  /// **'Noch keine Leistung gewählt'**
+  String get requestMatchesNoServiceTitle;
+
+  /// Explains why matching cannot run for a free-text request yet.
+  ///
+  /// In de, this message translates to:
+  /// **'Diese Anfrage nennt noch keine konkrete Leistung. Wähle eine Leistung im Katalog, dann suchen wir passende Anbieter.'**
+  String get requestMatchesNoServiceMessage;
+
+  /// Button that sends the saved request to one provider.
+  ///
+  /// In de, this message translates to:
+  /// **'Anfrage senden'**
+  String get providerMatchSend;
+
+  /// Shown on a provider the request has already reached.
+  ///
+  /// In de, this message translates to:
+  /// **'Anfrage gesendet'**
+  String get providerMatchSent;
+
+  /// Confirmation after the request was sent to one provider.
+  ///
+  /// In de, this message translates to:
+  /// **'Deine Anfrage ging an {name}.'**
+  String requestSentToProvider(String name);
+
+  /// Opens the provider list for a saved request.
+  ///
+  /// In de, this message translates to:
+  /// **'Passende Anbieter'**
+  String get customerRequestsShowProviders;
+
+  /// How many providers a saved request has been sent to.
+  ///
+  /// In de, this message translates to:
+  /// **'{count, plural, =0{Noch nicht gesendet} =1{An 1 Anbieter gesendet} other{An {count} Anbieter gesendet}}'**
+  String customerRequestsSentCount(int count);
+
+  /// Heading of the requests a provider has received.
+  ///
+  /// In de, this message translates to:
+  /// **'Anfragen an dich'**
+  String get providerIncomingTitle;
+
+  /// Honest empty state for a provider without incoming requests.
+  ///
+  /// In de, this message translates to:
+  /// **'Du hast noch keine Anfragen erhalten. Sobald dich jemand anfragt, steht sie hier.'**
+  String get providerIncomingEmpty;
+
+  /// Who sent an incoming request.
+  ///
+  /// In de, this message translates to:
+  /// **'von {name}'**
+  String providerIncomingFrom(String name);
+
+  /// Fallback when the customer stored no name.
+  ///
+  /// In de, this message translates to:
+  /// **'Kundin oder Kunde'**
+  String get providerIncomingCustomerUnknown;
+
+  /// Number of requests a provider has received.
+  ///
+  /// In de, this message translates to:
+  /// **'{count, plural, =0{Keine Anfragen} =1{1 Anfrage} other{{count} Anfragen}}'**
+  String providerIncomingCount(int count);
+
+  /// Says plainly that a provider cannot answer a request yet.
+  ///
+  /// In de, this message translates to:
+  /// **'Antworten und Zusagen folgen im nächsten Schritt.'**
+  String get providerIncomingNoReplyYet;
 }
 
 class _AppLocalizationsDelegate

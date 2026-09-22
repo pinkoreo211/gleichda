@@ -14,6 +14,7 @@ class ProviderMatch {
     this.city,
     this.lowestPriceCents,
     this.currency = 'EUR',
+    this.alreadyContacted = false,
   });
 
   final String providerId;
@@ -35,6 +36,10 @@ class ProviderMatch {
 
   final String currency;
 
+  /// Whether this request already reached this provider. Comes from the
+  /// server, so it is still right after the app was closed and reopened.
+  final bool alreadyContacted;
+
   static ProviderMatch fromJson(Map<String, dynamic> json) => ProviderMatch(
     providerId: json['provider_id'] as String,
     displayName: json['display_name'] as String?,
@@ -45,5 +50,6 @@ class ProviderMatch {
     ),
     lowestPriceCents: (json['lowest_price_cents'] as num?)?.toInt(),
     currency: json['currency'] as String? ?? 'EUR',
+    alreadyContacted: json['already_contacted'] as bool? ?? false,
   );
 }

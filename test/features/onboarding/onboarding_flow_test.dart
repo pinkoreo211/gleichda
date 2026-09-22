@@ -96,7 +96,7 @@ void main() {
 
     expect(roles.roles, contains(AppRole.provider));
     expect(store.activeRoles[testUserId], AppRole.provider);
-    expect(find.text('Noch keine Aufträge'), findsOneWidget);
+    expect(find.text('Anfragen an dich'), findsOneWidget);
     for (final label in [
       'Aufträge',
       'Kalender',

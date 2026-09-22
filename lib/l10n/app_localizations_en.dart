@@ -296,7 +296,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get requestNotSentYet =>
-      'Your request is not sent to providers yet – that comes in the next step.';
+      'Once saved, we show you matching providers. Nothing is sent until you pick one.';
 
   @override
   String get customerRequestsTitle => 'Your requests';
@@ -580,4 +580,84 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get providerNoPriceGiven => 'Price on request';
+
+  @override
+  String get requestCityLabel => 'Town or city';
+
+  @override
+  String get requestCityPlaceholder => 'e.g. Vienna';
+
+  @override
+  String get requestPostalCodeLabel => 'Postcode';
+
+  @override
+  String get requestLocationHint =>
+      'Without a town we show you providers from everywhere.';
+
+  @override
+  String get requestMatchesTitle => 'Matching providers';
+
+  @override
+  String get requestMatchesNoServiceTitle => 'No service chosen yet';
+
+  @override
+  String get requestMatchesNoServiceMessage =>
+      'This request does not name a service yet. Pick one from the catalogue and we will look for providers.';
+
+  @override
+  String get providerMatchSend => 'Send request';
+
+  @override
+  String get providerMatchSent => 'Request sent';
+
+  @override
+  String requestSentToProvider(String name) {
+    return 'Your request went to $name.';
+  }
+
+  @override
+  String get customerRequestsShowProviders => 'Matching providers';
+
+  @override
+  String customerRequestsSentCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Sent to $count providers',
+      one: 'Sent to 1 provider',
+      zero: 'Not sent yet',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get providerIncomingTitle => 'Requests for you';
+
+  @override
+  String get providerIncomingEmpty =>
+      'You have not received any requests yet. As soon as someone asks for you, it appears here.';
+
+  @override
+  String providerIncomingFrom(String name) {
+    return 'from $name';
+  }
+
+  @override
+  String get providerIncomingCustomerUnknown => 'Customer';
+
+  @override
+  String providerIncomingCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count requests',
+      one: '1 request',
+      zero: 'No requests',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get providerIncomingNoReplyYet =>
+      'Replying and accepting follow in the next step.';
 }

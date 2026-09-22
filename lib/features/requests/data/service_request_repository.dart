@@ -36,8 +36,13 @@ class SupabaseServiceRequestRepository implements ServiceRequestRepository {
   ///
   /// The AI columns are read back too: reading them is fine, only writing
   /// them is refused by the backend.
+  ///
+  /// `request_contacts(count)` is how many providers already have this
+  /// request. The backend counts only rows the customer may see, so the
+  /// number cannot be inflated by another account's contacts.
   static const _columns =
-      '*, service_categories(id, slug, name, name_en, icon), services(*)';
+      '*, service_categories(id, slug, name, name_en, icon), services(*), '
+      'request_contacts(count)';
 
   @override
   Future<List<ServiceRequest>> myRequests() async {
@@ -68,6 +73,10 @@ class SupabaseServiceRequestRepository implements ServiceRequestRepository {
                 ? _asDate(draft.preferredDate)
                 : null,
             'location_label': draft.locationLabel,
+            // Empty is stored as null, so "not given" stays one thing in the
+            // database instead of two.
+            'city': _orNull(draft.city),
+            'postal_code': _orNull(draft.postalCode),
           })
           .select(_columns)
           .single();
@@ -76,6 +85,9 @@ class SupabaseServiceRequestRepository implements ServiceRequestRepository {
       throw AppFailure.fromError(error);
     }
   }
+
+  static String? _orNull(String value) =>
+      value.trim().isEmpty ? null : value.trim();
 
   /// The column is a date, not a timestamp: "2026-09-20", no time zone, so
   /// a request for "tomorrow" means the same day everywhere.

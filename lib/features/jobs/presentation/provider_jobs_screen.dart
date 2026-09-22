@@ -4,6 +4,7 @@ import 'package:material_ui/material_ui.dart';
 
 import 'package:app/core/routing/app_routes.dart';
 import 'package:app/design_system/app_dimensions.dart';
+import 'package:app/features/jobs/presentation/widgets/incoming_request_list.dart';
 import 'package:app/features/provider/application/provider_profile_providers.dart';
 import 'package:app/features/provider/presentation/widgets/verification_badge.dart';
 import 'package:app/l10n/app_localizations.dart';
@@ -11,8 +12,8 @@ import 'package:app/l10n/app_localizations.dart';
 /// The provider's home: who they are, what is waiting for them, and the
 /// things they maintain themselves.
 ///
-/// Jobs are the main content, but there are none until matching exists — so
-/// this says so plainly rather than inventing any.
+/// The requests customers sent them are the main content. When there are
+/// none, this says so plainly rather than inventing any.
 class ProviderJobsScreen extends ConsumerWidget {
   const ProviderJobsScreen({super.key});
 
@@ -50,38 +51,7 @@ class ProviderJobsScreen extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: AppSpacing.lg),
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(AppSpacing.md),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.work_outline,
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
-                    const SizedBox(width: AppSpacing.md),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            l10n.providerJobsEmptyTitle,
-                            style: theme.textTheme.titleSmall,
-                          ),
-                          const SizedBox(height: AppSpacing.xs),
-                          Text(
-                            l10n.providerHomeNoJobs,
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              color: theme.colorScheme.onSurfaceVariant,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            const IncomingRequestList(),
             const SizedBox(height: AppSpacing.lg),
             Card(
               child: Column(

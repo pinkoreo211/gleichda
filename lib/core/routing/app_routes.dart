@@ -29,10 +29,18 @@ abstract final class AppRoutes {
   static String customerService(String categorySlug, String serviceId) =>
       '/customer/home/category/$categorySlug/service/$serviceId';
 
-  /// Providers who offer one service. Reachable from the catalog, and later
-  /// from a request once it names a service.
+  /// Providers who offer one service, browsed straight from the catalog.
   static String customerProviders(String serviceId) =>
       '/customer/home/providers/$serviceId';
+
+  /// Providers for one saved request. The same screen is reachable from two
+  /// tabs — right after writing the request, and later from the booking
+  /// list — so each tab keeps its own history and its own back button.
+  static String customerRequestProviders(String requestId) =>
+      '/customer/home/requests/$requestId/providers';
+
+  static String customerBookingProviders(String requestId) =>
+      '/customer/bookings/$requestId/providers';
 
   // Provider area
   static const String providerArea = '/provider';

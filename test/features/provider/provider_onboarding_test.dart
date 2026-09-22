@@ -173,7 +173,7 @@ void main() {
     );
 
     expect(find.text('Hallo, Max Montagen'), findsOneWidget);
-    expect(find.text('Du hast noch keine Aufträge.'), findsOneWidget);
+    expect(find.textContaining('noch keine Anfragen erhalten'), findsOneWidget);
     expect(find.text('2 Leistungen'), findsOneWidget);
   });
 

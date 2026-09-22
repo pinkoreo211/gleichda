@@ -15,6 +15,8 @@ class ServiceRequestDraft {
     this.timing = RequestTiming.asap,
     this.preferredDate,
     this.locationLabel,
+    this.city = '',
+    this.postalCode = '',
   });
 
   /// Exactly what the customer typed; never narrowed down by the app.
@@ -30,6 +32,11 @@ class ServiceRequestDraft {
   final DateTime? preferredDate;
   final String? locationLabel;
 
+  /// Where the work is. Matching compares this with the provider's city, so
+  /// an empty city means "show me everyone" rather than "show me nobody".
+  final String city;
+  final String postalCode;
+
   /// The only requirement for creating a request: a description.
   /// Category, location and date stay optional on purpose.
   bool get isSubmittable => description.trim().isNotEmpty;
@@ -43,6 +50,8 @@ class ServiceRequestDraft {
     DateTime? preferredDate,
     bool clearPreferredDate = false,
     String? locationLabel,
+    String? city,
+    String? postalCode,
   }) {
     return ServiceRequestDraft(
       description: description ?? this.description,
@@ -53,6 +62,8 @@ class ServiceRequestDraft {
           ? null
           : (preferredDate ?? this.preferredDate),
       locationLabel: locationLabel ?? this.locationLabel,
+      city: city ?? this.city,
+      postalCode: postalCode ?? this.postalCode,
     );
   }
 }

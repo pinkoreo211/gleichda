@@ -12,6 +12,8 @@ import 'package:app/features/catalog/data/catalog_repository.dart';
 import 'package:app/features/catalog/domain/service.dart';
 import 'package:app/features/catalog/domain/service_category.dart';
 import 'package:app/features/catalog/domain/service_price_option.dart';
+import 'package:app/features/jobs/data/incoming_requests_repository.dart';
+import 'package:app/features/jobs/domain/incoming_request.dart';
 import 'package:app/features/matching/data/matching_repository.dart';
 import 'package:app/features/matching/domain/provider_match.dart';
 import 'package:app/features/profile/data/profile_repository.dart';
@@ -211,14 +213,27 @@ class FakeCatalogRepository implements CatalogRepository {
 /// Returns whatever it was given. The real ordering -- verified first, then
 /// cheapest -- lives in SQL, so asserting it here would only test the fake.
 class FakeMatchingRepository implements MatchingRepository {
-  FakeMatchingRepository({List<ProviderMatch>? matches, this.failure})
-    : matches = matches ?? const [];
+  FakeMatchingRepository({
+    List<ProviderMatch>? matches,
+    this.failure,
+    this.requests,
+  }) : matches = matches ?? const [];
 
   final List<ProviderMatch> matches;
   final AppFailure? failure;
 
+  /// When given, sending also bumps that request's contact count, the way
+  /// the backend does because both read the same rows.
+  final InMemoryServiceRequestRepository? requests;
+
   /// The service ids that were asked for, for assertions.
   final askedFor = <String>[];
+
+  /// The request ids that were asked for, for assertions.
+  final askedForRequest = <String>[];
+
+  /// Which providers each request was sent to, mirroring request_contacts.
+  final sent = <String, List<String>>{};
 
   @override
   Future<List<ProviderMatch>> providersForService(
@@ -228,6 +243,86 @@ class FakeMatchingRepository implements MatchingRepository {
     if (failure case final failure?) throw failure;
     askedFor.add(serviceId);
     return List.unmodifiable(matches);
+  }
+
+  @override
+  Future<List<ProviderMatch>> providersForRequest(String requestId) async {
+    if (failure case final failure?) throw failure;
+    askedForRequest.add(requestId);
+    final contacted = sent[requestId] ?? const <String>[];
+    // Like the real function: whether a provider was already contacted is
+    // read back from stored rows, not remembered by the screen.
+    return [
+      for (final match in matches)
+        match.alreadyContacted || contacted.contains(match.providerId)
+            ? ProviderMatch(
+                providerId: match.providerId,
+                displayName: match.displayName,
+                description: match.description,
+                city: match.city,
+                verificationStatus: match.verificationStatus,
+                lowestPriceCents: match.lowestPriceCents,
+                currency: match.currency,
+                alreadyContacted: true,
+              )
+            : match,
+    ];
+  }
+
+  @override
+  Future<void> sendRequestToProvider({
+    required String requestId,
+    required String providerId,
+  }) async {
+    if (failure case final failure?) throw failure;
+    sent.putIfAbsent(requestId, () => <String>[]).add(providerId);
+    requests?.markSent(requestId);
+  }
+}
+
+/// [IncomingRequestsRepository] without a backend.
+///
+/// With [from] and [requests] it derives what one provider received from
+/// what was actually sent, so a test can follow a request all the way from
+/// the customer to the provider instead of pretending at the halfway mark.
+class FakeIncomingRequestsRepository implements IncomingRequestsRepository {
+  FakeIncomingRequestsRepository({
+    List<IncomingRequest>? seeded,
+    this.from,
+    this.requests,
+    this.providerId = testProviderId,
+  }) : seeded = seeded ?? const [];
+
+  final List<IncomingRequest> seeded;
+  final FakeMatchingRepository? from;
+  final InMemoryServiceRequestRepository? requests;
+
+  /// Which provider this repository speaks for. The real function works it
+  /// out from the signed-in account.
+  final String providerId;
+
+  @override
+  Future<List<IncomingRequest>> myIncomingRequests() async {
+    final matching = from;
+    if (matching == null) return List.unmodifiable(seeded);
+    return [
+      ...seeded,
+      for (final entry in matching.sent.entries)
+        // Only what was sent to this provider, like the backend's filter.
+        if (entry.value.contains(providerId))
+          if (requests?.byId(entry.key) case final request?)
+            IncomingRequest(
+              contactId: 'contact-${entry.key}',
+              requestId: request.id,
+              description: request.originalDescription,
+              sentAt: request.createdAt,
+              serviceName: request.service?.name,
+              city: request.city,
+              postalCode: request.postalCode,
+              timing: request.timing,
+              preferredDate: request.preferredDate,
+            ),
+    ];
   }
 }
 
@@ -422,9 +517,27 @@ class InMemoryServiceRequestRepository implements ServiceRequestRepository {
           ? draft.preferredDate
           : null,
       locationLabel: draft.locationLabel,
+      city: draft.city.trim().isEmpty ? null : draft.city.trim(),
+      postalCode: draft.postalCode.trim().isEmpty
+          ? null
+          : draft.postalCode.trim(),
     );
     requests.insert(0, request);
     return request;
+  }
+
+  ServiceRequest? byId(String id) =>
+      requests.where((request) => request.id == id).firstOrNull;
+
+  /// Mirrors the database, where the count comes from the contact rows:
+  /// sending bumps it, the list is not patched by the screen.
+  void markSent(String requestId) {
+    final index = requests.indexWhere((request) => request.id == requestId);
+    if (index < 0) return;
+    final request = requests[index];
+    requests[index] = request.copyWith(
+      sentToProviderCount: request.sentToProviderCount + 1,
+    );
   }
 }
 
@@ -455,6 +568,7 @@ Future<void> pumpApp(
   FakeProfileRepository? profile,
   FakeProviderRepository? provider,
   FakeMatchingRepository? matching,
+  FakeIncomingRequestsRepository? incoming,
   Locale locale = const Locale('de', 'AT'),
 }) async {
   tester.platformDispatcher.localesTestValue = [locale];
@@ -484,6 +598,9 @@ Future<void> pumpApp(
         ),
         matchingRepositoryProvider.overrideWithValue(
           matching ?? FakeMatchingRepository(),
+        ),
+        incomingRequestsRepositoryProvider.overrideWithValue(
+          incoming ?? FakeIncomingRequestsRepository(),
         ),
       ],
       child: const App(),
@@ -520,6 +637,7 @@ Future<void> pumpSignedInApp(
   FakeProfileRepository? profile,
   FakeProviderRepository? provider,
   FakeMatchingRepository? matching,
+  FakeIncomingRequestsRepository? incoming,
 }) {
   return pumpApp(
     tester,
@@ -533,6 +651,7 @@ Future<void> pumpSignedInApp(
     // otherwise, so the guard does not send every provider test into
     // onboarding.
     matching: matching,
+    incoming: incoming,
     provider:
         provider ??
         (role == AppRole.provider

@@ -366,9 +366,9 @@
   "@requestSaved": {
     "description": "Confirmation after a request was saved."
   },
-  "requestNotSentYet": "Deine Anfrage wird noch nicht an Dienstleister gesendet – das kommt im nächsten Schritt.",
+  "requestNotSentYet": "Nach dem Speichern zeigen wir dir passende Anbieter. Gesendet wird erst, wenn du einen auswählst.",
   "@requestNotSentYet": {
-    "description": "Honest note that saved requests stay on the device for now."
+    "description": "Says that saving a request does not send it: the customer picks the provider."
   },
   "customerRequestsTitle": "Deine Anfragen",
   "@customerRequestsTitle": {
@@ -606,5 +606,53 @@
   "providerUnnamed": "Dienstleister",
   "@providerUnnamed": { "description": "Fallback when a provider stored no name." },
   "providerNoPriceGiven": "Preis auf Anfrage",
-  "@providerNoPriceGiven": { "description": "Shown when a provider has not set a price for this service." }
+  "@providerNoPriceGiven": { "description": "Shown when a provider has not set a price for this service." },
+  "requestCityLabel": "Ort",
+  "@requestCityLabel": { "description": "Label of the city field on the request screen." },
+  "requestCityPlaceholder": "z. B. Wien",
+  "@requestCityPlaceholder": { "description": "Example city inside the request form." },
+  "requestPostalCodeLabel": "PLZ",
+  "@requestPostalCodeLabel": { "description": "Label of the postal code field on the request screen." },
+  "requestLocationHint": "Ohne Ort zeigen wir dir Anbieter aus allen Orten.",
+  "@requestLocationHint": { "description": "Explains that leaving the city empty widens the search instead of narrowing it." },
+  "requestMatchesTitle": "Passende Anbieter",
+  "@requestMatchesTitle": { "description": "Heading of the provider list belonging to one saved request." },
+  "requestMatchesNoServiceTitle": "Noch keine Leistung gewählt",
+  "@requestMatchesNoServiceTitle": { "description": "Empty state when a saved request names no catalog service." },
+  "requestMatchesNoServiceMessage": "Diese Anfrage nennt noch keine konkrete Leistung. Wähle eine Leistung im Katalog, dann suchen wir passende Anbieter.",
+  "@requestMatchesNoServiceMessage": { "description": "Explains why matching cannot run for a free-text request yet." },
+  "providerMatchSend": "Anfrage senden",
+  "@providerMatchSend": { "description": "Button that sends the saved request to one provider." },
+  "providerMatchSent": "Anfrage gesendet",
+  "@providerMatchSent": { "description": "Shown on a provider the request has already reached." },
+  "requestSentToProvider": "Deine Anfrage ging an {name}.",
+  "@requestSentToProvider": {
+    "description": "Confirmation after the request was sent to one provider.",
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "customerRequestsShowProviders": "Passende Anbieter",
+  "@customerRequestsShowProviders": { "description": "Opens the provider list for a saved request." },
+  "customerRequestsSentCount": "{count, plural, =0{Noch nicht gesendet} =1{An 1 Anbieter gesendet} other{An {count} Anbieter gesendet}}",
+  "@customerRequestsSentCount": {
+    "description": "How many providers a saved request has been sent to.",
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "providerIncomingTitle": "Anfragen an dich",
+  "@providerIncomingTitle": { "description": "Heading of the requests a provider has received." },
+  "providerIncomingEmpty": "Du hast noch keine Anfragen erhalten. Sobald dich jemand anfragt, steht sie hier.",
+  "@providerIncomingEmpty": { "description": "Honest empty state for a provider without incoming requests." },
+  "providerIncomingFrom": "von {name}",
+  "@providerIncomingFrom": {
+    "description": "Who sent an incoming request.",
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "providerIncomingCustomerUnknown": "Kundin oder Kunde",
+  "@providerIncomingCustomerUnknown": { "description": "Fallback when the customer stored no name." },
+  "providerIncomingCount": "{count, plural, =0{Keine Anfragen} =1{1 Anfrage} other{{count} Anfragen}}",
+  "@providerIncomingCount": {
+    "description": "Number of requests a provider has received.",
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "providerIncomingNoReplyYet": "Antworten und Zusagen folgen im nächsten Schritt.",
+  "@providerIncomingNoReplyYet": { "description": "Says plainly that a provider cannot answer a request yet." }
 }

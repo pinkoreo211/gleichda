@@ -113,8 +113,10 @@ void main() {
     expect(stored.single.detectedService, isNull);
     expect(stored.single.estimatedPriceMinCents, isNull);
 
-    // Saving returns to the home screen.
-    expect(find.text('Was brauchst du?'), findsOneWidget);
+    // Saving leads straight on to the providers. This request is free text
+    // with no service, so the screen says why it cannot match yet instead
+    // of showing an empty list.
+    expect(find.text('Noch keine Leistung gewählt'), findsOneWidget);
 
     await tester.tap(_navLabel('Buchungen'));
     await tester.pumpAndSettle();

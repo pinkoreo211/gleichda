@@ -19,6 +19,18 @@ abstract interface class MatchingRepository {
     String serviceId, {
     String? city,
   });
+
+  /// Providers for a saved request. Only the request id is sent: the server
+  /// reads the service and the city from the stored request itself, so the
+  /// phone cannot widen its own search.
+  Future<List<ProviderMatch>> providersForRequest(String requestId);
+
+  /// Hands the request to one provider. The server checks that the request
+  /// belongs to the caller and that the provider really offers the service.
+  Future<void> sendRequestToProvider({
+    required String requestId,
+    required String providerId,
+  });
 }
 
 final matchingRepositoryProvider = Provider<MatchingRepository>(
@@ -45,12 +57,45 @@ class SupabaseMatchingRepository implements MatchingRepository {
           'requested_city': city,
         },
       );
-      return [
-        for (final row in rows.whereType<Map<String, dynamic>>())
-          ProviderMatch.fromJson(row),
-      ];
+      return _parse(rows);
     } catch (error) {
       throw AppFailure.fromError(error);
     }
   }
+
+  @override
+  Future<List<ProviderMatch>> providersForRequest(String requestId) async {
+    try {
+      final rows = await _client.rpc<List<dynamic>>(
+        'find_providers_for_request',
+        params: {'target_request_id': requestId},
+      );
+      return _parse(rows);
+    } catch (error) {
+      throw AppFailure.fromError(error);
+    }
+  }
+
+  @override
+  Future<void> sendRequestToProvider({
+    required String requestId,
+    required String providerId,
+  }) async {
+    try {
+      await _client.rpc<dynamic>(
+        'send_request_to_provider',
+        params: {
+          'target_request_id': requestId,
+          'target_provider_id': providerId,
+        },
+      );
+    } catch (error) {
+      throw AppFailure.fromError(error);
+    }
+  }
+
+  List<ProviderMatch> _parse(List<dynamic> rows) => [
+    for (final row in rows.whereType<Map<String, dynamic>>())
+      ProviderMatch.fromJson(row),
+  ];
 }

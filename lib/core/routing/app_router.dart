@@ -14,6 +14,7 @@ import 'package:app/features/discovery/presentation/customer_home_screen.dart';
 import 'package:app/features/earnings/presentation/earnings_screen.dart';
 import 'package:app/features/jobs/presentation/customer_bookings_screen.dart';
 import 'package:app/features/matching/presentation/provider_matches_screen.dart';
+import 'package:app/features/matching/presentation/request_matches_screen.dart';
 import 'package:app/features/jobs/presentation/provider_jobs_screen.dart';
 import 'package:app/features/onboarding/presentation/role_selection_screen.dart';
 import 'package:app/features/onboarding/presentation/welcome_screen.dart';
@@ -135,6 +136,11 @@ List<RouteBase> _tabSubRoutes(ShellTab tab) => switch (tab) {
           ProviderMatchesScreen(serviceId: state.pathParameters['serviceId']!),
     ),
     GoRoute(
+      path: 'requests/:requestId/providers',
+      builder: (context, state) =>
+          RequestMatchesScreen(requestId: state.pathParameters['requestId']!),
+    ),
+    GoRoute(
       path: 'category/:categorySlug',
       builder: (context, state) =>
           CategoryScreen(slug: state.pathParameters['categorySlug']!),
@@ -148,6 +154,15 @@ List<RouteBase> _tabSubRoutes(ShellTab tab) => switch (tab) {
           ),
         ),
       ],
+    ),
+  ],
+  // The same screen as in the home tab, under the bookings tab's own path:
+  // opening it from a saved request should leave the customer in bookings.
+  ShellTab.customerBookings => [
+    GoRoute(
+      path: ':requestId/providers',
+      builder: (context, state) =>
+          RequestMatchesScreen(requestId: state.pathParameters['requestId']!),
     ),
   ],
   ShellTab.providerJobs => [

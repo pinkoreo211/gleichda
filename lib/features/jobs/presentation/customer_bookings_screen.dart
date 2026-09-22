@@ -1,7 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
 import 'package:app/core/formatting/app_date_format.dart';
+import 'package:app/core/routing/app_routes.dart';
 import 'package:app/design_system/app_dimensions.dart';
 import 'package:app/design_system/widgets/empty_state.dart';
 import 'package:app/features/requests/application/my_requests.dart';
@@ -12,10 +14,9 @@ import 'package:app/l10n/app_localizations.dart';
 
 /// The customer's requests and, later, their booked jobs.
 ///
-/// Requests shown here are the customer's own, read back from the backend.
-/// They are marked as not sent because no provider sees them yet: matching
-/// comes later. Bookings stay empty until booking exists — none are
-/// invented.
+/// Each request says how many providers it has reached — saving one does
+/// not send it, the customer picks who gets it. Bookings stay empty until
+/// booking exists; none are invented.
 class CustomerBookingsScreen extends ConsumerWidget {
   const CustomerBookingsScreen({super.key});
 
@@ -74,6 +75,11 @@ class _RequestList extends StatelessWidget {
   }
 }
 
+/// How the bookings list describes a saved request.
+///
+/// Requests shown here are the customer's own, read back from the backend.
+/// Bookings stay empty until booking exists — none are invented.
+
 class _RequestCard extends StatelessWidget {
   const _RequestCard({required this.request});
 
@@ -111,6 +117,8 @@ class _RequestCard extends StatelessWidget {
                       Localizations.localeOf(context).languageCode,
                     ),
                   ),
+                if (request.city != null && request.city!.isNotEmpty)
+                  _Detail(icon: Icons.place_outlined, text: request.city!),
                 _Detail(
                   icon: Icons.schedule,
                   text: request.timing.label(l10n, date: request.preferredDate),
@@ -123,11 +131,25 @@ class _RequestCard extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.sm),
             Text(
-              l10n.customerRequestsNotSent,
+              l10n.customerRequestsSentCount(request.sentToProviderCount),
               style: theme.textTheme.labelSmall?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
+                color: request.wasSent
+                    ? theme.colorScheme.primary
+                    : theme.colorScheme.onSurfaceVariant,
               ),
             ),
+            // Only requests that name a service can be matched; offering
+            // the button on the others would lead to an empty screen.
+            if (request.canBeMatched) ...[
+              const SizedBox(height: AppSpacing.sm),
+              OutlinedButton.icon(
+                onPressed: () => context.push(
+                  AppRoutes.customerBookingProviders(request.id),
+                ),
+                icon: const Icon(Icons.person_search_outlined),
+                label: Text(l10n.customerRequestsShowProviders),
+              ),
+            ],
           ],
         ),
       ),

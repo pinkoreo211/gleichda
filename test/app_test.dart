@@ -57,7 +57,7 @@ void main() {
     ) async {
       await pumpSignedInApp(tester, role: AppRole.provider);
 
-      expect(find.text('Noch keine Aufträge'), findsOneWidget);
+      expect(find.text('Anfragen an dich'), findsOneWidget);
     });
 
     testWidgets('another account on the same phone does not inherit the mode', (

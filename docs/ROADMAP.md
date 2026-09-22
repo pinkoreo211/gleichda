@@ -1,4 +1,3 @@
-| 4c | **Matching, Grundlage:** requests carry a service_id; one security-definer function returns only public provider data; results list with verified badge and own price | ✅ | A customer opens a service and sees who offers it, verified first then cheapest |
 # Roadmap
 
 Each step ends with something testable on a phone. The owner confirms before
@@ -18,6 +17,8 @@ Legend: ✅ done · 🔄 in progress · ⏳ open
 | 3 | **Service catalog:** categories, services, price options, sample data for Vienna; category and service screens | ✅ | The app shows whatever the backend holds — adding a category needs no release |
 | 4 | **Provider onboarding:** guided profile (personal, business, services from the catalog, service area), resumable, provider home, verification status prepared | ✅ | A provider signs up, picks services and reaches their own area — still unverified until the team checks |
 | 4a | **Provider prices:** own price options per offered service, activate, deactivate, delete; catalog stays untouched | ✅ | A provider sets their own price and the list shows it instead of the catalog example |
+| 4c | **Matching foundation:** requests carry a `service_id`; one security-definer function returns only public provider data; results list with verified badge and own price | ✅ | A customer opens a service and sees who offers it, verified first then cheapest |
+| 4d | **Request reaches a provider:** the request stores its town, matching runs on the saved request, the customer sends it to a provider, the provider sees it in their area | ✅ | A customer writes a request in Vienna and a provider finds it on their home screen |
 | 4b | **Verification & documents:** upload, category-specific requirements, admin review | ⏳ | Provider submits documents; the team approves in Supabase |
 | 5 | **Discovery & fixed-price booking:** location, nearby verified providers, option → price → time → request | ⏳ | Customer books a cleaner in Vienna |
 | 6 | **Job flow:** accept/decline, on the way, in progress, done, customer confirms, navigation button | ⏳ | Full job lifecycle between two test accounts |
@@ -50,6 +51,7 @@ analytics.
 - [x] Supabase: providers migration run — provider onboarding verified end to end on a device
 - [x] Supabase: provider prices migration run — verified by saving a real price on a device
 - [x] Supabase: matching migration run — verified on a device: the price a provider saved appeared for a customer as "ab € 39,99", with no verified badge, because that profile is not verified
+- [ ] **Supabase: run `20260922140000_request_contacts.sql`** (see docs/supabase-setup.md, section 2). Until then, a request cannot be sent to a provider and the provider's home stays empty
 
 - [x] Android SDK Command-line Tools installed
 - [x] Android licences: Google replaced `sdkmanager --licenses`; `flutter doctor` still reports "unknown", which is a tooling mismatch, not a blocker — builds work

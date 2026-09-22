@@ -299,7 +299,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get requestNotSentYet =>
-      'Deine Anfrage wird noch nicht an Dienstleister gesendet – das kommt im nächsten Schritt.';
+      'Nach dem Speichern zeigen wir dir passende Anbieter. Gesendet wird erst, wenn du einen auswählst.';
 
   @override
   String get customerRequestsTitle => 'Deine Anfragen';
@@ -584,4 +584,84 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get providerNoPriceGiven => 'Preis auf Anfrage';
+
+  @override
+  String get requestCityLabel => 'Ort';
+
+  @override
+  String get requestCityPlaceholder => 'z. B. Wien';
+
+  @override
+  String get requestPostalCodeLabel => 'PLZ';
+
+  @override
+  String get requestLocationHint =>
+      'Ohne Ort zeigen wir dir Anbieter aus allen Orten.';
+
+  @override
+  String get requestMatchesTitle => 'Passende Anbieter';
+
+  @override
+  String get requestMatchesNoServiceTitle => 'Noch keine Leistung gewählt';
+
+  @override
+  String get requestMatchesNoServiceMessage =>
+      'Diese Anfrage nennt noch keine konkrete Leistung. Wähle eine Leistung im Katalog, dann suchen wir passende Anbieter.';
+
+  @override
+  String get providerMatchSend => 'Anfrage senden';
+
+  @override
+  String get providerMatchSent => 'Anfrage gesendet';
+
+  @override
+  String requestSentToProvider(String name) {
+    return 'Deine Anfrage ging an $name.';
+  }
+
+  @override
+  String get customerRequestsShowProviders => 'Passende Anbieter';
+
+  @override
+  String customerRequestsSentCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'An $count Anbieter gesendet',
+      one: 'An 1 Anbieter gesendet',
+      zero: 'Noch nicht gesendet',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get providerIncomingTitle => 'Anfragen an dich';
+
+  @override
+  String get providerIncomingEmpty =>
+      'Du hast noch keine Anfragen erhalten. Sobald dich jemand anfragt, steht sie hier.';
+
+  @override
+  String providerIncomingFrom(String name) {
+    return 'von $name';
+  }
+
+  @override
+  String get providerIncomingCustomerUnknown => 'Kundin oder Kunde';
+
+  @override
+  String providerIncomingCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Anfragen',
+      one: '1 Anfrage',
+      zero: 'Keine Anfragen',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get providerIncomingNoReplyYet =>
+      'Antworten und Zusagen folgen im nächsten Schritt.';
 }
