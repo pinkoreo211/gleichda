@@ -67,7 +67,14 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Preisgestaltung'), findsOneWidget);
 
+    // Before: the screen says the price is missing, because it is.
+    expect(find.textContaining('noch keinen Preis hinterlegt'), findsOneWidget);
+
     await _addPrice(tester, name: 'bis 50 m²', amount: '49,99');
+
+    // After: the hint is gone. Leaving it up would tell providers to set a
+    // price they have just set.
+    expect(find.textContaining('noch keinen Preis hinterlegt'), findsNothing);
 
     // Stored as whole cents, not as a decimal.
     final stored =

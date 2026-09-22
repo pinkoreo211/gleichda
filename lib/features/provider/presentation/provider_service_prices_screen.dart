@@ -81,15 +81,20 @@ class _Prices extends ConsumerWidget {
           offering.service.nameFor(language),
           style: theme.textTheme.headlineSmall,
         ),
-        const SizedBox(height: AppSpacing.sm),
-        Text(
-          // A quoted service is fine without a fixed price, and saying so
-          // stops providers hunting for a field they do not need.
-          isQuote ? l10n.providerQuoteNoPriceNeeded : l10n.providerPricesEmpty,
-          style: theme.textTheme.bodyMedium?.copyWith(
-            color: theme.colorScheme.onSurfaceVariant,
+        // A quoted service is fine without a fixed price, and saying so stops
+        // providers hunting for a field they do not need. The "no price yet"
+        // line only belongs there while that is actually true.
+        if (isQuote || offering.prices.isEmpty) ...[
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            isQuote
+                ? l10n.providerQuoteNoPriceNeeded
+                : l10n.providerPricesEmpty,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
           ),
-        ),
+        ],
         const SizedBox(height: AppSpacing.lg),
         for (final price in offering.prices) ...[
           _PriceCard(
