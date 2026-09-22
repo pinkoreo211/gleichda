@@ -48,8 +48,8 @@ analytics.
 - [x] Supabase: `20260920120000_service_requests.sql` run — verified by creating a real request that survived an app restart
 - [x] Supabase: `20260920140000_service_catalog.sql` run — verified against the live catalog on a device
 - [x] Supabase: providers migration run — provider onboarding verified end to end on a device
-- [ ] **Supabase: run the provider prices migration** (see docs/supabase-setup.md, section 2). Until then, providers cannot save prices
-- [ ] **Supabase: run the matching migration** (see docs/supabase-setup.md, section 2). Until then, requests cannot store a service and the provider search does not exist
+- [x] Supabase: provider prices migration run — verified by saving a real price on a device
+- [x] Supabase: matching migration run — verified on a device: the price a provider saved appeared for a customer as "ab € 39,99", with no verified badge, because that profile is not verified
 
 - [x] Android SDK Command-line Tools installed
 - [x] Android licences: Google replaced `sdkmanager --licenses`; `flutter doctor` still reports "unknown", which is a tooling mismatch, not a blocker — builds work
