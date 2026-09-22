@@ -15,6 +15,7 @@ import 'package:app/features/catalog/domain/service_price_option.dart';
 import 'package:app/features/profile/data/profile_repository.dart';
 import 'package:app/features/provider/data/provider_repository.dart';
 import 'package:app/features/provider/domain/provider_profile.dart';
+import 'package:app/features/provider/domain/provider_service_offering.dart';
 import 'package:app/features/requests/data/service_request_repository.dart';
 import 'package:app/features/requests/domain/request_timing.dart';
 import 'package:app/features/requests/domain/service_request.dart';
@@ -278,6 +279,89 @@ class FakeProviderRepository implements ProviderRepository {
     serviceIds
       ..clear()
       ..addAll(ids);
+  }
+
+  /// The catalog the offerings are built from.
+  final List<Service> catalogServices = [
+    testFlatCleaning,
+    testMoveOutCleaning,
+    testFurnitureAssembly,
+  ];
+
+  /// Prices per offering id, as the database holds them per
+  /// `provider_service_id`.
+  final Map<String, List<ProviderServicePrice>> prices = {};
+
+  /// Offerings get a stable id derived from the service, so tests can point
+  /// at one without reading it back first.
+  static String offeringId(String serviceId) => 'ps-$serviceId';
+
+  @override
+  Future<List<ProviderServiceOffering>> myOfferings(String providerId) async {
+    if (failure case final failure?) throw failure;
+    return [
+      for (final service in catalogServices)
+        if (serviceIds.contains(service.id))
+          ProviderServiceOffering(
+            id: offeringId(service.id),
+            service: service,
+            prices: prices[offeringId(service.id)] ?? const [],
+          ),
+    ];
+  }
+
+  @override
+  Future<void> addPrice(
+    String providerServiceId, {
+    required String name,
+    required int priceCents,
+    String? unit,
+    int? durationMinutes,
+  }) async {
+    if (failure case final failure?) throw failure;
+    final list = prices.putIfAbsent(providerServiceId, () => []);
+    list.add(
+      ProviderServicePrice(
+        id: 'price-$providerServiceId-${list.length + 1}',
+        name: name.trim(),
+        priceCents: priceCents,
+        unit: unit,
+        durationMinutes: durationMinutes,
+      ),
+    );
+  }
+
+  @override
+  Future<void> updatePrice(String priceId, Map<String, dynamic> changes) async {
+    if (failure case final failure?) throw failure;
+    for (final list in prices.values) {
+      for (var i = 0; i < list.length; i++) {
+        if (list[i].id != priceId) continue;
+        final old = list[i];
+        list[i] = ProviderServicePrice(
+          id: old.id,
+          name: changes['name'] as String? ?? old.name,
+          priceCents:
+              (changes['price_cents'] as num?)?.toInt() ?? old.priceCents,
+          unit: changes.containsKey('unit')
+              ? changes['unit'] as String?
+              : old.unit,
+          durationMinutes: changes.containsKey('duration_minutes')
+              ? (changes['duration_minutes'] as num?)?.toInt()
+              : old.durationMinutes,
+          isActive: changes['is_active'] as bool? ?? old.isActive,
+        );
+        return;
+      }
+    }
+  }
+
+  @override
+  Future<void> deletePrice(String priceId) async {
+    if (failure case final failure?) throw failure;
+    for (final list in prices.values) {
+      list.removeWhere((price) => price.id == priceId);
+    }
   }
 }
 

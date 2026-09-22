@@ -506,4 +506,63 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get errorCityRequired => 'Bitte gib deine Stadt ein.';
+
+  @override
+  String get providerAddService => 'Leistung hinzufügen';
+
+  @override
+  String get providerEdit => 'Bearbeiten';
+
+  @override
+  String get providerNoPriceYet => 'Noch kein Preis hinterlegt';
+
+  @override
+  String get providerPricingTitle => 'Preisgestaltung';
+
+  @override
+  String get providerAddPrice => 'Preisoption hinzufügen';
+
+  @override
+  String get providerPriceNameLabel => 'Bezeichnung';
+
+  @override
+  String get providerPriceAmountLabel => 'Preis in Euro';
+
+  @override
+  String get providerPriceUnitLabel => 'Einheit';
+
+  @override
+  String get providerPriceDurationLabel => 'Dauer in Minuten';
+
+  @override
+  String get providerPriceSave => 'Speichern';
+
+  @override
+  String get providerPriceDeactivate => 'Deaktivieren';
+
+  @override
+  String get providerPriceActivate => 'Aktivieren';
+
+  @override
+  String get providerPriceDelete => 'Löschen';
+
+  @override
+  String get providerPriceInactive => 'Deaktiviert';
+
+  @override
+  String get providerQuoteNoPriceNeeded =>
+      'Für diese Leistung brauchst du keinen Fixpreis. Kunden fordern ein Angebot an.';
+
+  @override
+  String get providerPricesEmpty =>
+      'Du hast für diese Leistung noch keinen Preis hinterlegt.';
+
+  @override
+  String get providerServicesEmpty => 'Du bietest noch keine Leistungen an.';
+
+  @override
+  String get errorPriceNameRequired => 'Bitte gib eine Bezeichnung ein.';
+
+  @override
+  String get errorPriceInvalid => 'Bitte gib einen gültigen Preis ein.';
 }

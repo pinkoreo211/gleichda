@@ -979,6 +979,120 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Bitte gib deine Stadt ein.'**
   String get errorCityRequired;
+
+  /// Button that opens the service picker.
+  ///
+  /// In de, this message translates to:
+  /// **'Leistung hinzufügen'**
+  String get providerAddService;
+
+  /// Opens the prices of one offering.
+  ///
+  /// In de, this message translates to:
+  /// **'Bearbeiten'**
+  String get providerEdit;
+
+  /// Shown for a fixed-price service the provider has not priced yet.
+  ///
+  /// In de, this message translates to:
+  /// **'Noch kein Preis hinterlegt'**
+  String get providerNoPriceYet;
+
+  /// Heading of the price screen for one service.
+  ///
+  /// In de, this message translates to:
+  /// **'Preisgestaltung'**
+  String get providerPricingTitle;
+
+  /// Button that adds a price option.
+  ///
+  /// In de, this message translates to:
+  /// **'Preisoption hinzufügen'**
+  String get providerAddPrice;
+
+  /// Label of the price option name, e.g. 'bis 50 m²'.
+  ///
+  /// In de, this message translates to:
+  /// **'Bezeichnung'**
+  String get providerPriceNameLabel;
+
+  /// Label of the price amount field.
+  ///
+  /// In de, this message translates to:
+  /// **'Preis in Euro'**
+  String get providerPriceAmountLabel;
+
+  /// Label of the unit field, e.g. 'pro Auftrag'.
+  ///
+  /// In de, this message translates to:
+  /// **'Einheit'**
+  String get providerPriceUnitLabel;
+
+  /// Label of the duration field.
+  ///
+  /// In de, this message translates to:
+  /// **'Dauer in Minuten'**
+  String get providerPriceDurationLabel;
+
+  /// Saves a price option.
+  ///
+  /// In de, this message translates to:
+  /// **'Speichern'**
+  String get providerPriceSave;
+
+  /// Hides a price option without deleting it.
+  ///
+  /// In de, this message translates to:
+  /// **'Deaktivieren'**
+  String get providerPriceDeactivate;
+
+  /// Offers a deactivated price option again.
+  ///
+  /// In de, this message translates to:
+  /// **'Aktivieren'**
+  String get providerPriceActivate;
+
+  /// Removes a price option for good.
+  ///
+  /// In de, this message translates to:
+  /// **'Löschen'**
+  String get providerPriceDelete;
+
+  /// Badge on a deactivated price option.
+  ///
+  /// In de, this message translates to:
+  /// **'Deaktiviert'**
+  String get providerPriceInactive;
+
+  /// Explains that a quoted service needs no fixed price.
+  ///
+  /// In de, this message translates to:
+  /// **'Für diese Leistung brauchst du keinen Fixpreis. Kunden fordern ein Angebot an.'**
+  String get providerQuoteNoPriceNeeded;
+
+  /// Empty state on the price screen.
+  ///
+  /// In de, this message translates to:
+  /// **'Du hast für diese Leistung noch keinen Preis hinterlegt.'**
+  String get providerPricesEmpty;
+
+  /// Empty state when the provider offers nothing yet.
+  ///
+  /// In de, this message translates to:
+  /// **'Du bietest noch keine Leistungen an.'**
+  String get providerServicesEmpty;
+
+  /// Validation error for the price option name.
+  ///
+  /// In de, this message translates to:
+  /// **'Bitte gib eine Bezeichnung ein.'**
+  String get errorPriceNameRequired;
+
+  /// Validation error for the price amount.
+  ///
+  /// In de, this message translates to:
+  /// **'Bitte gib einen gültigen Preis ein.'**
+  String get errorPriceInvalid;
 }
 
 class _AppLocalizationsDelegate

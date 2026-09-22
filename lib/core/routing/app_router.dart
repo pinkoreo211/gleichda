@@ -19,6 +19,8 @@ import 'package:app/features/onboarding/presentation/welcome_screen.dart';
 import 'package:app/features/profile/presentation/profile_screen.dart';
 import 'package:app/features/provider/application/provider_profile_providers.dart';
 import 'package:app/features/provider/presentation/provider_onboarding_screen.dart';
+import 'package:app/features/provider/presentation/provider_service_picker_screen.dart';
+import 'package:app/features/provider/presentation/provider_service_prices_screen.dart';
 import 'package:app/features/provider/presentation/provider_services_screen.dart';
 import 'package:app/features/requests/presentation/service_request_screen.dart';
 import 'package:app/features/session/application/active_role_controller.dart';
@@ -146,6 +148,19 @@ List<RouteBase> _tabSubRoutes(ShellTab tab) => switch (tab) {
     GoRoute(
       path: 'services',
       builder: (context, state) => const ProviderServicesScreen(),
+      routes: [
+        // Listed before the id route so 'add' is not read as an id.
+        GoRoute(
+          path: 'add',
+          builder: (context, state) => const ProviderServicePickerScreen(),
+        ),
+        GoRoute(
+          path: ':offeringId',
+          builder: (context, state) => ProviderServicePricesScreen(
+            offeringId: state.pathParameters['offeringId']!,
+          ),
+        ),
+      ],
     ),
   ],
   _ => const [],

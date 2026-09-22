@@ -29,7 +29,8 @@ Bisher gibt es diese Dateien:
 | `20260917120000_profiles_and_roles.sql` | `profiles`, `user_roles` | ✅ |
 | `20260920120000_service_requests.sql` | `service_requests` | ✅ |
 | `20260920140000_service_catalog.sql` | Servicekatalog (Kategorien, Leistungen, Preise) | ✅ |
-| `20260921120000_providers.sql` | Dienstleister-Profile, ihre Leistungen und Dokumente | ⬜ |
+| `20260921120000_providers.sql` | Dienstleister-Profile, ihre Leistungen und Dokumente | ✅ |
+| `20260921140000_provider_prices.sql` | Eigene Preise der Anbieter je Leistung | ⬜ |
 
 Ein zweites Ausführen derselben Datei meldet Fehler wie „already exists“ –
 das ist harmlos, es wurde dann nichts verändert.

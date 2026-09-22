@@ -38,6 +38,14 @@ abstract final class AppRoutes {
 
   /// The provider's own services, opened from their home.
   static const String providerServices = '/provider/jobs/services';
+
+  /// Picking which catalog services the provider offers.
+  static const String providerServicesAdd = '/provider/jobs/services/add';
+
+  /// The provider's prices for one offering.
+  static String providerServicePrices(String offeringId) =>
+      '/provider/jobs/services/$offeringId';
+
   static const String providerJobs = '/provider/jobs';
   static const String providerCalendar = '/provider/calendar';
   static const String providerMessages = '/provider/messages';

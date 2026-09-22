@@ -4,6 +4,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:app/core/backend/supabase_providers.dart';
 import 'package:app/core/errors/app_failure.dart';
 import 'package:app/features/provider/domain/provider_profile.dart';
+import 'package:app/features/provider/domain/provider_service_offering.dart';
 
 /// The signed-in provider's own profile and the services they offer.
 ///
@@ -33,6 +34,28 @@ abstract interface class ProviderRepository {
   /// Makes the provider's offering exactly [serviceIds]: adds what is new,
   /// removes what was deselected.
   Future<void> setServices(String providerId, Set<String> serviceIds);
+
+  /// The services this provider offers, each with the catalog entry and
+  /// their own prices.
+  Future<List<ProviderServiceOffering>> myOfferings(String providerId);
+
+  /// Adds a price to one of the provider's own offerings.
+  ///
+  /// [providerServiceId] is a `provider_services` row, which already belongs
+  /// to exactly one provider — so a price can never land on a service the
+  /// provider does not offer.
+  Future<void> addPrice(
+    String providerServiceId, {
+    required String name,
+    required int priceCents,
+    String? unit,
+    int? durationMinutes,
+  });
+
+  /// Changes one price. Pass only what should change.
+  Future<void> updatePrice(String priceId, Map<String, dynamic> changes);
+
+  Future<void> deletePrice(String priceId);
 }
 
 final providerRepositoryProvider = Provider<ProviderRepository>(
@@ -46,6 +69,7 @@ class SupabaseProviderRepository implements ProviderRepository {
 
   static const _providers = 'providers';
   static const _providerServices = 'provider_services';
+  static const _providerServicePrices = 'provider_service_prices';
 
   @override
   Future<ProviderProfile?> myProfile() async {
@@ -100,6 +124,66 @@ class SupabaseProviderRepository implements ProviderRepository {
           .select('service_id')
           .eq('provider_id', providerId);
       return {for (final row in rows) row['service_id'] as String};
+    } catch (error) {
+      throw AppFailure.fromError(error);
+    }
+  }
+
+  @override
+  Future<List<ProviderServiceOffering>> myOfferings(String providerId) async {
+    try {
+      final rows = await _client
+          .from(_providerServices)
+          .select('*, services(*), provider_service_prices(*)')
+          .eq('provider_id', providerId)
+          .order(
+            'sort_order',
+            referencedTable: 'provider_service_prices',
+            ascending: true,
+          );
+      return [for (final row in rows) ProviderServiceOffering.fromJson(row)];
+    } catch (error) {
+      throw AppFailure.fromError(error);
+    }
+  }
+
+  @override
+  Future<void> addPrice(
+    String providerServiceId, {
+    required String name,
+    required int priceCents,
+    String? unit,
+    int? durationMinutes,
+  }) async {
+    try {
+      await _client.from(_providerServicePrices).insert({
+        'provider_service_id': providerServiceId,
+        'name': name.trim(),
+        'price_cents': priceCents,
+        'unit': unit?.trim().isEmpty ?? true ? null : unit!.trim(),
+        'duration_minutes': durationMinutes,
+      });
+    } catch (error) {
+      throw AppFailure.fromError(error);
+    }
+  }
+
+  @override
+  Future<void> updatePrice(String priceId, Map<String, dynamic> changes) async {
+    try {
+      await _client
+          .from(_providerServicePrices)
+          .update(changes)
+          .eq('id', priceId);
+    } catch (error) {
+      throw AppFailure.fromError(error);
+    }
+  }
+
+  @override
+  Future<void> deletePrice(String priceId) async {
+    try {
+      await _client.from(_providerServicePrices).delete().eq('id', priceId);
     } catch (error) {
       throw AppFailure.fromError(error);
     }

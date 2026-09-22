@@ -16,6 +16,7 @@ Legend: ✅ done · 🔄 in progress · ⏳ open
 | 2c | **Requests in the backend:** `service_requests` table with RLS, column grants that keep AI fields out of reach of clients, Supabase repository | ✅ | Requests survive reinstalling the app and are readable only by their own customer |
 | 3 | **Service catalog:** categories, services, price options, sample data for Vienna; category and service screens | ✅ | The app shows whatever the backend holds — adding a category needs no release |
 | 4 | **Provider onboarding:** guided profile (personal, business, services from the catalog, service area), resumable, provider home, verification status prepared | ✅ | A provider signs up, picks services and reaches their own area — still unverified until the team checks |
+| 4a | **Provider prices:** own price options per offered service, activate, deactivate, delete; catalog stays untouched | ✅ | A provider sets their own price and the list shows it instead of the catalog example |
 | 4b | **Verification & documents:** upload, category-specific requirements, admin review | ⏳ | Provider submits documents; the team approves in Supabase |
 | 5 | **Discovery & fixed-price booking:** location, nearby verified providers, option → price → time → request | ⏳ | Customer books a cleaner in Vienna |
 | 6 | **Job flow:** accept/decline, on the way, in progress, done, customer confirms, navigation button | ⏳ | Full job lifecycle between two test accounts |
@@ -45,7 +46,8 @@ analytics.
 - [x] First real sign-in on a device — confirmed in the running app
 - [x] Supabase: `20260920120000_service_requests.sql` run — verified by creating a real request that survived an app restart
 - [x] Supabase: `20260920140000_service_catalog.sql` run — verified against the live catalog on a device
-- [ ] **Supabase: run `supabase/migrations/20260921120000_providers.sql`** (`docs/supabase-setup.md`, section 2). Until this is done, provider onboarding cannot save anything
+- [x] Supabase: providers migration run — provider onboarding verified end to end on a device
+- [ ] **Supabase: run the provider prices migration** (see docs/supabase-setup.md, section 2). Until then, providers cannot save prices
 
 - [x] Android SDK Command-line Tools installed
 - [x] Android licences: Google replaced `sdkmanager --licenses`; `flutter doctor` still reports "unknown", which is a tooling mismatch, not a blocker — builds work

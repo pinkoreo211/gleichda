@@ -190,9 +190,14 @@ void main() {
 
     await tester.tap(find.text('Meine Leistungen'));
     await tester.pumpAndSettle();
+    await tester.tap(
+      find.widgetWithText(OutlinedButton, 'Leistung hinzufügen'),
+    );
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Möbelmontage'));
     await tester.pumpAndSettle();
-    await _tapContinue(tester);
+    await tester.tap(find.widgetWithText(FilledButton, 'Speichern'));
+    await tester.pumpAndSettle();
 
     expect(provider.serviceIds, {'svc-flat-cleaning', 'svc-assembly'});
     // Still finished, so they stay in their area instead of being sent back
@@ -201,7 +206,8 @@ void main() {
       provider.profile?.onboardingStatus,
       ProviderOnboardingStatus.completed,
     );
-    expect(find.text('Hallo, Max Montagen'), findsOneWidget);
+    // Back on the services list, not in the wizard.
+    expect(find.text('Meine Leistungen'), findsWidgets);
   });
 
   testWidgets('a verified provider is only shown as verified by the server', (

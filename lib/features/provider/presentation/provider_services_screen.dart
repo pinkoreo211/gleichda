@@ -2,105 +2,116 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
-import 'package:app/core/errors/app_failure_message.dart';
+import 'package:app/core/formatting/app_money_format.dart';
+import 'package:app/core/routing/app_routes.dart';
 import 'package:app/design_system/app_dimensions.dart';
-import 'package:app/design_system/widgets/button_progress.dart';
-import 'package:app/features/provider/application/provider_onboarding_controller.dart';
+import 'package:app/design_system/widgets/empty_state.dart';
+import 'package:app/features/catalog/domain/service.dart';
+import 'package:app/features/catalog/presentation/widgets/catalog_async.dart';
 import 'package:app/features/provider/application/provider_profile_providers.dart';
-import 'package:app/features/provider/presentation/widgets/provider_service_picker.dart';
+import 'package:app/features/provider/domain/provider_service_offering.dart';
 import 'package:app/l10n/app_localizations.dart';
 
-/// Lets a provider change what they offer after onboarding.
+/// What the provider offers, and what they charge for it.
 ///
-/// Same picker as in onboarding, so the two can never drift apart. Prices
-/// per service are prepared in the backend but not editable yet.
-class ProviderServicesScreen extends ConsumerStatefulWidget {
+/// Each row shows their own cheapest price — not the catalog's example — or
+/// says plainly that no price is set yet.
+class ProviderServicesScreen extends ConsumerWidget {
   const ProviderServicesScreen({super.key});
 
   @override
-  ConsumerState<ProviderServicesScreen> createState() =>
-      _ProviderServicesScreenState();
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final offerings = ref.watch(myOfferingsProvider);
+
+    return Scaffold(
+      appBar: AppBar(title: Text(l10n.providerHomeMyServices)),
+      body: SafeArea(
+        child: CatalogAsync<List<ProviderServiceOffering>>(
+          value: offerings,
+          onRetry: () => ref.invalidate(myOfferingsProvider),
+          builder: (list) => ListView(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            children: [
+              if (list.isEmpty)
+                EmptyState(
+                  icon: Icons.handyman_outlined,
+                  title: l10n.providerHomeMyServices,
+                  message: l10n.providerServicesEmpty,
+                )
+              else
+                for (final offering in list) ...[
+                  _OfferingCard(offering: offering),
+                  const SizedBox(height: AppSpacing.sm),
+                ],
+              const SizedBox(height: AppSpacing.md),
+              OutlinedButton.icon(
+                onPressed: () => context.push(AppRoutes.providerServicesAdd),
+                icon: const Icon(Icons.add),
+                label: Text(l10n.providerAddService),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
 
-class _ProviderServicesScreenState
-    extends ConsumerState<ProviderServicesScreen> {
-  Set<String>? _selected;
-  String? _error;
+class _OfferingCard extends StatelessWidget {
+  const _OfferingCard({required this.offering});
+
+  final ProviderServiceOffering offering;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
-    final stored = ref.watch(myProviderServiceIdsProvider);
-    final isSaving = ref.watch(providerOnboardingControllerProvider);
+    final language = Localizations.localeOf(context).languageCode;
+    final lowest = offering.lowestPriceCents;
 
-    final selected =
-        _selected ??
-        switch (stored) {
-          AsyncData(:final value) => value,
-          _ => null,
-        };
+    // A quoted service needs no price; a fixed-price one without a price is
+    // worth pointing out rather than showing a blank.
+    final priceLine = switch (lowest) {
+      final int cents => l10n.servicePriceFrom(formatCents(cents)),
+      _ when offering.service.serviceType == ServiceType.quote =>
+        l10n.serviceQuoteBadge,
+      _ => l10n.providerNoPriceYet,
+    };
 
-    return Scaffold(
-      appBar: AppBar(title: Text(l10n.providerHomeMyServices)),
-      body: SafeArea(
-        child: selected == null
-            ? const Center(child: CircularProgressIndicator())
-            : Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  AppSpacing.md,
-                  0,
-                  AppSpacing.md,
-                  AppSpacing.md,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Expanded(
-                      child: ProviderServicePicker(
-                        selected: selected,
-                        onChanged: (ids) => setState(() {
-                          _selected = ids;
-                          _error = null;
-                        }),
-                      ),
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    offering.service.nameFor(language),
+                    style: theme.textTheme.titleSmall,
+                  ),
+                  const SizedBox(height: AppSpacing.xs),
+                  Text(
+                    priceLine,
+                    style: theme.textTheme.labelLarge?.copyWith(
+                      color: offering.needsPrice
+                          ? theme.colorScheme.onSurfaceVariant
+                          : theme.colorScheme.primary,
                     ),
-                    if (_error != null) ...[
-                      Text(
-                        _error!,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.colorScheme.error,
-                        ),
-                      ),
-                      const SizedBox(height: AppSpacing.sm),
-                    ],
-                    FilledButton(
-                      onPressed: isSaving ? null : () => _save(selected),
-                      child: isSaving
-                          ? const ButtonProgress()
-                          : Text(l10n.customerHomeContinue),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
+            ),
+            TextButton(
+              onPressed: () =>
+                  context.push(AppRoutes.providerServicePrices(offering.id)),
+              child: Text(l10n.providerEdit),
+            ),
+          ],
+        ),
       ),
     );
-  }
-
-  Future<void> _save(Set<String> selected) async {
-    final l10n = AppLocalizations.of(context);
-    if (selected.isEmpty) {
-      setState(() => _error = l10n.errorServicesRequired);
-      return;
-    }
-    try {
-      await ref
-          .read(providerOnboardingControllerProvider.notifier)
-          .saveServices(selected);
-    } catch (error) {
-      if (mounted) showFailureSnackBar(context, error);
-      return;
-    }
-    if (mounted) context.pop();
   }
 }

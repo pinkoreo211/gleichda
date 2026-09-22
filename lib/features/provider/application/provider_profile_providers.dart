@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app/features/auth/application/current_user.dart';
 import 'package:app/features/provider/data/provider_repository.dart';
 import 'package:app/features/provider/domain/provider_profile.dart';
+import 'package:app/features/provider/domain/provider_service_offering.dart';
 
 /// The signed-in provider's own profile, or null when they have not started
 /// onboarding yet. Empty when signed out, so no other account's data can
@@ -30,4 +31,13 @@ final myProviderServiceIdsProvider = FutureProvider<Set<String>>((ref) async {
   final profile = await ref.watch(myProviderProfileProvider.future);
   if (profile == null) return const {};
   return ref.watch(providerRepositoryProvider).myServiceIds(profile.id);
+});
+
+/// The services this provider offers, with their own prices.
+final myOfferingsProvider = FutureProvider<List<ProviderServiceOffering>>((
+  ref,
+) async {
+  final profile = await ref.watch(myProviderProfileProvider.future);
+  if (profile == null) return const [];
+  return ref.watch(providerRepositoryProvider).myOfferings(profile.id);
 });

@@ -502,4 +502,63 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorCityRequired => 'Please enter your city.';
+
+  @override
+  String get providerAddService => 'Add service';
+
+  @override
+  String get providerEdit => 'Edit';
+
+  @override
+  String get providerNoPriceYet => 'No price set yet';
+
+  @override
+  String get providerPricingTitle => 'Pricing';
+
+  @override
+  String get providerAddPrice => 'Add price option';
+
+  @override
+  String get providerPriceNameLabel => 'Label';
+
+  @override
+  String get providerPriceAmountLabel => 'Price in euro';
+
+  @override
+  String get providerPriceUnitLabel => 'Unit';
+
+  @override
+  String get providerPriceDurationLabel => 'Duration in minutes';
+
+  @override
+  String get providerPriceSave => 'Save';
+
+  @override
+  String get providerPriceDeactivate => 'Deactivate';
+
+  @override
+  String get providerPriceActivate => 'Activate';
+
+  @override
+  String get providerPriceDelete => 'Delete';
+
+  @override
+  String get providerPriceInactive => 'Deactivated';
+
+  @override
+  String get providerQuoteNoPriceNeeded =>
+      'This service needs no fixed price. Customers request a quote.';
+
+  @override
+  String get providerPricesEmpty =>
+      'You have not set a price for this service yet.';
+
+  @override
+  String get providerServicesEmpty => 'You do not offer any services yet.';
+
+  @override
+  String get errorPriceNameRequired => 'Please enter a label.';
+
+  @override
+  String get errorPriceInvalid => 'Please enter a valid price.';
 }
