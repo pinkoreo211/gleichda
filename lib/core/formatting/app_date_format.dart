@@ -19,3 +19,15 @@ String formatShortDate(DateTime date) =>
 /// e.g. "14:05" — the market's clock, so no 12-hour times in Vienna.
 String formatShortTime(DateTime time) =>
     DateFormat.Hm(_marketLocale()).format(time.toLocal());
+
+/// The time for something from today, the date for anything older: in a
+/// list, "14:05" on a message from last week would read as today's.
+String formatMessageStamp(DateTime moment) {
+  final local = moment.toLocal();
+  final now = DateTime.now();
+  final isToday =
+      local.year == now.year &&
+      local.month == now.month &&
+      local.day == now.day;
+  return isToday ? formatShortTime(local) : formatShortDate(local);
+}

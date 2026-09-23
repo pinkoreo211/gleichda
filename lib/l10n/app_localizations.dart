@@ -239,14 +239,26 @@ abstract class AppLocalizations {
   /// Empty state title on the messages screen.
   ///
   /// In de, this message translates to:
-  /// **'Noch keine Nachrichten'**
+  /// **'Noch keine Chats'**
   String get conversationsEmptyTitle;
 
-  /// Empty state text on the messages screen.
+  /// Empty state text on the messages screen, for a customer.
   ///
   /// In de, this message translates to:
-  /// **'Hier findest du bald alle Chats zu deinen Aufträgen.'**
-  String get conversationsEmptyMessage;
+  /// **'Sobald ein Dienstleister deine Anfrage annimmt, könnt ihr hier miteinander schreiben.'**
+  String get conversationsEmptyCustomer;
+
+  /// Empty state text on the messages screen, for a provider.
+  ///
+  /// In de, this message translates to:
+  /// **'Sobald du eine Anfrage angenommen hast, kannst du hier mit der Kundin oder dem Kunden schreiben.'**
+  String get conversationsEmptyProvider;
+
+  /// Shown when the chat list could not be read.
+  ///
+  /// In de, this message translates to:
+  /// **'Chats konnten nicht geladen werden.'**
+  String get conversationsLoadFailed;
 
   /// Empty state title on the provider jobs screen.
   ///

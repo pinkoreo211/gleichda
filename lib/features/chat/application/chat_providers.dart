@@ -1,8 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:app/features/auth/application/current_user.dart';
 import 'package:app/features/chat/data/chat_repository.dart';
 import 'package:app/features/chat/domain/chat_message.dart';
 import 'package:app/features/chat/domain/conversation.dart';
+import 'package:app/features/chat/domain/conversation_summary.dart';
 
 /// Which job a chat belongs to.
 ///
@@ -31,4 +33,16 @@ final conversationProvider = FutureProvider.autoDispose
 final chatMessagesProvider = FutureProvider.autoDispose
     .family<List<ChatMessage>, String>((ref, conversationId) async {
       return ref.watch(chatRepositoryProvider).messages(conversationId);
+    });
+
+/// Every conversation the signed-in person is part of, newest first.
+///
+/// Empty when signed out, so no other account's chats can ever appear.
+/// `autoDispose` so reopening the tab asks the server again rather than
+/// showing a list that stopped being true a while ago.
+final myConversationsProvider =
+    FutureProvider.autoDispose<List<ConversationSummary>>((ref) async {
+      final userId = ref.watch(currentUserIdProvider);
+      if (userId == null) return const [];
+      return ref.watch(chatRepositoryProvider).myConversations();
     });

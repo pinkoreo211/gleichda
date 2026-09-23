@@ -86,11 +86,18 @@ class AppLocalizationsEn extends AppLocalizations {
       'Your bookings and projects will show up here with their current status.';
 
   @override
-  String get conversationsEmptyTitle => 'No messages yet';
+  String get conversationsEmptyTitle => 'No chats yet';
 
   @override
-  String get conversationsEmptyMessage =>
-      'All chats about your jobs will show up here.';
+  String get conversationsEmptyCustomer =>
+      'As soon as a provider accepts your request, you can write to each other here.';
+
+  @override
+  String get conversationsEmptyProvider =>
+      'As soon as you accept a request, you can write to the customer here.';
+
+  @override
+  String get conversationsLoadFailed => 'The chats could not be loaded.';
 
   @override
   String get providerJobsEmptyTitle => 'No jobs yet';

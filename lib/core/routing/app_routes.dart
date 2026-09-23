@@ -54,6 +54,15 @@ abstract final class AppRoutes {
   static String providerChat(String requestId) =>
       '/provider/jobs/chat/$requestId';
 
+  /// A chat opened from the chat list. The provider is always named here,
+  /// because the list shows both sides of an account that is customer for
+  /// one job and provider for another.
+  static String customerMessagesChat(String requestId, String providerId) =>
+      '/customer/messages/$requestId/$providerId/chat';
+
+  static String providerMessagesChat(String requestId, String providerId) =>
+      '/provider/messages/$requestId/$providerId/chat';
+
   // Provider area
   static const String providerArea = '/provider';
 

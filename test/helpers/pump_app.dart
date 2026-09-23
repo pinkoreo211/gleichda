@@ -15,6 +15,7 @@ import 'package:app/features/catalog/domain/service_price_option.dart';
 import 'package:app/features/chat/data/chat_repository.dart';
 import 'package:app/features/chat/domain/chat_message.dart';
 import 'package:app/features/chat/domain/conversation.dart';
+import 'package:app/features/chat/domain/conversation_summary.dart';
 import 'package:app/features/jobs/data/incoming_requests_repository.dart';
 import 'package:app/features/jobs/domain/incoming_request.dart';
 import 'package:app/features/matching/data/matching_repository.dart';
@@ -614,9 +615,23 @@ class FakeChatRepository implements ChatRepository {
     this.customerId = testUserId,
     this.myProviderId = testProviderId,
     this.isProvider = false,
+    this.requests,
+    this.providerName = 'Max Montagen',
+    this.customerName = 'Anna Kundin',
+    this.listFailure,
   });
 
   final FakeRequestContacts contacts;
+
+  /// Only used to put a service name on a chat list row.
+  final InMemoryServiceRequestRepository? requests;
+
+  /// What each side is called, as the backend function resolves it.
+  final String providerName;
+  final String customerName;
+
+  /// When set, reading the chat list throws it.
+  final AppFailure? listFailure;
 
   /// Who owns the requests in [contacts].
   final String customerId;
@@ -658,6 +673,29 @@ class FakeChatRepository implements ChatRepository {
         updatedAt: DateTime(2026, 1, 1),
       ),
     );
+  }
+
+  @override
+  Future<List<ConversationSummary>> myConversations() async {
+    if (listFailure case final failure?) throw failure;
+    // Derived from the same stores the chat itself uses, so a test cannot
+    // have a list that disagrees with the conversations behind it.
+    final summaries = [
+      for (final conversation in conversations.values)
+        ConversationSummary(
+          conversationId: conversation.id,
+          requestId: conversation.requestId,
+          providerId: conversation.providerId,
+          viewerIsCustomer: !isProvider,
+          otherName: isProvider ? customerName : providerName,
+          serviceName: requests?.byId(conversation.requestId)?.service?.name,
+          lastMessage: messageLog[conversation.id]?.lastOrNull?.message,
+          lastMessageAt: messageLog[conversation.id]?.lastOrNull?.createdAt,
+          updatedAt: conversation.updatedAt,
+        ),
+    ];
+    summaries.sort((a, b) => b.sortedAt.compareTo(a.sortedAt));
+    return summaries;
   }
 
   @override

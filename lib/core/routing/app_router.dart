@@ -135,6 +135,16 @@ final GoRoute _customerChatRoute = GoRoute(
   ),
 );
 
+/// The same screen under the chat list, in either role's messages tab.
+final GoRoute _messagesChatRoute = GoRoute(
+  path: ':requestId/:providerId/chat',
+  builder: (context, state) => ChatScreen(
+    requestId: state.pathParameters['requestId']!,
+    providerId: state.pathParameters['providerId']!,
+    args: state.extra as ChatArgs? ?? const ChatArgs(),
+  ),
+);
+
 /// Screens that open on top of a tab. They stay inside the tab's branch, so
 /// the bottom navigation remains visible and the tab keeps its history.
 List<RouteBase> _tabSubRoutes(ShellTab tab) => switch (tab) {
@@ -180,6 +190,8 @@ List<RouteBase> _tabSubRoutes(ShellTab tab) => switch (tab) {
       routes: [_customerChatRoute],
     ),
   ],
+  ShellTab.customerMessages ||
+  ShellTab.providerMessages => [_messagesChatRoute],
   ShellTab.providerJobs => [
     GoRoute(
       path: 'chat/:requestId',

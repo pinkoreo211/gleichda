@@ -5,6 +5,7 @@ import 'package:app/core/backend/supabase_providers.dart';
 import 'package:app/core/errors/app_failure.dart';
 import 'package:app/features/chat/domain/chat_message.dart';
 import 'package:app/features/chat/domain/conversation.dart';
+import 'package:app/features/chat/domain/conversation_summary.dart';
 
 /// The chat between a customer and the provider who took their job.
 ///
@@ -22,6 +23,10 @@ abstract interface class ChatRepository {
     required String requestId,
     String? providerId,
   });
+
+  /// Every conversation the signed-in person is part of, newest activity
+  /// first, each with the other person's name and the last message.
+  Future<List<ConversationSummary>> myConversations();
 
   /// Oldest first, the order a conversation is read in.
   Future<List<ChatMessage>> messages(String conversationId);
@@ -59,6 +64,22 @@ class SupabaseChatRepository implements ChatRepository {
         },
       );
       return Conversation.fromJson(row);
+    } catch (error) {
+      throw AppFailure.fromError(error);
+    }
+  }
+
+  @override
+  Future<List<ConversationSummary>> myConversations() async {
+    try {
+      // One call: the backend joins the names and the last message, so a
+      // provider with a hundred jobs costs the same round trip as one
+      // with two.
+      final rows = await _client.rpc<List<dynamic>>('my_conversations');
+      return [
+        for (final row in rows.whereType<Map<String, dynamic>>())
+          ConversationSummary.fromJson(row),
+      ];
     } catch (error) {
       throw AppFailure.fromError(error);
     }

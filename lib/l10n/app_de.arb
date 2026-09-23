@@ -98,13 +98,21 @@
   "@customerBookingsEmptyMessage": {
     "description": "Empty state text on the customer bookings screen."
   },
-  "conversationsEmptyTitle": "Noch keine Nachrichten",
+  "conversationsEmptyTitle": "Noch keine Chats",
   "@conversationsEmptyTitle": {
     "description": "Empty state title on the messages screen."
   },
-  "conversationsEmptyMessage": "Hier findest du bald alle Chats zu deinen Aufträgen.",
-  "@conversationsEmptyMessage": {
-    "description": "Empty state text on the messages screen."
+  "conversationsEmptyCustomer": "Sobald ein Dienstleister deine Anfrage annimmt, könnt ihr hier miteinander schreiben.",
+  "@conversationsEmptyCustomer": {
+    "description": "Empty state text on the messages screen, for a customer."
+  },
+  "conversationsEmptyProvider": "Sobald du eine Anfrage angenommen hast, kannst du hier mit der Kundin oder dem Kunden schreiben.",
+  "@conversationsEmptyProvider": {
+    "description": "Empty state text on the messages screen, for a provider."
+  },
+  "conversationsLoadFailed": "Chats konnten nicht geladen werden.",
+  "@conversationsLoadFailed": {
+    "description": "Shown when the chat list could not be read."
   },
   "providerJobsEmptyTitle": "Noch keine Aufträge",
   "@providerJobsEmptyTitle": {
