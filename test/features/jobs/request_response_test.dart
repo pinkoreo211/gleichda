@@ -137,6 +137,30 @@ void main() {
     );
   });
 
+  testWidgets('pulling down picks up a request that arrived meanwhile', (
+    tester,
+  ) async {
+    final requests = InMemoryServiceRequestRepository();
+    await _pumpProvider(tester, requests);
+    expect(find.textContaining('noch keine Anfragen erhalten'), findsOneWidget);
+
+    // A customer sends one while this screen is already open. Without a
+    // refresh the provider would never learn about it.
+    final stored = await requests.create(
+      ServiceRequestDraft(
+        description: 'Lampe montieren',
+        service: testFlatCleaning,
+      ),
+    );
+    requests.contacts.send(requestId: stored.id, providerId: testProviderId);
+
+    await tester.fling(find.byType(ListView), const Offset(0, 300), 1000);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Lampe montieren'), findsOneWidget);
+    expect(find.widgetWithText(FilledButton, 'Annehmen'), findsOneWidget);
+  });
+
   testWidgets('the customer sees that a provider accepted', (tester) async {
     final requests = await _withOpenRequest();
     final requestId = requests.requests.single.id;

@@ -28,12 +28,20 @@ class CustomerBookingsScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.tabBookings)),
-      body: requests.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        // A failed read is not worth its own error screen here.
-        error: (_, _) => _emptyState(l10n),
-        data: (list) =>
-            list.isEmpty ? _emptyState(l10n) : _RequestList(requests: list),
+      // Pull to refresh: a provider may answer while this screen is open,
+      // and nothing else would tell it.
+      body: RefreshIndicator(
+        onRefresh: () async {
+          ref.invalidate(myRequestsProvider);
+          await ref.read(myRequestsProvider.future);
+        },
+        child: requests.when(
+          loading: () => const Center(child: CircularProgressIndicator()),
+          // A failed read is not worth its own error screen here.
+          error: (_, _) => _emptyState(l10n),
+          data: (list) =>
+              list.isEmpty ? _emptyState(l10n) : _RequestList(requests: list),
+        ),
       ),
     );
   }
@@ -56,6 +64,8 @@ class _RequestList extends StatelessWidget {
     final theme = Theme.of(context);
 
     return ListView(
+      // So a short list can still be pulled down to refresh.
+      physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.all(AppSpacing.md),
       children: [
         Text(l10n.customerRequestsTitle, style: theme.textTheme.titleMedium),
