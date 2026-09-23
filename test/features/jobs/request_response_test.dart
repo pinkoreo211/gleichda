@@ -190,6 +190,44 @@ void main() {
     expect(find.widgetWithText(FilledButton, 'Anfrage senden'), findsNothing);
   });
 
+  testWidgets('reopening the provider list picks up the answer', (
+    tester,
+  ) async {
+    final requests = await _withOpenRequest();
+    await pumpSignedInApp(
+      tester,
+      role: AppRole.customer,
+      requests: requests,
+      matching: FakeMatchingRepository(
+        matches: [_maxMontagen],
+        requests: requests,
+      ),
+    );
+
+    await tester.tap(_navLabel('Buchungen'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(OutlinedButton, 'Passende Anbieter'));
+    await tester.pumpAndSettle();
+    expect(find.text('Anfrage gesendet'), findsOneWidget);
+
+    await tester.tap(find.byType(BackButton));
+    await tester.pumpAndSettle();
+
+    // The provider answers while the customer is elsewhere in the app.
+    requests.contacts.respond(
+      requests.contacts.contactId(requests.requests.single.id, testProviderId),
+      RequestContactStatus.accepted,
+    );
+
+    await tester.tap(find.widgetWithText(OutlinedButton, 'Passende Anbieter'));
+    await tester.pumpAndSettle();
+
+    // Read again on reopening. A list kept from the first visit would still
+    // say "sent" long after the provider had said yes.
+    expect(find.text('Angenommen'), findsOneWidget);
+    expect(find.text('Anfrage gesendet'), findsNothing);
+  });
+
   testWidgets('the customer sees a refusal as a refusal', (tester) async {
     final requests = await _withOpenRequest();
     final requestId = requests.requests.single.id;
