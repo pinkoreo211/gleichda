@@ -42,6 +42,18 @@ abstract final class AppRoutes {
   static String customerBookingProviders(String requestId) =>
       '/customer/bookings/$requestId/providers';
 
+  /// The chat sits under the provider list the customer opened it from, so
+  /// "back" returns there and the tab keeps its history. Built from the
+  /// current location rather than a fixed prefix, because that list exists
+  /// in two tabs.
+  static String chatUnder(String providerListLocation, String providerId) =>
+      '$providerListLocation/$providerId/chat';
+
+  /// The provider's side. They have one job per request, so no provider id
+  /// is needed — the backend uses their own profile.
+  static String providerChat(String requestId) =>
+      '/provider/jobs/chat/$requestId';
+
   // Provider area
   static const String providerArea = '/provider';
 

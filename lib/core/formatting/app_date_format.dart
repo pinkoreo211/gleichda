@@ -15,3 +15,7 @@ String formatLongDate(DateTime date) =>
 /// e.g. "19.09.2026".
 String formatShortDate(DateTime date) =>
     DateFormat.yMd(_marketLocale()).format(date);
+
+/// e.g. "14:05" — the market's clock, so no 12-hour times in Vienna.
+String formatShortTime(DateTime time) =>
+    DateFormat.Hm(_marketLocale()).format(time.toLocal());

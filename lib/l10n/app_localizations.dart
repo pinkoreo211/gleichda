@@ -1268,11 +1268,11 @@ abstract class AppLocalizations {
   /// **'Anfrage abgelehnt.'**
   String get providerIncomingDeclinedToast;
 
-  /// Says plainly that answering exists but talking to the customer does not.
+  /// Says where an accepted job gets arranged.
   ///
   /// In de, this message translates to:
-  /// **'Antworten geht, der Chat kommt später.'**
-  String get providerIncomingNoContactYet;
+  /// **'Den Termin stimmst du im Chat direkt mit der Kundin oder dem Kunden ab.'**
+  String get providerIncomingChatHint;
 
   /// A request that reached a provider who has not answered.
   ///
@@ -1309,6 +1309,66 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Diese Anfrage wurde bereits beantwortet.'**
   String get errorRequestAlreadyAnswered;
+
+  /// Shown when sending is attempted with no text.
+  ///
+  /// In de, this message translates to:
+  /// **'Die Nachricht ist leer.'**
+  String get errorMessageEmpty;
+
+  /// Header fallback when the other person's name was not passed in.
+  ///
+  /// In de, this message translates to:
+  /// **'Chat'**
+  String get chatOtherUnknown;
+
+  /// Says plainly that no appointment exists yet; the app must not present the customer's wish as one.
+  ///
+  /// In de, this message translates to:
+  /// **'Termin noch nicht vereinbart'**
+  String get chatNoAppointment;
+
+  /// Placeholder of the message field.
+  ///
+  /// In de, this message translates to:
+  /// **'Nachricht schreiben …'**
+  String get chatMessageHint;
+
+  /// Label of the send button.
+  ///
+  /// In de, this message translates to:
+  /// **'Senden'**
+  String get chatSend;
+
+  /// Empty state of a conversation nobody has written in yet.
+  ///
+  /// In de, this message translates to:
+  /// **'Noch keine Nachrichten'**
+  String get chatEmptyTitle;
+
+  /// Says what the chat is for.
+  ///
+  /// In de, this message translates to:
+  /// **'Schreib die erste Nachricht, um den Termin abzustimmen.'**
+  String get chatEmptyMessage;
+
+  /// Shown when the conversation or its messages could not be read.
+  ///
+  /// In de, this message translates to:
+  /// **'Chat konnte nicht geladen werden.'**
+  String get chatLoadFailed;
+
+  /// Opens the chat from the customer's side.
+  ///
+  /// In de, this message translates to:
+  /// **'Dienstleister kontaktieren'**
+  String get chatWithProvider;
+
+  /// Opens the chat from the provider's side.
+  ///
+  /// In de, this message translates to:
+  /// **'Kunde kontaktieren'**
+  String get chatWithCustomer;
 }
 
 class _AppLocalizationsDelegate

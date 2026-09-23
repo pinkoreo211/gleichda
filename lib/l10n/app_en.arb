@@ -195,11 +195,21 @@
   "providerIncomingDeclined": "You declined",
   "providerIncomingAcceptedToast": "Request accepted.",
   "providerIncomingDeclinedToast": "Request declined.",
-  "providerIncomingNoContactYet": "You can answer; the chat comes later.",
+  "providerIncomingChatHint": "You arrange the time with the customer in the chat.",
   "requestStatusOpen": "Still open",
   "requestStatusAccepted": "Accepted",
   "requestStatusDeclined": "Declined",
   "customerRequestsAcceptedCount": "{count, plural, =1{1 provider accepted} other{{count} providers accepted}}",
   "customerRequestsDeclinedCount": "{count, plural, =1{1 provider declined} other{{count} providers declined}}",
-  "errorRequestAlreadyAnswered": "This request has already been answered."
+  "errorRequestAlreadyAnswered": "This request has already been answered.",
+  "errorMessageEmpty": "The message is empty.",
+  "chatOtherUnknown": "Chat",
+  "chatNoAppointment": "No appointment agreed yet",
+  "chatMessageHint": "Write a message …",
+  "chatSend": "Send",
+  "chatEmptyTitle": "No messages yet",
+  "chatEmptyMessage": "Write the first message to agree on a time.",
+  "chatLoadFailed": "The chat could not be loaded.",
+  "chatWithProvider": "Contact provider",
+  "chatWithCustomer": "Contact customer"
 }

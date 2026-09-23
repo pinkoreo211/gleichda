@@ -676,8 +676,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get providerIncomingDeclinedToast => 'Request declined.';
 
   @override
-  String get providerIncomingNoContactYet =>
-      'You can answer; the chat comes later.';
+  String get providerIncomingChatHint =>
+      'You arrange the time with the customer in the chat.';
 
   @override
   String get requestStatusOpen => 'Still open';
@@ -713,4 +713,34 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get errorRequestAlreadyAnswered =>
       'This request has already been answered.';
+
+  @override
+  String get errorMessageEmpty => 'The message is empty.';
+
+  @override
+  String get chatOtherUnknown => 'Chat';
+
+  @override
+  String get chatNoAppointment => 'No appointment agreed yet';
+
+  @override
+  String get chatMessageHint => 'Write a message …';
+
+  @override
+  String get chatSend => 'Send';
+
+  @override
+  String get chatEmptyTitle => 'No messages yet';
+
+  @override
+  String get chatEmptyMessage => 'Write the first message to agree on a time.';
+
+  @override
+  String get chatLoadFailed => 'The chat could not be loaded.';
+
+  @override
+  String get chatWithProvider => 'Contact provider';
+
+  @override
+  String get chatWithCustomer => 'Contact customer';
 }

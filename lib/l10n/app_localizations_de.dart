@@ -680,8 +680,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get providerIncomingDeclinedToast => 'Anfrage abgelehnt.';
 
   @override
-  String get providerIncomingNoContactYet =>
-      'Antworten geht, der Chat kommt später.';
+  String get providerIncomingChatHint =>
+      'Den Termin stimmst du im Chat direkt mit der Kundin oder dem Kunden ab.';
 
   @override
   String get requestStatusOpen => 'Noch offen';
@@ -717,4 +717,35 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get errorRequestAlreadyAnswered =>
       'Diese Anfrage wurde bereits beantwortet.';
+
+  @override
+  String get errorMessageEmpty => 'Die Nachricht ist leer.';
+
+  @override
+  String get chatOtherUnknown => 'Chat';
+
+  @override
+  String get chatNoAppointment => 'Termin noch nicht vereinbart';
+
+  @override
+  String get chatMessageHint => 'Nachricht schreiben …';
+
+  @override
+  String get chatSend => 'Senden';
+
+  @override
+  String get chatEmptyTitle => 'Noch keine Nachrichten';
+
+  @override
+  String get chatEmptyMessage =>
+      'Schreib die erste Nachricht, um den Termin abzustimmen.';
+
+  @override
+  String get chatLoadFailed => 'Chat konnte nicht geladen werden.';
+
+  @override
+  String get chatWithProvider => 'Dienstleister kontaktieren';
+
+  @override
+  String get chatWithCustomer => 'Kunde kontaktieren';
 }

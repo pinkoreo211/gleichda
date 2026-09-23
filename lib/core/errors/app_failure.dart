@@ -11,6 +11,10 @@ enum AppFailure implements Exception {
   /// The default Supabase email service only sends to team members' addresses.
   emailNotAuthorized,
 
+  /// A message with nothing in it. Caught in the app so the round trip is
+  /// not spent to be told the obvious.
+  messageEmpty,
+
   /// Somebody answered this request before this tap arrived — from another
   /// device, or from a screen that had not refreshed yet.
   requestAlreadyAnswered,

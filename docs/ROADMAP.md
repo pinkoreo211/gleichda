@@ -20,6 +20,7 @@ Legend: ✅ done · 🔄 in progress · ⏳ open
 | 4c | **Matching foundation:** requests carry a `service_id`; one security-definer function returns only public provider data; results list with verified badge and own price | ✅ | A customer opens a service and sees who offers it, verified first then cheapest |
 | 4d | **Request reaches a provider:** the request stores its town, matching runs on the saved request, the customer sends it to a provider, the provider sees it in their area | ✅ | A customer writes a request in Vienna and a provider finds it on their home screen |
 | 4e | **Accept or decline:** the provider answers a received request once; the customer sees the answer on the request and on the provider | ✅ | A provider accepts, and the customer's booking list says so |
+| 4f | **Chat:** one private conversation per accepted job; text messages, opened from either side | ✅ | Customer and provider agree a time in the app |
 | 4b | **Verification & documents:** upload, category-specific requirements, admin review | ⏳ | Provider submits documents; the team approves in Supabase |
 | 5 | **Discovery & fixed-price booking:** location, nearby verified providers, option → price → time → request | ⏳ | Customer books a cleaner in Vienna |
 | 6 | **Job flow:** accept/decline, on the way, in progress, done, customer confirms, navigation button | ⏳ | Full job lifecycle between two test accounts |
@@ -53,7 +54,8 @@ analytics.
 - [x] Supabase: provider prices migration run — verified by saving a real price on a device
 - [x] Supabase: matching migration run — verified on a device: the price a provider saved appeared for a customer as "ab € 39,99", with no verified badge, because that profile is not verified
 - [x] Supabase: request contacts migration run — verified on a device: a request from Wien reached the provider, who sees it under "Requests for you"
-- [ ] **Supabase: run `20260922160000_request_responses.sql`** (see docs/supabase-setup.md, section 2). Until then, a provider cannot accept or decline a request
+- [x] Supabase: request responses migration run — verified on a device: accepted and declined both reached the customer's side
+- [ ] **Supabase: run `20260923120000_chat.sql`** (see docs/supabase-setup.md, section 2). Until then, the chat cannot be opened
 
 - [x] Android SDK Command-line Tools installed
 - [x] Android licences: Google replaced `sdkmanager --licenses`; `flutter doctor` still reports "unknown", which is a tooling mismatch, not a blocker — builds work

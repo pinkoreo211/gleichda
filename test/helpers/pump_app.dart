@@ -12,6 +12,9 @@ import 'package:app/features/catalog/data/catalog_repository.dart';
 import 'package:app/features/catalog/domain/service.dart';
 import 'package:app/features/catalog/domain/service_category.dart';
 import 'package:app/features/catalog/domain/service_price_option.dart';
+import 'package:app/features/chat/data/chat_repository.dart';
+import 'package:app/features/chat/domain/chat_message.dart';
+import 'package:app/features/chat/domain/conversation.dart';
 import 'package:app/features/jobs/data/incoming_requests_repository.dart';
 import 'package:app/features/jobs/domain/incoming_request.dart';
 import 'package:app/features/matching/data/matching_repository.dart';
@@ -600,6 +603,94 @@ class InMemoryServiceRequestRepository implements ServiceRequestRepository {
       requests.where((request) => request.id == id).firstOrNull;
 }
 
+/// [ChatRepository] without a backend.
+///
+/// Mirrors the two rules the database enforces, so a test that breaks them
+/// fails here the way it would fail there: a conversation exists only for
+/// an accepted job, and only its two people can open it.
+class FakeChatRepository implements ChatRepository {
+  FakeChatRepository({
+    required this.contacts,
+    this.customerId = testUserId,
+    this.myProviderId = testProviderId,
+    this.isProvider = false,
+  });
+
+  final FakeRequestContacts contacts;
+
+  /// Who owns the requests in [contacts].
+  final String customerId;
+
+  /// The provider profile the signed-in account belongs to, used when the
+  /// provider opens a chat without naming a provider.
+  final String myProviderId;
+
+  /// Whether the caller is the provider rather than the customer. Mutable
+  /// so one store can play both sides of a conversation in one test, the
+  /// way one database serves two accounts.
+  bool isProvider;
+
+  final conversations = <String, Conversation>{};
+
+  /// conversation id -> messages, oldest first.
+  final messageLog = <String, List<ChatMessage>>{};
+
+  String _key(String requestId, String providerId) => '$requestId/$providerId';
+
+  @override
+  Future<Conversation> getOrCreateConversationForRequest({
+    required String requestId,
+    String? providerId,
+  }) async {
+    final resolved = providerId ?? myProviderId;
+    if (contacts.forRequest(requestId)[resolved] !=
+        RequestContactStatus.accepted) {
+      throw AppFailure.unknown;
+    }
+    return conversations.putIfAbsent(
+      _key(requestId, resolved),
+      () => Conversation(
+        id: 'conversation-${conversations.length + 1}',
+        requestId: requestId,
+        customerId: customerId,
+        providerId: resolved,
+        createdAt: DateTime(2026, 1, 1),
+        updatedAt: DateTime(2026, 1, 1),
+      ),
+    );
+  }
+
+  @override
+  Future<List<ChatMessage>> messages(String conversationId) async =>
+      List.unmodifiable(messageLog[conversationId] ?? const []);
+
+  @override
+  Future<ChatMessage> sendMessage({
+    required String conversationId,
+    required String text,
+  }) async {
+    final trimmed = text.trim();
+    if (trimmed.isEmpty) throw AppFailure.messageEmpty;
+    final stored = messageLog.putIfAbsent(
+      conversationId,
+      () => <ChatMessage>[],
+    );
+    final message = ChatMessage(
+      id: 'message-${stored.length + 1}',
+      conversationId: conversationId,
+      // Always the signed-in account, exactly as the backend sets it.
+      senderId: isProvider ? testProviderUserId : customerId,
+      message: trimmed,
+      createdAt: DateTime(2026, 1, 1).add(Duration(minutes: stored.length)),
+    );
+    stored.add(message);
+    return message;
+  }
+}
+
+/// The auth account behind [testProviderId] when a test needs both sides.
+const testProviderUserId = 'user-provider-1';
+
 /// [SessionStore] that keeps everything in memory.
 class InMemorySessionStore implements SessionStore {
   InMemorySessionStore([Map<String, AppRole>? activeRoles])
@@ -628,6 +719,7 @@ Future<void> pumpApp(
   FakeProviderRepository? provider,
   FakeMatchingRepository? matching,
   FakeIncomingRequestsRepository? incoming,
+  FakeChatRepository? chat,
   Locale locale = const Locale('de', 'AT'),
 }) async {
   tester.platformDispatcher.localesTestValue = [locale];
@@ -661,6 +753,7 @@ Future<void> pumpApp(
         incomingRequestsRepositoryProvider.overrideWithValue(
           incoming ?? FakeIncomingRequestsRepository(),
         ),
+        if (chat != null) chatRepositoryProvider.overrideWithValue(chat),
       ],
       child: const App(),
     ),
@@ -697,6 +790,7 @@ Future<void> pumpSignedInApp(
   FakeProviderRepository? provider,
   FakeMatchingRepository? matching,
   FakeIncomingRequestsRepository? incoming,
+  FakeChatRepository? chat,
 }) {
   return pumpApp(
     tester,
@@ -711,6 +805,7 @@ Future<void> pumpSignedInApp(
     // onboarding.
     matching: matching,
     incoming: incoming,
+    chat: chat,
     provider:
         provider ??
         (role == AppRole.provider

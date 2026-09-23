@@ -1,16 +1,20 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
 import 'package:app/core/errors/app_failure_message.dart';
+import 'package:app/core/routing/app_routes.dart';
 import 'package:app/design_system/app_dimensions.dart';
 import 'package:app/design_system/widgets/button_progress.dart';
 import 'package:app/design_system/widgets/empty_state.dart';
 import 'package:app/features/catalog/presentation/widgets/catalog_async.dart';
+import 'package:app/features/chat/presentation/chat_screen.dart';
 import 'package:app/features/matching/application/provider_matches.dart';
 import 'package:app/features/matching/data/matching_repository.dart';
 import 'package:app/features/matching/domain/provider_match.dart';
 import 'package:app/features/matching/presentation/widgets/provider_match_card.dart';
 import 'package:app/features/requests/application/my_requests.dart';
+import 'package:app/features/requests/domain/request_contact_status.dart';
 import 'package:app/features/requests/domain/service_request.dart';
 import 'package:app/features/requests/presentation/widgets/request_status_display.dart';
 import 'package:app/l10n/app_localizations.dart';
@@ -92,6 +96,9 @@ class _RequestMatchesScreenState extends ConsumerState<RequestMatchesScreen> {
             }
             return _Matches(
               requestId: widget.requestId,
+              serviceName: value.service?.nameFor(
+                Localizations.localeOf(context).languageCode,
+              ),
               sendingTo: _sendingTo,
               onSend: _send,
             );
@@ -105,13 +112,31 @@ class _RequestMatchesScreenState extends ConsumerState<RequestMatchesScreen> {
 class _Matches extends ConsumerWidget {
   const _Matches({
     required this.requestId,
+    required this.serviceName,
     required this.sendingTo,
     required this.onSend,
   });
 
   final String requestId;
+  final String? serviceName;
   final String? sendingTo;
   final ValueChanged<ProviderMatch> onSend;
+
+  /// The chat is a child of this screen's own route, so it opens inside
+  /// whichever tab the customer came from and "back" returns here.
+  void _openChat(BuildContext context, ProviderMatch match) {
+    final l10n = AppLocalizations.of(context);
+    context.push(
+      AppRoutes.chatUnder(
+        GoRouterState.of(context).matchedLocation,
+        match.providerId,
+      ),
+      extra: ChatArgs(
+        otherName: match.displayName ?? l10n.providerUnnamed,
+        serviceName: serviceName,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -135,12 +160,13 @@ class _Matches extends ConsumerWidget {
             for (final match in list) ...[
               ProviderMatchCard(
                 match: match,
-                action: _SendButton(
+                action: _Action(
                   match: match,
                   isSending: sendingTo == match.providerId,
                   // One at a time: a second tap while a request is on its
                   // way would only confuse.
                   onSend: sendingTo == null ? () => onSend(match) : null,
+                  onChat: () => _openChat(context, match),
                 ),
               ),
               const SizedBox(height: AppSpacing.sm),
@@ -152,16 +178,18 @@ class _Matches extends ConsumerWidget {
   }
 }
 
-class _SendButton extends StatelessWidget {
-  const _SendButton({
+class _Action extends StatelessWidget {
+  const _Action({
     required this.match,
     required this.isSending,
     required this.onSend,
+    required this.onChat,
   });
 
   final ProviderMatch match;
   final bool isSending;
   final VoidCallback? onSend;
+  final VoidCallback onChat;
 
   @override
   Widget build(BuildContext context) {
@@ -172,17 +200,33 @@ class _SendButton extends StatelessWidget {
     if (match.contactStatus case final status?) {
       final theme = Theme.of(context);
       final color = status.color(theme.colorScheme);
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+      return Column(
         children: [
-          Icon(status.icon, size: AppIconSize.sm, color: color),
-          const SizedBox(width: AppSpacing.xs),
-          Text(
-            // "Anfrage gesendet" says more than "Noch offen" while nothing
-            // has come back; once it has, the answer is the news.
-            status.isOpen ? l10n.providerMatchSent : status.label(l10n),
-            style: theme.textTheme.labelLarge?.copyWith(color: color),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(status.icon, size: AppIconSize.sm, color: color),
+              const SizedBox(width: AppSpacing.xs),
+              Text(
+                // "Anfrage gesendet" says more than "Noch offen" while
+                // nothing has come back; once it has, the answer is the news.
+                status.isOpen ? l10n.providerMatchSent : status.label(l10n),
+                style: theme.textTheme.labelLarge?.copyWith(color: color),
+              ),
+            ],
           ),
+          // Only a provider who said yes has agreed to be talked to.
+          if (status == RequestContactStatus.accepted) ...[
+            const SizedBox(height: AppSpacing.sm),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                onPressed: onChat,
+                icon: const Icon(Icons.chat_bubble_outline),
+                label: Text(l10n.chatWithProvider),
+              ),
+            ),
+          ],
         ],
       );
     }

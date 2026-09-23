@@ -9,6 +9,7 @@ import 'package:app/features/auth/presentation/login_screen.dart';
 import 'package:app/features/availability/presentation/availability_screen.dart';
 import 'package:app/features/catalog/presentation/category_screen.dart';
 import 'package:app/features/catalog/presentation/service_detail_screen.dart';
+import 'package:app/features/chat/presentation/chat_screen.dart';
 import 'package:app/features/chat/presentation/conversations_screen.dart';
 import 'package:app/features/discovery/presentation/customer_home_screen.dart';
 import 'package:app/features/earnings/presentation/earnings_screen.dart';
@@ -122,6 +123,18 @@ Widget _tabScreen(ShellTab tab) => switch (tab) {
   ShellTab.providerEarnings => const EarningsScreen(),
 };
 
+/// The customer's chat, opened from a provider they picked. Registered as a
+/// child of the provider list in both tabs that show it, so the back button
+/// returns to the list the customer came from.
+final GoRoute _customerChatRoute = GoRoute(
+  path: ':providerId/chat',
+  builder: (context, state) => ChatScreen(
+    requestId: state.pathParameters['requestId']!,
+    providerId: state.pathParameters['providerId']!,
+    args: state.extra as ChatArgs? ?? const ChatArgs(),
+  ),
+);
+
 /// Screens that open on top of a tab. They stay inside the tab's branch, so
 /// the bottom navigation remains visible and the tab keeps its history.
 List<RouteBase> _tabSubRoutes(ShellTab tab) => switch (tab) {
@@ -139,6 +152,7 @@ List<RouteBase> _tabSubRoutes(ShellTab tab) => switch (tab) {
       path: 'requests/:requestId/providers',
       builder: (context, state) =>
           RequestMatchesScreen(requestId: state.pathParameters['requestId']!),
+      routes: [_customerChatRoute],
     ),
     GoRoute(
       path: 'category/:categorySlug',
@@ -163,9 +177,19 @@ List<RouteBase> _tabSubRoutes(ShellTab tab) => switch (tab) {
       path: ':requestId/providers',
       builder: (context, state) =>
           RequestMatchesScreen(requestId: state.pathParameters['requestId']!),
+      routes: [_customerChatRoute],
     ),
   ],
   ShellTab.providerJobs => [
+    GoRoute(
+      path: 'chat/:requestId',
+      builder: (context, state) => ChatScreen(
+        requestId: state.pathParameters['requestId']!,
+        // No provider id: the backend uses the signed-in provider's own
+        // profile, so this cannot be pointed at someone else's job.
+        args: state.extra as ChatArgs? ?? const ChatArgs(),
+      ),
+    ),
     GoRoute(
       path: 'services',
       builder: (context, state) => const ProviderServicesScreen(),
