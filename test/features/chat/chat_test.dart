@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
 import 'package:app/core/errors/app_failure.dart';
+import 'package:app/features/chat/domain/chat_message.dart';
 import 'package:app/features/matching/domain/provider_match.dart';
 import 'package:app/features/provider/domain/provider_profile.dart';
 import 'package:app/features/requests/domain/request_contact_status.dart';
@@ -278,6 +279,63 @@ void main() {
     }
 
     expect(chat.conversations, hasLength(1));
+  });
+
+  testWidgets('the other person\'s messages sit on the other side', (
+    tester,
+  ) async {
+    final requests = await _withAcceptedJob();
+    final chat = FakeChatRepository(contacts: requests.contacts);
+    final conversation = await chat.getOrCreateConversationForRequest(
+      requestId: requests.requests.single.id,
+      providerId: testProviderId,
+    );
+    // One message from each account. On a device with a single account
+    // both would be "mine", which is why this lives in a test.
+    chat.messageLog[conversation.id] = [
+      ChatMessage(
+        id: 'm1',
+        conversationId: conversation.id,
+        senderId: testUserId,
+        message: 'Wann hast du Zeit?',
+        createdAt: DateTime(2026, 1, 1, 10),
+      ),
+      ChatMessage(
+        id: 'm2',
+        conversationId: conversation.id,
+        senderId: testProviderUserId,
+        message: 'Mittwoch passt mir',
+        createdAt: DateTime(2026, 1, 1, 10, 5),
+      ),
+    ];
+
+    await pumpSignedInApp(
+      tester,
+      role: AppRole.customer,
+      requests: requests,
+      matching: FakeMatchingRepository(
+        matches: [_maxMontagen],
+        requests: requests,
+      ),
+      chat: chat,
+    );
+    await _openProviderList(tester);
+    await tester.tap(
+      find.widgetWithText(OutlinedButton, 'Dienstleister kontaktieren'),
+    );
+    await tester.pumpAndSettle();
+
+    Alignment alignmentOf(String text) => tester
+        .widget<Align>(
+          find
+              .ancestor(of: find.text(text), matching: find.byType(Align))
+              .first,
+        )
+        .alignment
+        .resolve(TextDirection.ltr);
+
+    expect(alignmentOf('Wann hast du Zeit?'), Alignment.centerRight);
+    expect(alignmentOf('Mittwoch passt mir'), Alignment.centerLeft);
   });
 
   testWidgets('a chat for a job that was never accepted is refused', (
