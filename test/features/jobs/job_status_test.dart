@@ -96,8 +96,9 @@ void main() {
     await tester.pumpAndSettle();
     expect(_statusOf(requests), RequestContactStatus.completed);
 
-    // And then it is the customer's turn, which the card says plainly.
-    expect(find.textContaining('Warte auf die Bestätigung'), findsWidgets);
+    // And then it is the customer's turn, which the card says plainly —
+    // once, not once under the headline and again under the steps.
+    expect(find.textContaining('Warte auf die Bestätigung'), findsOneWidget);
     expect(
       find.widgetWithText(FilledButton, 'Auftrag bestätigen'),
       findsNothing,

@@ -208,8 +208,12 @@ class _Headline extends StatelessWidget {
 
     final detail = switch (status) {
       RequestContactStatus.accepted => l10n.jobNoAppointment,
-      RequestContactStatus.completed =>
-        job.viewerIsCustomer ? l10n.jobCompletedAsk : l10n.jobCompletedWaiting,
+      // Only the customer is asked for something here. The provider's "now
+      // we wait" line lives below the steps, where every other "nothing for
+      // you to do" message is — saying it in both places read as a stutter.
+      RequestContactStatus.completed when job.viewerIsCustomer =>
+        l10n.jobCompletedAsk,
+      RequestContactStatus.completed => null,
       _ =>
         job.scheduledAt == null
             ? null
