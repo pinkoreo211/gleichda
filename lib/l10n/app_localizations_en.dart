@@ -683,10 +683,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get providerIncomingDeclinedToast => 'Request declined.';
 
   @override
-  String get providerIncomingChatHint =>
-      'You arrange the time with the customer in the chat.';
-
-  @override
   String get requestStatusOpen => 'Still open';
 
   @override
@@ -694,6 +690,77 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get requestStatusDeclined => 'Declined';
+
+  @override
+  String get jobStatusScheduled => 'Time agreed';
+
+  @override
+  String get jobStatusOnTheWay => 'On the way';
+
+  @override
+  String get jobStatusInProgress => 'In progress';
+
+  @override
+  String get jobStatusCompleted => 'Done';
+
+  @override
+  String get jobStatusConfirmed => 'Confirmed by the customer';
+
+  @override
+  String get jobStatusCancelled => 'Cancelled';
+
+  @override
+  String get jobsTitle => 'Your jobs';
+
+  @override
+  String jobAppointment(String when) {
+    return 'Appointment: $when';
+  }
+
+  @override
+  String get jobNoAppointment => 'No time agreed yet';
+
+  @override
+  String jobOnTheWayNamed(String name) {
+    return '$name is on the way';
+  }
+
+  @override
+  String get jobCompletedAsk => 'Please confirm that the work is finished.';
+
+  @override
+  String get jobCompletedWaiting => 'Waiting for the customer to confirm.';
+
+  @override
+  String get jobFinished => 'Job completed';
+
+  @override
+  String get jobSetAppointment => 'Agree a time';
+
+  @override
+  String get jobOnMyWay => 'I am on my way';
+
+  @override
+  String get jobStartWork => 'Start work';
+
+  @override
+  String get jobReportDone => 'Work is done';
+
+  @override
+  String get jobConfirm => 'Confirm the job';
+
+  @override
+  String get jobWaitingForProvider =>
+      'The provider will get in touch when they set off.';
+
+  @override
+  String get jobOpenChat => 'Write a message';
+
+  @override
+  String get jobChanged => 'Job updated.';
+
+  @override
+  String get jobAppointmentPickTime => 'Pick a time';
 
   @override
   String customerRequestsAcceptedCount(int count) {

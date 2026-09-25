@@ -44,6 +44,11 @@ Future<void> _pumpProvider(
     role: AppRole.provider,
     requests: requests,
     incoming: FakeIncomingRequestsRepository(requests: requests),
+    jobs: FakeJobsRepository(
+      contacts: requests.contacts,
+      requests: requests,
+      isProvider: true,
+    ),
   );
 }
 
@@ -74,7 +79,10 @@ void main() {
 
     final stored = requests.contacts.forRequest(requests.requests.single.id);
     expect(stored[testProviderId], RequestContactStatus.accepted);
-    expect(find.text('Du hast angenommen'), findsOneWidget);
+    // It is a job now, so it moves out of the requests list and into the
+    // one above it, with the next step on it.
+    expect(find.text('Deine Aufträge'), findsOneWidget);
+    expect(find.text('Angenommen'), findsOneWidget);
     // No second decision: the backend would refuse it, and the screen does
     // not offer what cannot happen.
     expect(find.widgetWithText(FilledButton, 'Annehmen'), findsNothing);
@@ -104,7 +112,7 @@ void main() {
 
     await _pumpProvider(tester, requests);
 
-    expect(find.text('Du hast angenommen'), findsOneWidget);
+    expect(find.text('Angenommen'), findsOneWidget);
     expect(find.widgetWithText(FilledButton, 'Annehmen'), findsNothing);
     expect(find.widgetWithText(OutlinedButton, 'Ablehnen'), findsNothing);
     // And the store itself refuses a second answer, which is what the

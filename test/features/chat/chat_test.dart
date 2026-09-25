@@ -243,8 +243,16 @@ void main() {
       requests: requests,
       incoming: FakeIncomingRequestsRepository(requests: requests),
       chat: chat,
+      jobs: FakeJobsRepository(
+        contacts: requests.contacts,
+        requests: requests,
+        isProvider: true,
+      ),
     );
-    await tester.tap(find.widgetWithText(OutlinedButton, 'Kunde kontaktieren'));
+    // An accepted request is a job now, and the chat hangs off its card.
+    await tester.tap(
+      find.widgetWithText(OutlinedButton, 'Nachricht schreiben'),
+    );
     await tester.pumpAndSettle();
 
     // One conversation for the job, so the customer's message is here.

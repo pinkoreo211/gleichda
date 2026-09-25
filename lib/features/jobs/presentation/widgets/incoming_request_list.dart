@@ -1,15 +1,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
 import 'package:app/core/errors/app_failure_message.dart';
-import 'package:app/core/routing/app_routes.dart';
 import 'package:app/core/formatting/app_date_format.dart';
 import 'package:app/design_system/app_dimensions.dart';
 import 'package:app/design_system/widgets/button_progress.dart';
 import 'package:app/features/jobs/application/incoming_requests.dart';
+import 'package:app/features/jobs/application/my_jobs.dart';
 import 'package:app/features/jobs/data/incoming_requests_repository.dart';
-import 'package:app/features/chat/presentation/chat_screen.dart';
 import 'package:app/features/jobs/domain/incoming_request.dart';
 import 'package:app/features/requests/domain/request_contact_status.dart';
 import 'package:app/features/requests/presentation/widgets/request_status_display.dart';
@@ -58,8 +56,10 @@ class _IncomingRequestListState extends ConsumerState<IncomingRequestList> {
           ),
         ),
       );
-      // Re-read: the answer that counts is the one the server stored.
+      // Re-read both: the answer that counts is the one the server stored,
+      // and a yes has just turned this request into a job.
       ref.invalidate(myIncomingRequestsProvider);
+      ref.invalidate(myJobsProvider);
     } catch (error) {
       if (mounted) showFailureSnackBar(context, error);
     }
@@ -73,7 +73,13 @@ class _IncomingRequestListState extends ConsumerState<IncomingRequestList> {
     final requests = ref.watch(myIncomingRequestsProvider);
 
     final list = switch (requests) {
-      AsyncData(:final value) => value,
+      AsyncData(:final value) => [
+        // Once a request is answered with yes it is a job, and jobs have
+        // their own section. Showing it in both places would be the same
+        // thing twice on one screen.
+        for (final request in value)
+          if (!request.status.isJob) request,
+      ],
       // A failed read is not worth its own error screen on the home page;
       // the list simply stays empty until the next refresh.
       _ => const <IncomingRequest>[],
@@ -143,12 +149,6 @@ class _IncomingRequestListState extends ConsumerState<IncomingRequestList> {
             ),
             const SizedBox(height: AppSpacing.sm),
           ],
-          Text(
-            l10n.providerIncomingChatHint,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
-          ),
         ],
       ],
     );
@@ -219,31 +219,11 @@ class _IncomingRequestCard extends StatelessWidget {
             const SizedBox(height: AppSpacing.md),
             if (request.status.isOpen)
               _Decision(isAnswering: isAnswering, onRespond: onRespond)
-            else ...[
-              // Answered: what was decided, and no way to decide again.
-              // The backend refuses a second answer either way.
+            else
+              // Only a refusal reaches this branch now: a yes turns the
+              // request into a job, and jobs live in their own section with
+              // the chat and the next step on them.
               _Answered(status: request.status),
-              // Only an accepted job has two people who agreed to talk.
-              if (request.status == RequestContactStatus.accepted) ...[
-                const SizedBox(height: AppSpacing.sm),
-                SizedBox(
-                  width: double.infinity,
-                  child: OutlinedButton.icon(
-                    onPressed: () => context.push(
-                      AppRoutes.providerChat(request.requestId),
-                      extra: ChatArgs(
-                        otherName:
-                            request.customerName ??
-                            l10n.providerIncomingCustomerUnknown,
-                        serviceName: serviceName,
-                      ),
-                    ),
-                    icon: const Icon(Icons.chat_bubble_outline),
-                    label: Text(l10n.chatWithCustomer),
-                  ),
-                ),
-              ],
-            ],
           ],
         ),
       ),

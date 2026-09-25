@@ -1280,12 +1280,6 @@ abstract class AppLocalizations {
   /// **'Anfrage abgelehnt.'**
   String get providerIncomingDeclinedToast;
 
-  /// Says where an accepted job gets arranged.
-  ///
-  /// In de, this message translates to:
-  /// **'Den Termin stimmst du im Chat direkt mit der Kundin oder dem Kunden ab.'**
-  String get providerIncomingChatHint;
-
   /// A request that reached a provider who has not answered.
   ///
   /// In de, this message translates to:
@@ -1303,6 +1297,138 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Abgelehnt'**
   String get requestStatusDeclined;
+
+  /// Job status: a time has been agreed.
+  ///
+  /// In de, this message translates to:
+  /// **'Termin vereinbart'**
+  String get jobStatusScheduled;
+
+  /// Job status: the provider is on their way.
+  ///
+  /// In de, this message translates to:
+  /// **'Unterwegs'**
+  String get jobStatusOnTheWay;
+
+  /// Job status: the work is happening.
+  ///
+  /// In de, this message translates to:
+  /// **'In Arbeit'**
+  String get jobStatusInProgress;
+
+  /// Job status: the provider reported the work done.
+  ///
+  /// In de, this message translates to:
+  /// **'Fertig'**
+  String get jobStatusCompleted;
+
+  /// Job status: the customer confirmed the work.
+  ///
+  /// In de, this message translates to:
+  /// **'Vom Kunden bestätigt'**
+  String get jobStatusConfirmed;
+
+  /// Job status: the job was called off.
+  ///
+  /// In de, this message translates to:
+  /// **'Storniert'**
+  String get jobStatusCancelled;
+
+  /// Heading above the list of running jobs.
+  ///
+  /// In de, this message translates to:
+  /// **'Deine Aufträge'**
+  String get jobsTitle;
+
+  /// The agreed appointment on a job card.
+  ///
+  /// In de, this message translates to:
+  /// **'Termin: {when}'**
+  String jobAppointment(String when);
+
+  /// Says plainly that no time has been agreed.
+  ///
+  /// In de, this message translates to:
+  /// **'Termin noch nicht vereinbart'**
+  String get jobNoAppointment;
+
+  /// Headline while the provider is travelling.
+  ///
+  /// In de, this message translates to:
+  /// **'{name} ist unterwegs'**
+  String jobOnTheWayNamed(String name);
+
+  /// Asks the customer to confirm the finished work.
+  ///
+  /// In de, this message translates to:
+  /// **'Bitte bestätige, dass die Arbeit abgeschlossen ist.'**
+  String get jobCompletedAsk;
+
+  /// Shown to the provider after reporting the work done.
+  ///
+  /// In de, this message translates to:
+  /// **'Warte auf die Bestätigung durch die Kundin oder den Kunden.'**
+  String get jobCompletedWaiting;
+
+  /// Shown once the customer confirmed.
+  ///
+  /// In de, this message translates to:
+  /// **'Auftrag abgeschlossen'**
+  String get jobFinished;
+
+  /// Button that records the agreed time.
+  ///
+  /// In de, this message translates to:
+  /// **'Termin vereinbaren'**
+  String get jobSetAppointment;
+
+  /// Button the provider taps when setting off.
+  ///
+  /// In de, this message translates to:
+  /// **'Ich bin unterwegs'**
+  String get jobOnMyWay;
+
+  /// Button the provider taps when starting.
+  ///
+  /// In de, this message translates to:
+  /// **'Arbeit beginnen'**
+  String get jobStartWork;
+
+  /// Button the provider taps when finished.
+  ///
+  /// In de, this message translates to:
+  /// **'Auftrag fertig'**
+  String get jobReportDone;
+
+  /// Button the customer taps to confirm the work.
+  ///
+  /// In de, this message translates to:
+  /// **'Auftrag bestätigen'**
+  String get jobConfirm;
+
+  /// Shown to the customer while it is the provider's turn.
+  ///
+  /// In de, this message translates to:
+  /// **'Der Dienstleister meldet sich, sobald es losgeht.'**
+  String get jobWaitingForProvider;
+
+  /// Opens the chat from a job card.
+  ///
+  /// In de, this message translates to:
+  /// **'Nachricht schreiben'**
+  String get jobOpenChat;
+
+  /// Confirmation after a status change.
+  ///
+  /// In de, this message translates to:
+  /// **'Auftrag aktualisiert.'**
+  String get jobChanged;
+
+  /// Second step of picking an appointment.
+  ///
+  /// In de, this message translates to:
+  /// **'Uhrzeit wählen'**
+  String get jobAppointmentPickTime;
 
   /// How many providers accepted a saved request.
   ///

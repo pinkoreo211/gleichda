@@ -687,10 +687,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get providerIncomingDeclinedToast => 'Anfrage abgelehnt.';
 
   @override
-  String get providerIncomingChatHint =>
-      'Den Termin stimmst du im Chat direkt mit der Kundin oder dem Kunden ab.';
-
-  @override
   String get requestStatusOpen => 'Noch offen';
 
   @override
@@ -698,6 +694,79 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get requestStatusDeclined => 'Abgelehnt';
+
+  @override
+  String get jobStatusScheduled => 'Termin vereinbart';
+
+  @override
+  String get jobStatusOnTheWay => 'Unterwegs';
+
+  @override
+  String get jobStatusInProgress => 'In Arbeit';
+
+  @override
+  String get jobStatusCompleted => 'Fertig';
+
+  @override
+  String get jobStatusConfirmed => 'Vom Kunden bestätigt';
+
+  @override
+  String get jobStatusCancelled => 'Storniert';
+
+  @override
+  String get jobsTitle => 'Deine Aufträge';
+
+  @override
+  String jobAppointment(String when) {
+    return 'Termin: $when';
+  }
+
+  @override
+  String get jobNoAppointment => 'Termin noch nicht vereinbart';
+
+  @override
+  String jobOnTheWayNamed(String name) {
+    return '$name ist unterwegs';
+  }
+
+  @override
+  String get jobCompletedAsk =>
+      'Bitte bestätige, dass die Arbeit abgeschlossen ist.';
+
+  @override
+  String get jobCompletedWaiting =>
+      'Warte auf die Bestätigung durch die Kundin oder den Kunden.';
+
+  @override
+  String get jobFinished => 'Auftrag abgeschlossen';
+
+  @override
+  String get jobSetAppointment => 'Termin vereinbaren';
+
+  @override
+  String get jobOnMyWay => 'Ich bin unterwegs';
+
+  @override
+  String get jobStartWork => 'Arbeit beginnen';
+
+  @override
+  String get jobReportDone => 'Auftrag fertig';
+
+  @override
+  String get jobConfirm => 'Auftrag bestätigen';
+
+  @override
+  String get jobWaitingForProvider =>
+      'Der Dienstleister meldet sich, sobald es losgeht.';
+
+  @override
+  String get jobOpenChat => 'Nachricht schreiben';
+
+  @override
+  String get jobChanged => 'Auftrag aktualisiert.';
+
+  @override
+  String get jobAppointmentPickTime => 'Uhrzeit wählen';
 
   @override
   String customerRequestsAcceptedCount(int count) {

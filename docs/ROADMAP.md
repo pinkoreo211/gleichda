@@ -24,7 +24,7 @@ Legend: ✅ done · 🔄 in progress · ⏳ open
 | 4g | **Chat list:** the Chats tab shows every conversation with the other person's name, the job and the last message | ✅ | A provider with ten jobs reaches any chat in one tap |
 | 4b | **Verification & documents:** upload, category-specific requirements, admin review | ⏳ | Provider submits documents; the team approves in Supabase |
 | 5 | **Discovery & fixed-price booking:** location, nearby verified providers, option → price → time → request | ⏳ | Customer books a cleaner in Vienna |
-| 6 | **Job flow:** accept/decline, on the way, in progress, done, customer confirms, navigation button | ⏳ | Full job lifecycle between two test accounts |
+| 6 | **Job flow:** accepted, time agreed, on the way, in progress, done, customer confirms — each side offered only its own steps | ✅ | Both sides move one job through to the end; skipping a step is refused by the database |
 | 7 | **Chat:** live messages and photos per job | ⏳ | |
 | 8 | **Reviews & book again** | ⏳ | |
 | 9 | **Projects & offers:** project with photos/measurements/budget, offers, compare, accept | ⏳ | Paving project receives offers |
@@ -58,7 +58,8 @@ analytics.
 - [x] Supabase: request responses migration run — verified on a device: accepted and declined both reached the customer's side
 - [x] Supabase: chat migration run — verified on a device with two real accounts: customer and provider reach the same conversation, and neither sees the other pair's
 - [x] Supabase: conversation list migration run — verified on a device: the customer sees one chat, the provider both, each with its own last message
-- [ ] **Supabase: run `20260925120000_no_self_hire.sql`** (see docs/supabase-setup.md, section 2). Until then, an account can still send a request to its own provider profile
+- [x] Supabase: no-self-hire migration run — verified on a device: the provider no longer appears in their own results
+- [ ] **Supabase: run `20260925140000_job_status_values.sql` and then `20260925160000_job_status.sql`** (see docs/supabase-setup.md, section 2, two separate runs). Until then, a job has no status beyond "accepted"
 
 - [x] Android SDK Command-line Tools installed
 - [x] Android licences: Google replaced `sdkmanager --licenses`; `flutter doctor` still reports "unknown", which is a tooling mismatch, not a blocker — builds work

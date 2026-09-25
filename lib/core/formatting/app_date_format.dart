@@ -20,6 +20,12 @@ String formatShortDate(DateTime date) =>
 String formatShortTime(DateTime time) =>
     DateFormat.Hm(_marketLocale()).format(time.toLocal());
 
+/// e.g. "24.09.2026, 14:00" — an appointment needs both halves.
+String formatDateTime(DateTime moment) {
+  final local = moment.toLocal();
+  return '${formatShortDate(local)}, ${formatShortTime(local)}';
+}
+
 /// The time for something from today, the date for anything older: in a
 /// list, "14:05" on a message from last week would read as today's.
 String formatMessageStamp(DateTime moment) {

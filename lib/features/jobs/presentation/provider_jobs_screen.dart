@@ -5,7 +5,9 @@ import 'package:material_ui/material_ui.dart';
 import 'package:app/core/routing/app_routes.dart';
 import 'package:app/design_system/app_dimensions.dart';
 import 'package:app/features/jobs/application/incoming_requests.dart';
+import 'package:app/features/jobs/application/my_jobs.dart';
 import 'package:app/features/jobs/presentation/widgets/incoming_request_list.dart';
+import 'package:app/features/jobs/presentation/widgets/jobs_section.dart';
 import 'package:app/features/provider/application/provider_profile_providers.dart';
 import 'package:app/features/provider/presentation/widgets/verification_badge.dart';
 import 'package:app/l10n/app_localizations.dart';
@@ -39,7 +41,9 @@ class ProviderJobsScreen extends ConsumerWidget {
         child: RefreshIndicator(
           onRefresh: () async {
             ref.invalidate(myIncomingRequestsProvider);
+            ref.invalidate(myJobsProvider);
             await ref.read(myIncomingRequestsProvider.future);
+            await ref.read(myJobsProvider.future);
           },
           child: ListView(
             padding: const EdgeInsets.all(AppSpacing.md),
@@ -59,6 +63,9 @@ class ProviderJobsScreen extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: AppSpacing.lg),
+              // Running work first: what is already agreed matters more
+              // than what is still being asked.
+              const JobsSection(),
               const IncomingRequestList(),
               const SizedBox(height: AppSpacing.lg),
               Card(

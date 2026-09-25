@@ -6,6 +6,8 @@ import 'package:app/core/formatting/app_date_format.dart';
 import 'package:app/core/routing/app_routes.dart';
 import 'package:app/design_system/app_dimensions.dart';
 import 'package:app/design_system/widgets/empty_state.dart';
+import 'package:app/features/jobs/application/my_jobs.dart';
+import 'package:app/features/jobs/presentation/widgets/jobs_section.dart';
 import 'package:app/features/requests/application/my_requests.dart';
 import 'package:app/features/requests/domain/request_contact_status.dart';
 import 'package:app/features/requests/domain/service_request.dart';
@@ -33,7 +35,9 @@ class CustomerBookingsScreen extends ConsumerWidget {
       body: RefreshIndicator(
         onRefresh: () async {
           ref.invalidate(myRequestsProvider);
+          ref.invalidate(myJobsProvider);
           await ref.read(myRequestsProvider.future);
+          await ref.read(myJobsProvider.future);
         },
         child: requests.when(
           loading: () => const Center(child: CircularProgressIndicator()),
@@ -68,6 +72,9 @@ class _RequestList extends StatelessWidget {
       physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.all(AppSpacing.md),
       children: [
+        // Agreed work first: a running job matters more than a request
+        // still waiting for somebody to say yes.
+        const JobsSection(),
         Text(l10n.customerRequestsTitle, style: theme.textTheme.titleMedium),
         const SizedBox(height: AppSpacing.md),
         for (final request in requests) ...[
@@ -175,7 +182,11 @@ class _Status extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
-    final accepted = request.countOf(RequestContactStatus.accepted);
+    // Every provider who said yes, wherever their job has got to since —
+    // "in Arbeit" still means they accepted.
+    final accepted = request.contactStatuses
+        .where((status) => status.isJob)
+        .length;
     final open = request.countOf(RequestContactStatus.sent);
     final declined = request.countOf(RequestContactStatus.declined);
 

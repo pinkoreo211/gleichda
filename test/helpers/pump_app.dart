@@ -17,7 +17,9 @@ import 'package:app/features/chat/domain/chat_message.dart';
 import 'package:app/features/chat/domain/conversation.dart';
 import 'package:app/features/chat/domain/conversation_summary.dart';
 import 'package:app/features/jobs/data/incoming_requests_repository.dart';
+import 'package:app/features/jobs/data/jobs_repository.dart';
 import 'package:app/features/jobs/domain/incoming_request.dart';
+import 'package:app/features/jobs/domain/job.dart';
 import 'package:app/features/matching/data/matching_repository.dart';
 import 'package:app/features/matching/domain/provider_match.dart';
 import 'package:app/features/profile/data/profile_repository.dart';
@@ -249,6 +251,21 @@ class FakeRequestContacts {
     final current = _rows[row.$1]?[row.$2];
     if (current == null) throw AppFailure.unknown;
     if (!current.isOpen) throw AppFailure.requestAlreadyAnswered;
+    _rows[row.$1]![row.$2] = status;
+  }
+
+  RequestContactStatus? statusOf(String id) {
+    final row = _byContactId[id];
+    if (row == null) return null;
+    return _rows[row.$1]?[row.$2];
+  }
+
+  /// Moves a contact on. Used by the job lifecycle, which has its own rules
+  /// about who may do what — those live with the caller, as they do in the
+  /// database.
+  void setStatus(String id, RequestContactStatus status) {
+    final row = _byContactId[id];
+    if (row == null) throw AppFailure.unknown;
     _rows[row.$1]![row.$2] = status;
   }
 
@@ -729,6 +746,91 @@ class FakeChatRepository implements ChatRepository {
 /// The auth account behind [testProviderId] when a test needs both sides.
 const testProviderUserId = 'user-provider-1';
 
+/// [JobsRepository] without a backend.
+///
+/// Mirrors the rules the database enforces — who may take which step, and
+/// which step may follow which — so a test that breaks them fails here the
+/// way it would fail there.
+class FakeJobsRepository implements JobsRepository {
+  FakeJobsRepository({
+    required this.contacts,
+    this.requests,
+    this.isProvider = false,
+    this.providerName = 'Max Montagen',
+    this.customerName = 'Anna Kundin',
+    this.myProviderId = testProviderId,
+  });
+
+  final FakeRequestContacts contacts;
+  final InMemoryServiceRequestRepository? requests;
+  final bool isProvider;
+  final String providerName;
+  final String customerName;
+  final String myProviderId;
+
+  /// contact id -> the agreed time.
+  final appointments = <String, DateTime>{};
+
+  @override
+  Future<List<Job>> myJobs() async {
+    final store = requests;
+    if (store == null) return const [];
+    return [
+      for (final (requestId, status) in contacts.forProvider(myProviderId))
+        if (status.isJob)
+          if (store.byId(requestId) case final request?)
+            Job(
+              contactId: contacts.contactId(requestId, myProviderId),
+              requestId: requestId,
+              providerId: myProviderId,
+              viewerIsCustomer: !isProvider,
+              status: status,
+              description: request.originalDescription,
+              otherName: isProvider ? customerName : providerName,
+              serviceName: request.service?.name,
+              city: request.city,
+              postalCode: request.postalCode,
+              scheduledAt:
+                  appointments[contacts.contactId(requestId, myProviderId)],
+              updatedAt: request.createdAt,
+            ),
+    ];
+  }
+
+  @override
+  Future<void> advance({
+    required String contactId,
+    required RequestContactStatus status,
+    DateTime? appointmentAt,
+  }) async {
+    final current = contacts.statusOf(contactId);
+    if (current == null) throw AppFailure.unknown;
+
+    // The same two questions the backend asks: may this side take this
+    // step, and does it follow the one before it?
+    final allowed = switch (status) {
+      RequestContactStatus.scheduled =>
+        current == RequestContactStatus.accepted ||
+            current == RequestContactStatus.scheduled,
+      RequestContactStatus.onTheWay =>
+        isProvider && current == RequestContactStatus.scheduled,
+      RequestContactStatus.inProgress =>
+        isProvider && current == RequestContactStatus.onTheWay,
+      RequestContactStatus.completed =>
+        isProvider && current == RequestContactStatus.inProgress,
+      RequestContactStatus.customerConfirmed =>
+        !isProvider && current == RequestContactStatus.completed,
+      _ => false,
+    };
+    if (!allowed) throw AppFailure.unknown;
+    if (status == RequestContactStatus.scheduled) {
+      if (appointmentAt == null) throw AppFailure.unknown;
+      appointments[contactId] = appointmentAt;
+    }
+    contacts.setStatus(contactId, status);
+  }
+}
+
 /// [SessionStore] that keeps everything in memory.
 class InMemorySessionStore implements SessionStore {
   InMemorySessionStore([Map<String, AppRole>? activeRoles])
@@ -758,6 +860,7 @@ Future<void> pumpApp(
   FakeMatchingRepository? matching,
   FakeIncomingRequestsRepository? incoming,
   FakeChatRepository? chat,
+  FakeJobsRepository? jobs,
   Locale locale = const Locale('de', 'AT'),
 }) async {
   tester.platformDispatcher.localesTestValue = [locale];
@@ -792,6 +895,9 @@ Future<void> pumpApp(
           incoming ?? FakeIncomingRequestsRepository(),
         ),
         if (chat != null) chatRepositoryProvider.overrideWithValue(chat),
+        jobsRepositoryProvider.overrideWithValue(
+          jobs ?? FakeJobsRepository(contacts: FakeRequestContacts()),
+        ),
       ],
       child: const App(),
     ),
@@ -829,6 +935,7 @@ Future<void> pumpSignedInApp(
   FakeMatchingRepository? matching,
   FakeIncomingRequestsRepository? incoming,
   FakeChatRepository? chat,
+  FakeJobsRepository? jobs,
 }) {
   return pumpApp(
     tester,
@@ -844,6 +951,7 @@ Future<void> pumpSignedInApp(
     matching: matching,
     incoming: incoming,
     chat: chat,
+    jobs: jobs,
     provider:
         provider ??
         (role == AppRole.provider
