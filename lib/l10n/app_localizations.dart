@@ -1436,6 +1436,108 @@ abstract class AppLocalizations {
   /// **'Uhrzeit wählen'**
   String get jobAppointmentPickTime;
 
+  /// Heading of the review screen.
+  ///
+  /// In de, this message translates to:
+  /// **'Wie war dein Auftrag?'**
+  String get reviewTitle;
+
+  /// Label above the optional comment field.
+  ///
+  /// In de, this message translates to:
+  /// **'Was möchtest du über den Auftrag sagen?'**
+  String get reviewCommentLabel;
+
+  /// Placeholder of the optional comment field.
+  ///
+  /// In de, this message translates to:
+  /// **'Deine Erfahrung (optional)'**
+  String get reviewCommentHint;
+
+  /// Button that sends the review.
+  ///
+  /// In de, this message translates to:
+  /// **'Bewertung abgeben'**
+  String get reviewSubmit;
+
+  /// Button on a finished job that opens the review screen.
+  ///
+  /// In de, this message translates to:
+  /// **'Auftrag bewerten'**
+  String get reviewRate;
+
+  /// Shown after a review was saved.
+  ///
+  /// In de, this message translates to:
+  /// **'Danke für deine Bewertung!'**
+  String get reviewThanks;
+
+  /// Label above the rating the customer gave.
+  ///
+  /// In de, this message translates to:
+  /// **'Deine Bewertung'**
+  String get reviewYours;
+
+  /// Button that leaves the review screen.
+  ///
+  /// In de, this message translates to:
+  /// **'Zurück zu meinen Aufträgen'**
+  String get reviewBackToJobs;
+
+  /// Shown instead of the form when a job was already reviewed.
+  ///
+  /// In de, this message translates to:
+  /// **'Du hast diesen Auftrag bereits bewertet.'**
+  String get reviewAlready;
+
+  /// Word for a one-star rating.
+  ///
+  /// In de, this message translates to:
+  /// **'Sehr schlecht'**
+  String get reviewStars1;
+
+  /// Word for a two-star rating.
+  ///
+  /// In de, this message translates to:
+  /// **'Nicht gut'**
+  String get reviewStars2;
+
+  /// Word for a three-star rating.
+  ///
+  /// In de, this message translates to:
+  /// **'Okay'**
+  String get reviewStars3;
+
+  /// Word for a four-star rating.
+  ///
+  /// In de, this message translates to:
+  /// **'Gut'**
+  String get reviewStars4;
+
+  /// Word for a five-star rating.
+  ///
+  /// In de, this message translates to:
+  /// **'Ausgezeichnet'**
+  String get reviewStars5;
+
+  /// How many reviews a provider has.
+  ///
+  /// In de, this message translates to:
+  /// **'{count, plural, =1{1 Bewertung} other{{count} Bewertungen}}'**
+  String reviewCount(int count);
+
+  /// Shown for a provider nobody has rated; never a made-up score.
+  ///
+  /// In de, this message translates to:
+  /// **'Noch keine Bewertungen'**
+  String get reviewNone;
+
+  /// Heading of the rating card on the provider's home.
+  ///
+  /// In de, this message translates to:
+  /// **'Deine Bewertung'**
+  String get reviewYourRatingTitle;
+
   /// How many providers accepted a saved request.
   ///
   /// In de, this message translates to:

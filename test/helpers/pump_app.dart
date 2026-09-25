@@ -27,6 +27,8 @@ import 'package:app/features/provider/data/provider_repository.dart';
 import 'package:app/features/provider/domain/provider_profile.dart';
 import 'package:app/features/provider/domain/provider_service_offering.dart';
 import 'package:app/features/requests/data/service_request_repository.dart';
+import 'package:app/features/reviews/data/reviews_repository.dart';
+import 'package:app/features/reviews/domain/review.dart';
 import 'package:app/features/requests/domain/request_contact_status.dart';
 import 'package:app/features/requests/domain/request_timing.dart';
 import 'package:app/features/requests/domain/service_request.dart';
@@ -338,6 +340,10 @@ class FakeMatchingRepository implements MatchingRepository {
             lowestPriceCents: match.lowestPriceCents,
             currency: match.currency,
             contactStatus: status,
+            // Carried through: a rating is not something contacting
+            // somebody takes away.
+            ratingAverage: match.ratingAverage,
+            ratingCount: match.ratingCount,
           )
         else
           match,
@@ -759,10 +765,15 @@ class FakeJobsRepository implements JobsRepository {
     this.providerName = 'Max Montagen',
     this.customerName = 'Anna Kundin',
     this.myProviderId = testProviderId,
+    this.reviews,
   });
 
   final FakeRequestContacts contacts;
   final InMemoryServiceRequestRepository? requests;
+
+  /// When given, a rated job carries its rating, the way the backend joins
+  /// the review onto the job.
+  final FakeReviewsRepository? reviews;
   final bool isProvider;
   final String providerName;
   final String customerName;
@@ -793,6 +804,12 @@ class FakeJobsRepository implements JobsRepository {
               scheduledAt:
                   appointments[contacts.contactId(requestId, myProviderId)],
               updatedAt: request.createdAt,
+              myRating: reviews
+                  ?.byContact[contacts.contactId(requestId, myProviderId)]
+                  ?.rating,
+              myComment: reviews
+                  ?.byContact[contacts.contactId(requestId, myProviderId)]
+                  ?.comment,
             ),
     ];
   }
@@ -831,6 +848,60 @@ class FakeJobsRepository implements JobsRepository {
   }
 }
 
+/// [ReviewsRepository] without a backend.
+///
+/// Mirrors the rules the database enforces: only the job's customer, only
+/// a confirmed job, and only once.
+class FakeReviewsRepository implements ReviewsRepository {
+  FakeReviewsRepository({
+    required this.contacts,
+    this.isProvider = false,
+    this.myProviderId = testProviderId,
+  });
+
+  final FakeRequestContacts contacts;
+
+  /// Whether the caller is the provider rather than the customer.
+  final bool isProvider;
+  final String myProviderId;
+
+  /// contact id -> the review written for it.
+  final byContact = <String, Review>{};
+
+  @override
+  Future<void> submit({
+    required String contactId,
+    required int rating,
+    String? comment,
+  }) async {
+    if (rating < 1 || rating > 5) throw AppFailure.unknown;
+    // A provider rating their own job is not a thing the backend allows.
+    if (isProvider) throw AppFailure.unknown;
+    if (contacts.statusOf(contactId) !=
+        RequestContactStatus.customerConfirmed) {
+      throw AppFailure.unknown;
+    }
+    if (byContact.containsKey(contactId)) throw AppFailure.unknown;
+
+    final trimmed = (comment ?? '').trim();
+    byContact[contactId] = Review(
+      id: 'review-${byContact.length + 1}',
+      contactId: contactId,
+      customerId: testUserId,
+      providerId: myProviderId,
+      rating: rating,
+      comment: trimmed.isEmpty ? null : trimmed,
+      createdAt: DateTime(2026, 1, 1).add(Duration(minutes: byContact.length)),
+    );
+  }
+
+  @override
+  Future<List<Review>> reviewsAbout(String providerId) async => [
+    for (final review in byContact.values)
+      if (review.providerId == providerId) review,
+  ];
+}
+
 /// [SessionStore] that keeps everything in memory.
 class InMemorySessionStore implements SessionStore {
   InMemorySessionStore([Map<String, AppRole>? activeRoles])
@@ -861,6 +932,7 @@ Future<void> pumpApp(
   FakeIncomingRequestsRepository? incoming,
   FakeChatRepository? chat,
   FakeJobsRepository? jobs,
+  FakeReviewsRepository? reviews,
   Locale locale = const Locale('de', 'AT'),
 }) async {
   tester.platformDispatcher.localesTestValue = [locale];
@@ -897,6 +969,9 @@ Future<void> pumpApp(
         if (chat != null) chatRepositoryProvider.overrideWithValue(chat),
         jobsRepositoryProvider.overrideWithValue(
           jobs ?? FakeJobsRepository(contacts: FakeRequestContacts()),
+        ),
+        reviewsRepositoryProvider.overrideWithValue(
+          reviews ?? FakeReviewsRepository(contacts: FakeRequestContacts()),
         ),
       ],
       child: const App(),
@@ -936,6 +1011,7 @@ Future<void> pumpSignedInApp(
   FakeIncomingRequestsRepository? incoming,
   FakeChatRepository? chat,
   FakeJobsRepository? jobs,
+  FakeReviewsRepository? reviews,
 }) {
   return pumpApp(
     tester,
@@ -952,6 +1028,7 @@ Future<void> pumpSignedInApp(
     incoming: incoming,
     chat: chat,
     jobs: jobs,
+    reviews: reviews,
     provider:
         provider ??
         (role == AppRole.provider

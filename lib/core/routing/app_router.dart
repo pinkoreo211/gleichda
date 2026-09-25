@@ -26,6 +26,7 @@ import 'package:app/features/provider/presentation/provider_service_picker_scree
 import 'package:app/features/provider/presentation/provider_service_prices_screen.dart';
 import 'package:app/features/provider/presentation/provider_services_screen.dart';
 import 'package:app/features/requests/presentation/service_request_screen.dart';
+import 'package:app/features/reviews/presentation/review_screen.dart';
 import 'package:app/features/session/application/active_role_controller.dart';
 import 'package:app/features/session/domain/app_role.dart';
 import 'package:app/features/shell/presentation/role_shell.dart';
@@ -183,6 +184,12 @@ List<RouteBase> _tabSubRoutes(ShellTab tab) => switch (tab) {
   // The same screen as in the home tab, under the bookings tab's own path:
   // opening it from a saved request should leave the customer in bookings.
   ShellTab.customerBookings => [
+    // Listed before the id route so 'review' is not read as a request id.
+    GoRoute(
+      path: 'review/:contactId',
+      builder: (context, state) =>
+          ReviewScreen(contactId: state.pathParameters['contactId']!),
+    ),
     GoRoute(
       path: ':requestId/providers',
       builder: (context, state) =>

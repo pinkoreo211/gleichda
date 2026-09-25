@@ -63,6 +63,11 @@ abstract final class AppRoutes {
   static String providerMessagesChat(String requestId, String providerId) =>
       '/provider/messages/$requestId/$providerId/chat';
 
+  /// Rating one finished job. Only the customer ever reaches it, so it
+  /// lives under their bookings.
+  static String customerReview(String contactId) =>
+      '/customer/bookings/review/$contactId';
+
   // Provider area
   static const String providerArea = '/provider';
 

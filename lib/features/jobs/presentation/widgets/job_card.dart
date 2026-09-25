@@ -13,6 +13,7 @@ import 'package:app/features/jobs/data/jobs_repository.dart';
 import 'package:app/features/jobs/domain/job.dart';
 import 'package:app/features/requests/domain/request_contact_status.dart';
 import 'package:app/features/requests/presentation/widgets/request_status_display.dart';
+import 'package:app/features/reviews/presentation/widgets/star_rating.dart';
 import 'package:app/l10n/app_localizations.dart';
 
 /// One job, with where it stands and the one thing this side can do next.
@@ -139,7 +140,21 @@ class _JobCardState extends ConsumerState<JobCard> {
               _Steps(status: _job.status),
               const SizedBox(height: AppSpacing.md),
             ],
-            if (next != null)
+            // A finished job asks the customer what they thought, once.
+            if (_job.status.isFinished && _job.viewerIsCustomer)
+              if (_job.isRated)
+                _GivenRating(rating: _job.myRating!)
+              else
+                FilledButton(
+                  onPressed: () =>
+                      context.push(AppRoutes.customerReview(_job.contactId)),
+                  child: Text(l10n.reviewRate),
+                )
+            else if (_job.status.isFinished && _job.isRated)
+              // The provider sees the verdict about them, and cannot give
+              // one of their own.
+              _GivenRating(rating: _job.myRating!)
+            else if (next != null)
               FilledButton(
                 onPressed: _isBusy ? null : () => _advance(next),
                 child: _isBusy
@@ -178,6 +193,33 @@ class _JobCardState extends ConsumerState<JobCard> {
         RequestContactStatus.customerConfirmed => l10n.jobConfirm,
         _ => l10n.jobChanged,
       };
+}
+
+/// The rating this job already has, shown the same to both of them.
+class _GivenRating extends StatelessWidget {
+  const _GivenRating({required this.rating});
+
+  final int rating;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        StarRating(rating: rating, size: AppIconSize.sm),
+        const SizedBox(width: AppSpacing.sm),
+        Text(
+          starWord(l10n, rating),
+          style: theme.textTheme.labelLarge?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
+      ],
+    );
+  }
 }
 
 /// Where the job stands, in one line big enough to read at a glance, with

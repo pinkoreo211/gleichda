@@ -772,6 +772,65 @@ class AppLocalizationsDe extends AppLocalizations {
   String get jobAppointmentPickTime => 'Uhrzeit wählen';
 
   @override
+  String get reviewTitle => 'Wie war dein Auftrag?';
+
+  @override
+  String get reviewCommentLabel => 'Was möchtest du über den Auftrag sagen?';
+
+  @override
+  String get reviewCommentHint => 'Deine Erfahrung (optional)';
+
+  @override
+  String get reviewSubmit => 'Bewertung abgeben';
+
+  @override
+  String get reviewRate => 'Auftrag bewerten';
+
+  @override
+  String get reviewThanks => 'Danke für deine Bewertung!';
+
+  @override
+  String get reviewYours => 'Deine Bewertung';
+
+  @override
+  String get reviewBackToJobs => 'Zurück zu meinen Aufträgen';
+
+  @override
+  String get reviewAlready => 'Du hast diesen Auftrag bereits bewertet.';
+
+  @override
+  String get reviewStars1 => 'Sehr schlecht';
+
+  @override
+  String get reviewStars2 => 'Nicht gut';
+
+  @override
+  String get reviewStars3 => 'Okay';
+
+  @override
+  String get reviewStars4 => 'Gut';
+
+  @override
+  String get reviewStars5 => 'Ausgezeichnet';
+
+  @override
+  String reviewCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Bewertungen',
+      one: '1 Bewertung',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get reviewNone => 'Noch keine Bewertungen';
+
+  @override
+  String get reviewYourRatingTitle => 'Deine Bewertung';
+
+  @override
   String customerRequestsAcceptedCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,

@@ -23,6 +23,8 @@ class Job {
     this.startedAt,
     this.completedAt,
     this.customerConfirmedAt,
+    this.myRating,
+    this.myComment,
   });
 
   final String contactId;
@@ -51,6 +53,13 @@ class Job {
   final DateTime? startedAt;
   final DateTime? completedAt;
   final DateTime? customerConfirmedAt;
+
+  /// The customer's verdict on this job, once they gave one. Both sides
+  /// see it: the customer wrote it, and the provider is who it is about.
+  final int? myRating;
+  final String? myComment;
+
+  bool get isRated => myRating != null;
 
   final DateTime updatedAt;
 
@@ -112,5 +121,7 @@ class Job {
     updatedAt:
         DateTime.tryParse(json['updated_at'] as String? ?? '') ??
         DateTime.fromMillisecondsSinceEpoch(0),
+    myRating: (json['my_rating'] as num?)?.toInt(),
+    myComment: json['my_comment'] as String?,
   );
 }

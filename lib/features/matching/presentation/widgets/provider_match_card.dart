@@ -67,6 +67,33 @@ class ProviderMatchCard extends StatelessWidget {
                 ),
               ),
             ],
+            // Only what customers actually said. A provider nobody has
+            // rated gets no line at all — not a default score, and not a
+            // zero that reads like a bad one.
+            if (match.hasRating) ...[
+              const SizedBox(height: AppSpacing.xs),
+              Row(
+                children: [
+                  Icon(
+                    Icons.star_rounded,
+                    size: AppIconSize.sm,
+                    color: theme.colorScheme.primary,
+                  ),
+                  const SizedBox(width: AppSpacing.xs),
+                  Text(
+                    formatRating(match.ratingAverage!),
+                    style: theme.textTheme.labelLarge,
+                  ),
+                  const SizedBox(width: AppSpacing.xs),
+                  Text(
+                    l10n.reviewCount(match.ratingCount),
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
+            ],
             if (match.description != null && match.description!.isNotEmpty) ...[
               const SizedBox(height: AppSpacing.sm),
               Text(

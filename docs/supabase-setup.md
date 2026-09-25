@@ -37,8 +37,9 @@ Bisher gibt es diese Dateien:
 | `20260923120000_chat.sql` | Privater Chat pro angenommenem Auftrag (`conversations`, `messages`) | ✅ |
 | `20260923140000_conversation_list.sql` | Leseabfrage für den Chats-Tab (nur eine Funktion, keine neue Tabelle) | ✅ |
 | `20260925120000_no_self_hire.sql` | Niemand beauftragt sich selbst (ersetzt drei Funktionen, keine Tabellenänderung) | ✅ |
-| `20260925140000_job_status_values.sql` | **Teil 1:** Statuswerte und Zeitstempel für den Auftragsablauf | ⬜ |
-| `20260925160000_job_status.sql` | **Teil 2:** Aufträge lesen und einen Schritt weiterschalten | ⬜ |
+| `20260925140000_job_status_values.sql` | **Teil 1:** Statuswerte und Zeitstempel für den Auftragsablauf | ✅ |
+| `20260925160000_job_status.sql` | **Teil 2:** Aufträge lesen und einen Schritt weiterschalten | ✅ |
+| `20260925180000_reviews.sql` | Bewertungen nach abgeschlossenen Aufträgen; Durchschnitt in der Anbietersuche | ⬜ |
 
 Die beiden Auftragsstatus-Dateien sind **getrennt und in dieser Reihenfolge**
 auszuführen. Postgres erlaubt es nicht, einen gerade erst angelegten

@@ -16,6 +16,8 @@ class ProviderMatch {
     this.lowestPriceCents,
     this.currency = 'EUR',
     this.contactStatus,
+    this.ratingAverage,
+    this.ratingCount = 0,
   });
 
   final String providerId;
@@ -44,6 +46,13 @@ class ProviderMatch {
 
   bool get alreadyContacted => contactStatus != null;
 
+  /// What this provider's reviews add up to. Null while nobody has rated
+  /// them — a different fact from a bad rating, and shown as such.
+  final double? ratingAverage;
+  final int ratingCount;
+
+  bool get hasRating => ratingCount > 0 && ratingAverage != null;
+
   static ProviderMatch fromJson(Map<String, dynamic> json) => ProviderMatch(
     providerId: json['provider_id'] as String,
     displayName: json['display_name'] as String?,
@@ -57,5 +66,7 @@ class ProviderMatch {
     contactStatus: RequestContactStatus.fromDb(
       json['contact_status'] as String?,
     ),
+    ratingAverage: (json['rating_average'] as num?)?.toDouble(),
+    ratingCount: (json['rating_count'] as num?)?.toInt() ?? 0,
   );
 }

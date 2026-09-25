@@ -766,6 +766,65 @@ class AppLocalizationsEn extends AppLocalizations {
   String get jobAppointmentPickTime => 'Pick a time';
 
   @override
+  String get reviewTitle => 'How was your job?';
+
+  @override
+  String get reviewCommentLabel => 'What would you like to say about the job?';
+
+  @override
+  String get reviewCommentHint => 'Your experience (optional)';
+
+  @override
+  String get reviewSubmit => 'Submit review';
+
+  @override
+  String get reviewRate => 'Rate the job';
+
+  @override
+  String get reviewThanks => 'Thank you for your review!';
+
+  @override
+  String get reviewYours => 'Your review';
+
+  @override
+  String get reviewBackToJobs => 'Back to my jobs';
+
+  @override
+  String get reviewAlready => 'You have already reviewed this job.';
+
+  @override
+  String get reviewStars1 => 'Very poor';
+
+  @override
+  String get reviewStars2 => 'Not good';
+
+  @override
+  String get reviewStars3 => 'Okay';
+
+  @override
+  String get reviewStars4 => 'Good';
+
+  @override
+  String get reviewStars5 => 'Excellent';
+
+  @override
+  String reviewCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count reviews',
+      one: '1 review',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get reviewNone => 'No reviews yet';
+
+  @override
+  String get reviewYourRatingTitle => 'Your rating';
+
+  @override
   String customerRequestsAcceptedCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,

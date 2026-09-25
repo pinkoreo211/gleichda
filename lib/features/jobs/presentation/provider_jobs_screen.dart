@@ -8,8 +8,10 @@ import 'package:app/features/jobs/application/incoming_requests.dart';
 import 'package:app/features/jobs/application/my_jobs.dart';
 import 'package:app/features/jobs/presentation/widgets/incoming_request_list.dart';
 import 'package:app/features/jobs/presentation/widgets/jobs_section.dart';
+import 'package:app/features/reviews/application/my_reviews.dart';
 import 'package:app/features/provider/application/provider_profile_providers.dart';
 import 'package:app/features/provider/presentation/widgets/verification_badge.dart';
+import 'package:app/features/reviews/presentation/widgets/provider_rating_card.dart';
 import 'package:app/l10n/app_localizations.dart';
 
 /// The provider's home: who they are, what is waiting for them, and the
@@ -42,6 +44,7 @@ class ProviderJobsScreen extends ConsumerWidget {
           onRefresh: () async {
             ref.invalidate(myIncomingRequestsProvider);
             ref.invalidate(myJobsProvider);
+            ref.invalidate(myProviderRatingProvider);
             await ref.read(myIncomingRequestsProvider.future);
             await ref.read(myJobsProvider.future);
           },
@@ -90,6 +93,8 @@ class ProviderJobsScreen extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: AppSpacing.lg),
+              const ProviderRatingCard(),
+              const SizedBox(height: AppSpacing.md),
               const VerificationCard(),
               const SizedBox(height: AppSpacing.md),
             ],

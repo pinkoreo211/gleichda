@@ -26,7 +26,7 @@ Legend: ✅ done · 🔄 in progress · ⏳ open
 | 5 | **Discovery & fixed-price booking:** location, nearby verified providers, option → price → time → request | ⏳ | Customer books a cleaner in Vienna |
 | 6 | **Job flow:** accepted, time agreed, on the way, in progress, done, customer confirms — each side offered only its own steps | ✅ | Both sides move one job through to the end; skipping a step is refused by the database |
 | 7 | **Chat:** live messages and photos per job | ⏳ | |
-| 8 | **Reviews & book again** | ⏳ | |
+| 8 | **Reviews:** the customer rates a confirmed job once; the provider's average comes from real reviews | ✅ | An unrated provider reads "no reviews yet", never five stars |
 | 9 | **Projects & offers:** project with photos/measurements/budget, offers, compare, accept | ⏳ | Paving project receives offers |
 | 10 | **Push notifications** | ⏳ | |
 | 11 | **Payments:** Stripe Connect in test mode (only when instructed) | ⏳ | Test payment, platform fee, payout, refund |
@@ -59,7 +59,8 @@ analytics.
 - [x] Supabase: chat migration run — verified on a device with two real accounts: customer and provider reach the same conversation, and neither sees the other pair's
 - [x] Supabase: conversation list migration run — verified on a device: the customer sees one chat, the provider both, each with its own last message
 - [x] Supabase: no-self-hire migration run — verified on a device: the provider no longer appears in their own results
-- [ ] **Supabase: run `20260925140000_job_status_values.sql` and then `20260925160000_job_status.sql`** (see docs/supabase-setup.md, section 2, two separate runs). Until then, a job has no status beyond "accepted"
+- [x] Supabase: both job status migrations run — verified on a device with two accounts: the whole lifecycle from agreeing a time to the customer's confirmation
+- [ ] **Supabase: run `20260925180000_reviews.sql`** (see docs/supabase-setup.md, section 2). Until then, a finished job cannot be rated
 
 - [x] Android SDK Command-line Tools installed
 - [x] Android licences: Google replaced `sdkmanager --licenses`; `flutter doctor` still reports "unknown", which is a tooling mismatch, not a blocker — builds work

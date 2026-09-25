@@ -15,3 +15,10 @@ String formatCents(int cents, {String currency = 'EUR'}) {
   );
   return format.format(cents / 100);
 }
+
+/// e.g. "4,8" — one decimal, in the market's notation, because a comma is
+/// what a price uses two lines above it.
+String formatRating(double average) => NumberFormat(
+  '0.0',
+  MarketConfig.launchMarket.formattingLocale.toLanguageTag(),
+).format(average);
