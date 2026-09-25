@@ -730,6 +730,9 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
+  String get jobOnTheWaySelf => 'Du bist unterwegs';
+
+  @override
   String get jobCompletedAsk =>
       'Bitte bestätige, dass die Arbeit abgeschlossen ist.';
 

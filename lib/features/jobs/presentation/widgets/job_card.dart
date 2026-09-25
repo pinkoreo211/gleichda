@@ -196,7 +196,12 @@ class _Headline extends StatelessWidget {
     final color = status.color(theme.colorScheme);
 
     final headline = switch (status) {
-      RequestContactStatus.onTheWay => l10n.jobOnTheWayNamed(name),
+      // Only the customer is waiting for somebody: naming the other person
+      // on the provider's own screen would tell them the customer is
+      // driving to themselves.
+      RequestContactStatus.onTheWay when job.viewerIsCustomer =>
+        l10n.jobOnTheWayNamed(name),
+      RequestContactStatus.onTheWay => l10n.jobOnTheWaySelf,
       RequestContactStatus.customerConfirmed => l10n.jobFinished,
       _ => status.label(l10n),
     };

@@ -726,6 +726,9 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get jobOnTheWaySelf => 'You are on the way';
+
+  @override
   String get jobCompletedAsk => 'Please confirm that the work is finished.';
 
   @override

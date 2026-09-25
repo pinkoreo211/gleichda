@@ -1358,6 +1358,12 @@ abstract class AppLocalizations {
   /// **'{name} ist unterwegs'**
   String jobOnTheWayNamed(String name);
 
+  /// Headline on the provider own screen while they are travelling.
+  ///
+  /// In de, this message translates to:
+  /// **'Du bist unterwegs'**
+  String get jobOnTheWaySelf;
+
   /// Asks the customer to confirm the finished work.
   ///
   /// In de, this message translates to:

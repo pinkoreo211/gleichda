@@ -705,6 +705,8 @@
     "description": "Headline while the provider is travelling.",
     "placeholders": { "name": { "type": "String" } }
   },
+  "jobOnTheWaySelf": "Du bist unterwegs",
+  "@jobOnTheWaySelf": { "description": "Headline on the provider own screen while they are travelling." },
   "jobCompletedAsk": "Bitte bestätige, dass die Arbeit abgeschlossen ist.",
   "@jobCompletedAsk": { "description": "Asks the customer to confirm the finished work." },
   "jobCompletedWaiting": "Warte auf die Bestätigung durch die Kundin oder den Kunden.",
