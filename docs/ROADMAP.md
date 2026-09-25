@@ -57,7 +57,8 @@ analytics.
 - [x] Supabase: request contacts migration run — verified on a device: a request from Wien reached the provider, who sees it under "Requests for you"
 - [x] Supabase: request responses migration run — verified on a device: accepted and declined both reached the customer's side
 - [x] Supabase: chat migration run — verified on a device with two real accounts: customer and provider reach the same conversation, and neither sees the other pair's
-- [ ] **Supabase: run `20260923140000_conversation_list.sql`** (see docs/supabase-setup.md, section 2). Until then, the Chats tab cannot list anything
+- [x] Supabase: conversation list migration run — verified on a device: the customer sees one chat, the provider both, each with its own last message
+- [ ] **Supabase: run `20260925120000_no_self_hire.sql`** (see docs/supabase-setup.md, section 2). Until then, an account can still send a request to its own provider profile
 
 - [x] Android SDK Command-line Tools installed
 - [x] Android licences: Google replaced `sdkmanager --licenses`; `flutter doctor` still reports "unknown", which is a tooling mismatch, not a blocker — builds work

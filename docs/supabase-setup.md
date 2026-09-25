@@ -35,7 +35,8 @@ Bisher gibt es diese Dateien:
 | `20260922140000_request_contacts.sql` | Ort bei der Anfrage; Anfrage an einen Anbieter senden; der Anbieter sieht sie | ✅ |
 | `20260922160000_request_responses.sql` | Anbieter nimmt eine Anfrage an oder lehnt sie ab; Kunde sieht den Status | ✅ |
 | `20260923120000_chat.sql` | Privater Chat pro angenommenem Auftrag (`conversations`, `messages`) | ✅ |
-| `20260923140000_conversation_list.sql` | Leseabfrage für den Chats-Tab (nur eine Funktion, keine neue Tabelle) | ⬜ |
+| `20260923140000_conversation_list.sql` | Leseabfrage für den Chats-Tab (nur eine Funktion, keine neue Tabelle) | ✅ |
+| `20260925120000_no_self_hire.sql` | Niemand beauftragt sich selbst (ersetzt drei Funktionen, keine Tabellenänderung) | ⬜ |
 
 Ein zweites Ausführen derselben Datei meldet Fehler wie „already exists“ –
 das ist harmlos, es wurde dann nichts verändert.
