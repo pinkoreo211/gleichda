@@ -6,11 +6,23 @@ import 'dart:typed_data';
 /// tests only ever see bytes and a name, so nothing below this line has to
 /// know whether it came from the camera, the gallery or a file browser.
 class PickedDocument {
-  const PickedDocument({required this.fileName, required this.bytes});
+  const PickedDocument({
+    required this.fileName,
+    required this.bytes,
+    this.displayName,
+  });
 
-  /// What the file was called where it came from. Shown back to the
-  /// provider so they recognise what they sent.
+  /// The technical name, used only for the extension and the content type.
+  /// Never shown: a photo comes back from the picker called something like
+  /// `scaled_53.png`, which tells the provider nothing.
   final String fileName;
+
+  /// What to show the provider, when there is something worth showing.
+  ///
+  /// A file they chose by name ("Gewerbeschein.pdf") has one. A photo they
+  /// just took does not, and the card says the document type and the date
+  /// anyway — which is more than a made-up name would.
+  final String? displayName;
 
   final Uint8List bytes;
 

@@ -47,6 +47,8 @@ class PlatformDocumentPicker implements DocumentPicker {
       imageQuality: 85,
     );
     if (file == null) return null;
+    // No display name on purpose: scaling the photo down renames it, and
+    // the generated name would mean nothing to the person who took it.
     return PickedDocument(fileName: file.name, bytes: await file.readAsBytes());
   }
 
@@ -58,6 +60,11 @@ class PlatformDocumentPicker implements DocumentPicker {
     if (file == null) return null;
     // Read through the picker rather than from a path: on Android a picked
     // file often has no readable path of its own.
-    return PickedDocument(fileName: file.name, bytes: await file.readAsBytes());
+    return PickedDocument(
+      fileName: file.name,
+      // This one the provider picked by name, so it is worth showing back.
+      displayName: file.name,
+      bytes: await file.readAsBytes(),
+    );
   }
 }

@@ -121,7 +121,7 @@ class SupabaseVerificationRepository implements VerificationRepository {
         params: {
           'doc_type': type.dbName,
           'storage_path': path,
-          'original_file_name': file.fileName,
+          'original_file_name': file.displayName,
         },
       );
     } catch (error) {

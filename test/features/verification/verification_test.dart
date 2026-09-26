@@ -141,6 +141,38 @@ void main() {
     expect(stored?.status, ProviderDocumentStatus.uploaded);
   });
 
+  testWidgets('a photo is shown by its date, not by a made-up file name', (
+    tester,
+  ) async {
+    // What the camera and the gallery hand back: scaling the photo down
+    // renames it, so there is no name worth repeating to anybody.
+    final opened = await _openVerification(
+      tester,
+      picker: FakeDocumentPicker(
+        next: PickedDocument(
+          fileName: 'scaled_53.png',
+          bytes: Uint8List.fromList(const [1, 2, 3]),
+        ),
+      ),
+    );
+    await _upload(tester, 'Identitätsnachweis');
+
+    expect(find.text('scaled_53.png'), findsNothing);
+    expect(
+      _inCard('Identitätsnachweis', find.text('Prüfung ausstehend')),
+      findsOneWidget,
+    );
+    expect(find.text('Hochgeladen am 26.9.2026'), findsOneWidget);
+    // The file itself went up all the same.
+    expect(
+      opened.docs.store.documentOf(
+        testProviderId,
+        ProviderDocumentType.identity,
+      ),
+      isNotNull,
+    );
+  });
+
   testWidgets('handing something in starts a check and nothing more', (
     tester,
   ) async {

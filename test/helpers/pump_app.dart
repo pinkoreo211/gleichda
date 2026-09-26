@@ -938,7 +938,7 @@ class FakeDocumentStore {
   ProviderDocument submit({
     required String providerId,
     required ProviderDocumentType type,
-    required String fileName,
+    String? fileName,
   }) {
     final existing = documentOf(providerId, type);
     if (existing != null && !existing.status.canBeReplaced) {
@@ -1040,7 +1040,11 @@ class FakeVerificationRepository implements VerificationRepository {
     // request naming somebody else's profile gets nowhere.
     if (providerId != myProviderId) throw AppFailure.unknown;
 
-    store.submit(providerId: myProviderId, type: type, fileName: file.fileName);
+    store.submit(
+      providerId: myProviderId,
+      type: type,
+      fileName: file.displayName,
+    );
 
     // Handing something in starts a check. Never sets 'verified'.
     final current = provider?.profile?.verificationStatus;
@@ -1058,6 +1062,7 @@ class FakeDocumentPicker implements DocumentPicker {
           next ??
           PickedDocument(
             fileName: 'ausweis.jpg',
+            displayName: 'ausweis.jpg',
             bytes: Uint8List.fromList(const [1, 2, 3]),
           );
 
