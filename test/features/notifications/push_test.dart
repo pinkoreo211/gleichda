@@ -5,6 +5,7 @@ import 'package:app/core/errors/app_failure.dart';
 import 'package:app/features/notifications/application/push_controller.dart';
 import 'package:app/features/notifications/domain/push_message.dart';
 import 'package:app/features/provider/domain/provider_profile.dart';
+import 'package:app/features/requests/domain/request_contact_status.dart';
 import 'package:app/features/requests/domain/service_request_draft.dart';
 import 'package:app/features/session/domain/app_role.dart';
 
@@ -181,6 +182,47 @@ void main() {
     // No pull to refresh, no tab switch: it is simply there.
     await scrollTo(tester, find.text(_cleaning));
     expect(find.text(_cleaning), findsOneWidget);
+  });
+
+  testWidgets('a notification about an accepted job marks that job too', (
+    tester,
+  ) async {
+    // The gap this test exists for: a request the provider already
+    // accepted is no longer in "requests for you", it is a job. A
+    // notification about it has to mark it there.
+    final requests = await _waitingRequest();
+    final contactId = requests.contacts.contactId(
+      requests.requests.single.id,
+      testProviderId,
+    );
+    requests.contacts.respond(contactId, RequestContactStatus.accepted);
+
+    final push = FakePushService();
+    await pumpSignedInApp(
+      tester,
+      role: AppRole.provider,
+      requests: requests,
+      incoming: FakeIncomingRequestsRepository(requests: requests),
+      jobs: FakeJobsRepository(
+        contacts: requests.contacts,
+        requests: requests,
+        isProvider: true,
+      ),
+      provider: FakeProviderRepository(
+        hasProfile: true,
+        status: ProviderOnboardingStatus.completed,
+      ),
+      push: push,
+    );
+
+    push.tap(PushMessage(kind: PushKind.bookingReceived, contactId: contactId));
+    await tester.pumpAndSettle();
+
+    await scrollTo(tester, find.text('Wohnungsreinigung').first);
+    final outlined = tester
+        .widgetList<Card>(find.byType(Card))
+        .where((card) => card.shape is RoundedRectangleBorder);
+    expect(outlined.length, 1);
   });
 
   testWidgets('a notification about nothing opens nothing in particular', (

@@ -11,6 +11,7 @@ import 'package:app/design_system/widgets/button_progress.dart';
 import 'package:app/features/chat/presentation/chat_screen.dart';
 import 'package:app/features/jobs/application/my_jobs.dart';
 import 'package:app/features/jobs/data/jobs_repository.dart';
+import 'package:app/features/notifications/application/push_controller.dart';
 import 'package:app/features/jobs/domain/job.dart';
 import 'package:app/features/requests/domain/request_contact_status.dart';
 import 'package:app/features/requests/presentation/widgets/request_status_display.dart';
@@ -118,8 +119,18 @@ class _JobCardState extends ConsumerState<JobCard> {
     final service = _job.serviceFor(language);
     final next = _job.nextStep;
 
+    // Outlined when a tapped notification was about this job, so the push
+    // lands on the thing it announced rather than on a list of everything.
+    final isHighlighted = ref.watch(highlightedJobProvider) == _job.contactId;
+
     return Card(
       margin: EdgeInsets.zero,
+      shape: isHighlighted
+          ? RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppRadius.md),
+              side: BorderSide(color: theme.colorScheme.primary, width: 2),
+            )
+          : null,
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
