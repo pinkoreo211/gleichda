@@ -40,7 +40,8 @@ Bisher gibt es diese Dateien:
 | `20260925140000_job_status_values.sql` | **Teil 1:** Statuswerte und Zeitstempel für den Auftragsablauf | ✅ |
 | `20260925160000_job_status.sql` | **Teil 2:** Aufträge lesen und einen Schritt weiterschalten | ✅ |
 | `20260925180000_reviews.sql` | Bewertungen nach abgeschlossenen Aufträgen; Durchschnitt in der Anbietersuche | ✅ |
-| `20260926120000_provider_verification.sql` | Nachweise hochladen: Spalten, privater Storage-Bucket, Prüf-Funktionen fürs Team | ⬜ |
+| `20260926120000_provider_verification.sql` | Nachweise hochladen: Spalten, privater Storage-Bucket, Prüf-Funktionen fürs Team | ✅ |
+| `20260926140000_document_upload_limits.sql` | Größe und Dateiformat schon im Bucket begrenzen, nicht nur in der App | ⬜ |
 
 Die beiden Auftragsstatus-Dateien sind **getrennt und in dieser Reihenfolge**
 auszuführen. Postgres erlaubt es nicht, einen gerade erst angelegten
