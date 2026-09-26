@@ -149,6 +149,27 @@ Datenbank steht, nicht nach dem, was ihr jemand erzählt. Dadurch arbeitet
 sie auch eine Warteschlange ab, die sich während einer Störung angesammelt
 hat.
 
+> **Achtung beim Produktivprojekt:** Dieser Webhook ist die **einzige**
+> Einstellung des Projekts, die nicht als Datei im Repository liegt. Alles
+> andere ist eine Migration und läuft automatisch mit. Der Webhook wird im
+> Dashboard geklickt und muss beim Anlegen des Produktivprojekts **von Hand
+> wiederholt** werden — sonst entstehen dort Benachrichtigungen, die nie
+> jemand abholt.
+>
+> Grund: Der Webhook braucht den Publishable Key im Authorization-Header,
+> und der steht bei uns in `env/*.json` und damit bewusst nicht in Git.
+
+### Der Schalter „Verify JWT"
+
+An der Edge Function bleibt **„Verify JWT with legacy secret" eingeschaltet**.
+Supabase empfiehlt im Hinweistext „OFF" — das gilt für Funktionen, die
+ihre Zugangsprüfung selbst im Code machen. Unsere macht das nicht.
+
+Wäre er aus, könnte jeder mit der URL die Funktion beliebig oft aufrufen.
+An den Daten könnte er nichts anrichten — versendet wird nur, was ohnehin
+legitim in der Warteschlange steht — aber er könnte das Firebase- und
+Supabase-Kontingent verbrennen.
+
 ## 7. Prüfen, ob es geht
 
 Nach einer Buchung im SQL Editor:
