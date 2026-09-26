@@ -62,7 +62,7 @@ analytics.
 - [x] Supabase: both job status migrations run — verified on a device with two accounts: the whole lifecycle from agreeing a time to the customer's confirmation
 - [x] Supabase: reviews migration run — verified on a device: the customer rated a confirmed job five stars with a comment, the button turned into the given rating, and the provider went from no rating at all to "5,0 · 1 review" in the search
 - [x] Supabase: verification migration run — bucket `provider-documents` exists, is not public, and carries all three storage policies
-- [ ] **Supabase: run `20260926140000_document_upload_limits.sql`** — the bucket still accepts 50 MB of any file type; the app's 10 MB / PDF-and-photo rule should hold on the server too
+- [x] Supabase: bucket limits migration run — the bucket itself now refuses anything over 10 MB and anything that is not a PDF or a photo
 
 - [x] Android SDK Command-line Tools installed
 - [x] Android licences: Google replaced `sdkmanager --licenses`; `flutter doctor` still reports "unknown", which is a tooling mismatch, not a blocker — builds work
