@@ -65,7 +65,8 @@ analytics.
 - [x] Supabase: bucket limits migration run — the bucket itself now refuses anything over 10 MB and anything that is not a PDF or a photo
 - [x] Verification walked through on a device with two accounts: the provider uploaded, the team rejected with a reason that arrived word for word, the provider replaced it, the team accepted and verified, and the badge appeared on the customer's side. Storage kept one file per document type, not two
 - [ ] **Push: Firebase-Projekt anlegen und `google-services.json` liefern** (docs/push-setup.md, Abschnitte 1–2). Ohne die Datei kann Firebase nicht in die App
-- [ ] **Supabase: run `20260927120000_push_notifications.sql`**, then the Edge Function and the webhook (docs/push-setup.md, sections 4–6)
+- [x] Supabase: push tables migration run — the outbox and the token table exist
+- [ ] **Push: Edge Function, the `FIREBASE_SERVICE_ACCOUNT` secret and the webhook** (docs/push-setup.md, sections 4–6). Needs the Firebase project first
 - [x] Supabase: booking migration run — walked through on a device with two accounts: "Mein Kasten muss aufgebaut werden" found Möbelmontage in the catalog, Wien found Max, his own € 39,99 became the price, and he saw that price and the wanted hour before accepting. The street reached him only after he did
 
 - [x] Android SDK Command-line Tools installed
