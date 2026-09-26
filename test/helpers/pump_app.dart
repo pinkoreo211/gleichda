@@ -26,6 +26,9 @@ import 'package:app/features/jobs/data/jobs_repository.dart';
 import 'package:app/features/jobs/domain/incoming_request.dart';
 import 'package:app/features/jobs/domain/job.dart';
 import 'package:app/features/matching/data/matching_repository.dart';
+import 'package:app/features/notifications/data/push_service.dart';
+import 'package:app/features/notifications/data/push_token_repository.dart';
+import 'package:app/features/notifications/domain/push_message.dart';
 import 'package:app/features/matching/domain/provider_match.dart';
 import 'package:app/features/profile/data/profile_repository.dart';
 import 'package:app/features/provider/data/provider_repository.dart';
@@ -1272,6 +1275,91 @@ class FakeDocumentPicker implements DocumentPicker {
   }
 }
 
+/// [PushService] without a push provider.
+///
+/// Nothing here reaches a network. It records what the app asked for, so a
+/// test can check that permission was requested at the right moment and
+/// that a tapped notification opened the right job.
+class FakePushService implements PushService {
+  FakePushService({
+    this.isAvailable = true,
+    this.grantsPermission = true,
+    this.token = 'device-token-1',
+    this.startedFrom,
+  });
+
+  @override
+  final bool isAvailable;
+
+  /// What the operating system answers. False stands for a person who
+  /// declined, which must leave the app working.
+  final bool grantsPermission;
+
+  String? token;
+
+  /// A notification that started the app from cold.
+  PushMessage? startedFrom;
+
+  /// How often the app asked. The operating system shows its dialog once,
+  /// so anything above one would be the app nagging.
+  int permissionRequests = 0;
+
+  final _opened = StreamController<PushMessage>.broadcast();
+  final _tokens = StreamController<String>.broadcast();
+
+  /// Stands in for the person tapping a notification.
+  void tap(PushMessage message) => _opened.add(message);
+
+  void rotateToken(String next) {
+    token = next;
+    _tokens.add(next);
+  }
+
+  @override
+  Future<bool> requestPermission() async {
+    permissionRequests++;
+    return grantsPermission;
+  }
+
+  @override
+  Future<bool> hasPermission() async => false;
+
+  @override
+  Future<String?> currentToken() async => grantsPermission ? token : null;
+
+  @override
+  Stream<String> get tokenChanges => _tokens.stream;
+
+  @override
+  Stream<PushMessage> get opened => _opened.stream;
+
+  @override
+  Future<PushMessage?> initialMessage() async => startedFrom;
+}
+
+/// [PushTokenRepository] that records what was registered.
+class FakePushTokenRepository implements PushTokenRepository {
+  /// Every token currently filed under this account.
+  final registered = <String>{};
+  final forgotten = <String>[];
+
+  /// When set, every call throws it.
+  AppFailure? failure;
+
+  @override
+  Future<void> register(String token) async {
+    if (failure case final failure?) throw failure;
+    registered.add(token);
+  }
+
+  @override
+  Future<void> forget(String token) async {
+    if (failure case final failure?) throw failure;
+    registered.remove(token);
+    forgotten.add(token);
+  }
+}
+
 /// [SessionStore] that keeps everything in memory.
 class InMemorySessionStore implements SessionStore {
   InMemorySessionStore([Map<String, AppRole>? activeRoles])
@@ -1305,6 +1393,8 @@ Future<void> pumpApp(
   FakeReviewsRepository? reviews,
   FakeVerificationRepository? verification,
   FakeBookingRepository? booking,
+  FakePushService? push,
+  FakePushTokenRepository? pushTokens,
   FakeDocumentPicker? picker,
   Locale locale = const Locale('de', 'AT'),
 }) async {
@@ -1345,6 +1435,10 @@ Future<void> pumpApp(
         ),
         reviewsRepositoryProvider.overrideWithValue(
           reviews ?? FakeReviewsRepository(contacts: FakeRequestContacts()),
+        ),
+        pushServiceProvider.overrideWithValue(push ?? FakePushService()),
+        pushTokenRepositoryProvider.overrideWithValue(
+          pushTokens ?? FakePushTokenRepository(),
         ),
         bookingRepositoryProvider.overrideWithValue(
           booking ?? FakeBookingRepository(),
@@ -1396,6 +1490,8 @@ Future<void> pumpSignedInApp(
   FakeReviewsRepository? reviews,
   FakeVerificationRepository? verification,
   FakeBookingRepository? booking,
+  FakePushService? push,
+  FakePushTokenRepository? pushTokens,
   FakeDocumentPicker? picker,
 }) {
   return pumpApp(
@@ -1416,6 +1512,8 @@ Future<void> pumpSignedInApp(
     reviews: reviews,
     verification: verification,
     booking: booking,
+    push: push,
+    pushTokens: pushTokens,
     picker: picker,
     provider:
         provider ??
@@ -1427,3 +1525,8 @@ Future<void> pumpSignedInApp(
             : null),
   );
 }
+
+/// The Riverpod container behind the running app, for reading state a test
+/// cannot see on screen.
+ProviderContainer providerContainerOf(WidgetTester tester) =>
+    ProviderScope.containerOf(tester.element(find.byType(App)));

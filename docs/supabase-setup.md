@@ -43,6 +43,7 @@ Bisher gibt es diese Dateien:
 | `20260926120000_provider_verification.sql` | Nachweise hochladen: Spalten, privater Storage-Bucket, Prüf-Funktionen fürs Team | ✅ |
 | `20260926140000_document_upload_limits.sql` | Größe und Dateiformat schon im Bucket begrenzen, nicht nur in der App | ✅ |
 | `20260926160000_booking.sql` | Festpreis-Buchung: Adresse, gewählte Preisoption, Wunschtermin; Servicevorschlag und buchbare Anbieter | ✅ |
+| `20260927120000_push_notifications.sql` | Geräte-Tokens und Benachrichtigungs-Warteschlange (siehe docs/push-setup.md) | ⬜ |
 
 Die beiden Auftragsstatus-Dateien sind **getrennt und in dieser Reihenfolge**
 auszuführen. Postgres erlaubt es nicht, einen gerade erst angelegten

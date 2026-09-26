@@ -10,6 +10,7 @@ import 'package:app/features/jobs/application/incoming_requests.dart';
 import 'package:app/features/jobs/application/my_jobs.dart';
 import 'package:app/features/jobs/data/incoming_requests_repository.dart';
 import 'package:app/features/jobs/domain/incoming_request.dart';
+import 'package:app/features/notifications/application/push_controller.dart';
 import 'package:app/features/requests/domain/request_contact_status.dart';
 import 'package:app/features/requests/presentation/widgets/request_status_display.dart';
 import 'package:app/features/requests/presentation/widgets/request_timing_display.dart';
@@ -72,6 +73,9 @@ class _IncomingRequestListState extends ConsumerState<IncomingRequestList> {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final requests = ref.watch(myIncomingRequestsProvider);
+    // The job a tapped notification was about, if the person got here that
+    // way. Outlined below so the push lands on it.
+    final highlighted = ref.watch(highlightedJobProvider);
 
     final list = switch (requests) {
       AsyncData(:final value) => [
@@ -141,6 +145,7 @@ class _IncomingRequestListState extends ConsumerState<IncomingRequestList> {
           for (final request in list) ...[
             _IncomingRequestCard(
               request: request,
+              isHighlighted: highlighted == request.contactId,
               isAnswering: _answering == request.contactId,
               // One at a time: a second decision while the first is on its
               // way would only confuse.
@@ -161,10 +166,15 @@ class _IncomingRequestCard extends StatelessWidget {
     required this.request,
     required this.isAnswering,
     required this.onRespond,
+    this.isHighlighted = false,
   });
 
   final IncomingRequest request;
   final bool isAnswering;
+
+  /// True for the request a tapped notification was about, so the push
+  /// lands on the thing it announced rather than on a list of everything.
+  final bool isHighlighted;
 
   /// Null while another request is being answered.
   final ValueChanged<RequestContactStatus>? onRespond;
@@ -179,6 +189,12 @@ class _IncomingRequestCard extends StatelessWidget {
 
     return Card(
       margin: EdgeInsets.zero,
+      shape: isHighlighted
+          ? RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppRadius.md),
+              side: BorderSide(color: theme.colorScheme.primary, width: 2),
+            )
+          : null,
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(

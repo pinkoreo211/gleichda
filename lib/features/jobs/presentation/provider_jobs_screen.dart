@@ -8,6 +8,7 @@ import 'package:app/features/jobs/application/incoming_requests.dart';
 import 'package:app/features/jobs/application/my_jobs.dart';
 import 'package:app/features/jobs/presentation/widgets/incoming_request_list.dart';
 import 'package:app/features/jobs/presentation/widgets/jobs_section.dart';
+import 'package:app/features/notifications/presentation/ask_for_notifications.dart';
 import 'package:app/features/reviews/application/my_reviews.dart';
 import 'package:app/features/provider/application/provider_profile_providers.dart';
 import 'package:app/features/provider/presentation/widgets/verification_badge.dart';
@@ -51,6 +52,9 @@ class ProviderJobsScreen extends ConsumerWidget {
           child: ListView(
             padding: const EdgeInsets.all(AppSpacing.md),
             children: [
+              // A provider with a job list is exactly who a notification
+              // is for, so this is where the app asks.
+              const AskForNotifications(),
               const SizedBox(height: AppSpacing.sm),
               Text(
                 name == null

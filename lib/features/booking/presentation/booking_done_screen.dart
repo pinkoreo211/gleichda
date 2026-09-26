@@ -5,6 +5,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:app/core/routing/app_routes.dart';
 import 'package:app/design_system/app_dimensions.dart';
 import 'package:app/features/booking/application/booking_controller.dart';
+import 'package:app/features/notifications/presentation/ask_for_notifications.dart';
 import 'package:app/l10n/app_localizations.dart';
 
 /// Step seven: it is sent.
@@ -33,6 +34,9 @@ class BookingDoneScreen extends ConsumerWidget {
           padding: const EdgeInsets.all(AppSpacing.md),
           child: Column(
             children: [
+              // Someone who just sent a booking is waiting for an answer,
+              // which is the one moment where a notification sells itself.
+              const AskForNotifications(),
               const Spacer(),
               Icon(
                 Icons.check_circle_outline,

@@ -28,7 +28,7 @@ Legend: ✅ done · 🔄 in progress · ⏳ open
 | 7 | **Chat:** live messages and photos per job | ⏳ | |
 | 8 | **Reviews:** the customer rates a confirmed job once; the provider's average comes from real reviews | ✅ | An unrated provider reads "no reviews yet", never five stars |
 | 9 | **Projects & offers:** project with photos/measurements/budget, offers, compare, accept | ⏳ | Paving project receives offers |
-| 10 | **Push notifications** | ⏳ | |
+| 10 | **Push notifications:** device tokens, an outbox the booking writes to, and a sender that reads it | 🔄 | A provider learns about a request without opening the app |
 | 11 | **Payments:** Stripe Connect in test mode (only when instructed) | ⏳ | Test payment, platform fee, payout, refund |
 | 12 | **Launch prep:** separate prod Supabase project, own email service (SMTP), icon, splash, legal pages + consent at sign-up, account deletion, sign-in tokens in secure storage, crash reporting, store listings, release signing, iOS build on a Mac, TestFlight + Play internal testing | ⏳ | Beta testers install the app |
 | 13 | **Closed beta in Vienna**, fixes, public launch | ⏳ | |
@@ -64,6 +64,8 @@ analytics.
 - [x] Supabase: verification migration run — bucket `provider-documents` exists, is not public, and carries all three storage policies
 - [x] Supabase: bucket limits migration run — the bucket itself now refuses anything over 10 MB and anything that is not a PDF or a photo
 - [x] Verification walked through on a device with two accounts: the provider uploaded, the team rejected with a reason that arrived word for word, the provider replaced it, the team accepted and verified, and the badge appeared on the customer's side. Storage kept one file per document type, not two
+- [ ] **Push: Firebase-Projekt anlegen und `google-services.json` liefern** (docs/push-setup.md, Abschnitte 1–2). Ohne die Datei kann Firebase nicht in die App
+- [ ] **Supabase: run `20260927120000_push_notifications.sql`**, then the Edge Function and the webhook (docs/push-setup.md, sections 4–6)
 - [x] Supabase: booking migration run — walked through on a device with two accounts: "Mein Kasten muss aufgebaut werden" found Möbelmontage in the catalog, Wien found Max, his own € 39,99 became the price, and he saw that price and the wanted hour before accepting. The street reached him only after he did
 
 - [x] Android SDK Command-line Tools installed
