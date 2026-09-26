@@ -155,6 +155,34 @@ void main() {
     );
   });
 
+  testWidgets('one arriving while the app is open reloads the list', (
+    tester,
+  ) async {
+    final push = FakePushService();
+    final requests = InMemoryServiceRequestRepository();
+    await _pumpProvider(tester, push: push, requests: requests);
+
+    expect(find.text(_cleaning), findsNothing);
+
+    // The request arrives on the server while the provider is looking at
+    // the screen. Android shows nothing in that case, so the app has to.
+    final stored = await requests.create(
+      ServiceRequestDraft(
+        description: _cleaning,
+        service: testFlatCleaning,
+        city: 'Wien',
+      ),
+    );
+    requests.contacts.send(requestId: stored.id, providerId: testProviderId);
+
+    push.arrive(const PushMessage(kind: PushKind.bookingReceived));
+    await tester.pumpAndSettle();
+
+    // No pull to refresh, no tab switch: it is simply there.
+    await scrollTo(tester, find.text(_cleaning));
+    expect(find.text(_cleaning), findsOneWidget);
+  });
+
   testWidgets('a notification about nothing opens nothing in particular', (
     tester,
   ) async {

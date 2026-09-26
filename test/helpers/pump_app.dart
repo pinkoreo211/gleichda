@@ -1305,10 +1305,15 @@ class FakePushService implements PushService {
   int permissionRequests = 0;
 
   final _opened = StreamController<PushMessage>.broadcast();
+  final _received = StreamController<PushMessage>.broadcast();
   final _tokens = StreamController<String>.broadcast();
 
   /// Stands in for the person tapping a notification.
   void tap(PushMessage message) => _opened.add(message);
+
+  /// Stands in for one arriving while the app is open, which the
+  /// operating system does not show.
+  void arrive(PushMessage message) => _received.add(message);
 
   void rotateToken(String next) {
     token = next;
@@ -1332,6 +1337,9 @@ class FakePushService implements PushService {
 
   @override
   Stream<PushMessage> get opened => _opened.stream;
+
+  @override
+  Stream<PushMessage> get received => _received.stream;
 
   @override
   Future<PushMessage?> initialMessage() async => startedFrom;

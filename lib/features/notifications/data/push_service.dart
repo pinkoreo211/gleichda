@@ -37,6 +37,13 @@ abstract interface class PushService {
   Stream<PushMessage> get opened;
 
   Future<PushMessage?> initialMessage();
+
+  /// Notifications that arrived while the app was open.
+  ///
+  /// The operating system shows nothing in that case, on the reasoning
+  /// that the app can say it better itself. So it does: the list the
+  /// notification was about reloads, and the new request is simply there.
+  Stream<PushMessage> get received;
 }
 
 /// What the app uses until a push provider is configured, and in tests.
@@ -67,6 +74,9 @@ class NoPushService implements PushService {
 
   @override
   Future<PushMessage?> initialMessage() async => null;
+
+  @override
+  Stream<PushMessage> get received => const Stream.empty();
 }
 
 /// Replaced with the real implementation once a push provider is set up.

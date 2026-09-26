@@ -1,3 +1,5 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -7,6 +9,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:app/app.dart';
 import 'package:app/core/config/env.dart';
+import 'package:app/features/notifications/data/firebase_push_service.dart';
+import 'package:app/features/notifications/data/push_service.dart';
 import 'package:app/features/session/application/active_role_controller.dart';
 import 'package:app/features/session/data/session_store.dart';
 
@@ -46,10 +50,27 @@ Future<void> main() async {
         sessionStoreProvider.overrideWithValue(
           SharedPreferencesSessionStore(preferences),
         ),
+        pushServiceProvider.overrideWithValue(await _pushService()),
       ],
       child: const App(),
     ),
   );
+}
+
+/// Firebase, or nothing.
+///
+/// A build without the Firebase configuration files, a device without
+/// Google Play services, or any other reason this fails: the app runs
+/// exactly as before, minus the notifications. Nobody should be kept out
+/// of a working app because a messaging service would not start.
+Future<PushService> _pushService() async {
+  try {
+    await Firebase.initializeApp();
+    return FirebasePushService(FirebaseMessaging.instance);
+  } catch (error) {
+    debugPrint('Push notifications unavailable: $error');
+    return const NoPushService();
+  }
 }
 
 /// Developer-facing hint when the app was started without the environment

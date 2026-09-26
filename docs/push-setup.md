@@ -56,10 +56,17 @@ der Empfänger ist.
 3. App-Alias: `GleichDa Android`. SHA-1 lässt du **leer** (brauchen wir
    erst für Google-Login).
 4. **App registrieren**.
-5. **`google-services.json` herunterladen**.
+5. **`google-services.json` herunterladen** und nach
+   `android/app/google-services.json` legen.
 
-   → Diese Datei schickst du mir. Sie enthält kein Geheimnis; sie steckt
-   in jeder ausgelieferten Android-App.
+   Diese Datei liegt im Projekt und darf das auch: Sie enthält kein
+   Geheimnis. Genau derselbe Inhalt steckt in jeder ausgelieferten
+   Android-App und lässt sich aus jeder APK herauslesen. Der Schlüssel
+   darin ist an den Paketnamen gebunden und nützt niemandem, der nicht
+   ohnehin die App hat.
+
+   Das eine echte Geheimnis ist der Dienstkonto-Schlüssel aus Abschnitt 4.
+   Der kommt nie ins Projekt.
 
 6. Die nächsten beiden Firebase-Bildschirme („SDK hinzufügen") kannst du
    überspringen – das mache ich.

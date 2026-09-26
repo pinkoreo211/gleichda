@@ -11,6 +11,8 @@ dependencies:
   # Picking a PDF for verification. Photos come from image_picker, which
   # offers the camera as well.
   file_picker: ^13.1.0
+  firebase_core: ^3.8.0
+  firebase_messaging: ^15.1.5
   flutter:
     sdk: flutter
   flutter_localizations:

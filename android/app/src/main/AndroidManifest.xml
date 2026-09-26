@@ -2,6 +2,9 @@
     <!-- Needed in release builds to reach the backend. Flutter only adds it
          to debug/profile builds automatically. -->
     <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- Android 13 and up ask the person before an app may notify them.
+         Without this line the dialog never appears and no push is shown. -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 
     <application
         android:label="GleichDa"

@@ -4,6 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:app/features/auth/application/current_user.dart';
+import 'package:app/features/jobs/application/incoming_requests.dart';
+import 'package:app/features/jobs/application/my_jobs.dart';
 import 'package:app/features/notifications/data/push_service.dart';
 import 'package:app/features/notifications/data/push_token_repository.dart';
 import 'package:app/features/notifications/domain/push_message.dart';
@@ -35,6 +37,7 @@ class HighlightedJob extends Notifier<String?> {
 class PushController extends Notifier<PushState> {
   StreamSubscription<String>? _tokens;
   StreamSubscription<PushMessage>? _opened;
+  StreamSubscription<PushMessage>? _received;
   String? _registered;
 
   @override
@@ -44,9 +47,14 @@ class PushController extends Notifier<PushState> {
 
     _opened = service.opened.listen(_handle);
     _tokens = service.tokenChanges.listen(_register);
+    // Arriving while the app is open shows nothing by itself, so the app
+    // says it the better way: the list it was about reloads, and the new
+    // request is simply there.
+    _received = service.received.listen((_) => _refreshLists());
     ref.onDispose(() {
       _tokens?.cancel();
       _opened?.cancel();
+      _received?.cancel();
     });
 
     // A notification that started the app from cold has no stream to
@@ -90,6 +98,14 @@ class PushController extends Notifier<PushState> {
     if (message.opensAJob) {
       ref.read(highlightedJobProvider.notifier).show(message.contactId!);
     }
+    // Whatever the notification was about has changed on the server, so
+    // both lists are re-read rather than guessed at from its text.
+    _refreshLists();
+  }
+
+  void _refreshLists() {
+    ref.invalidate(myIncomingRequestsProvider);
+    ref.invalidate(myJobsProvider);
   }
 
   /// Asks for permission, at a moment where the reason is obvious.
