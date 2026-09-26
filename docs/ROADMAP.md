@@ -66,7 +66,8 @@ analytics.
 - [x] Verification walked through on a device with two accounts: the provider uploaded, the team rejected with a reason that arrived word for word, the provider replaced it, the team accepted and verified, and the badge appeared on the customer's side. Storage kept one file per document type, not two
 - [x] Push: Firebase project `gleichda-c328d` created and `google-services.json` in place; Firebase is wired into the app
 - [x] Supabase: push tables migration run — the outbox and the token table exist
-- [ ] **Push: the `FIREBASE_SERVICE_ACCOUNT` secret, the Edge Function and the webhook** (docs/push-setup.md, sections 4–6). Everything else is ready; without these nothing is sent
+- [x] Push: secret, Edge Function and webhook all set up — verified on a device: a row in the outbox reached the phone by itself, the text was right, and tapping it outlined that job. A dead token was deleted on the way
+- [ ] **Push: walk it once from a real booking** — so far the outbox row was written by hand. Needs a login code for the customer account
 - [x] Supabase: booking migration run — walked through on a device with two accounts: "Mein Kasten muss aufgebaut werden" found Möbelmontage in the catalog, Wien found Max, his own € 39,99 became the price, and he saw that price and the wanted hour before accepting. The street reached him only after he did
 
 - [x] Android SDK Command-line Tools installed
