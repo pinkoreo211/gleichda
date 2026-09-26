@@ -5,6 +5,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:app/core/config/brand_config.dart';
 import 'package:app/core/routing/app_routes.dart';
 import 'package:app/design_system/app_dimensions.dart';
+import 'package:app/features/booking/application/booking_controller.dart';
 import 'package:app/features/catalog/application/catalog_providers.dart';
 import 'package:app/features/catalog/domain/service_category.dart';
 import 'package:app/features/catalog/presentation/widgets/catalog_async.dart';
@@ -41,13 +42,21 @@ class _CustomerHomeScreenState extends ConsumerState<CustomerHomeScreen> {
     super.dispose();
   }
 
-  Future<void> _openRequest() async {
-    ref
-        .read(serviceRequestDraftProvider.notifier)
-        .start(description: _controller.text);
-    await context.push(AppRoutes.customerRequest);
+  /// Starts the booking flow: the backend reads what they wrote and
+  /// suggests services, and from there the customer picks a place, a
+  /// provider, a price and a time.
+  ///
+  /// The older "describe it and ask around" route is still there — the
+  /// suggestion screen offers it when nothing fits, and it stays the way
+  /// in for services nobody has priced yet.
+  Future<void> _openBooking() async {
+    final text = _controller.text.trim();
+    ref.read(bookingProvider.notifier).start(text);
+    // Kept in step so switching to the older route further on still has
+    // the sentence the customer typed.
+    ref.read(serviceRequestDraftProvider.notifier).start(description: text);
+    await context.push(AppRoutes.booking);
     if (!mounted) return;
-    // The request screen may have changed or cleared the text.
     _controller.text = ref.read(serviceRequestDraftProvider).description;
   }
 
@@ -76,7 +85,7 @@ class _CustomerHomeScreenState extends ConsumerState<CustomerHomeScreen> {
             ValueListenableBuilder<TextEditingValue>(
               valueListenable: _controller,
               builder: (context, value, _) => FilledButton(
-                onPressed: value.text.trim().isEmpty ? null : _openRequest,
+                onPressed: value.text.trim().isEmpty ? null : _openBooking,
                 child: Text(l10n.customerHomeContinue),
               ),
             ),

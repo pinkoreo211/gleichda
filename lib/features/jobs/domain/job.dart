@@ -19,6 +19,10 @@ class Job {
     this.serviceNameEn,
     this.city,
     this.postalCode,
+    this.address,
+    this.priceCents,
+    this.currency = 'EUR',
+    this.requestedAt,
     this.scheduledAt,
     this.startedAt,
     this.completedAt,
@@ -46,9 +50,24 @@ class Job {
   final String? city;
   final String? postalCode;
 
+  /// The street. Only in this list, which both sides are already on: a
+  /// provider reads it once the job is theirs, not while deciding.
+  final String? address;
+
+  /// What was agreed when the job was booked at a listed price. Null for a
+  /// job that started as an open request — then there is no price yet, and
+  /// the app says nothing rather than inventing one.
+  final int? priceCents;
+  final String currency;
+
+  /// The time the customer asked for. A wish, and shown as one.
+  final DateTime? requestedAt;
+
   /// The time the two of them agreed on. Null until they do — the
   /// customer's "as soon as possible" is a wish, not an appointment.
   final DateTime? scheduledAt;
+
+  bool get hasPrice => priceCents != null;
 
   final DateTime? startedAt;
   final DateTime? completedAt;
@@ -112,6 +131,10 @@ class Job {
     serviceNameEn: json['service_name_en'] as String?,
     city: json['city'] as String?,
     postalCode: json['postal_code'] as String?,
+    address: json['address'] as String?,
+    priceCents: (json['price_cents'] as num?)?.toInt(),
+    currency: json['currency'] as String? ?? 'EUR',
+    requestedAt: DateTime.tryParse(json['requested_at'] as String? ?? ''),
     scheduledAt: DateTime.tryParse(json['scheduled_at'] as String? ?? ''),
     startedAt: DateTime.tryParse(json['started_at'] as String? ?? ''),
     completedAt: DateTime.tryParse(json['completed_at'] as String? ?? ''),

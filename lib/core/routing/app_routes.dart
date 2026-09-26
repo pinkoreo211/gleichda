@@ -21,6 +21,23 @@ abstract final class AppRoutes {
   /// navigation stays visible.
   static const String customerRequest = '/customer/home/request';
 
+  /// The booking flow, one screen per decision, all inside the home tab so
+  /// the whole thing sits on one back stack: service → place → provider →
+  /// price → time → summary.
+  static const String booking = '/customer/home/book';
+  static const String bookingLocation = '/customer/home/book/where';
+  static const String bookingProviders = '/customer/home/book/providers';
+  static const String bookingSchedule = '/customer/home/book/when';
+  static const String bookingSummary = '/customer/home/book/summary';
+
+  static String bookingProvider(String providerId) =>
+      '/customer/home/book/providers/$providerId';
+
+  /// Carries the request id so "write a message" opens the conversation
+  /// that belongs to the booking just made.
+  static String bookingDone(String requestId) =>
+      '/customer/home/book/done/$requestId';
+
   /// Catalog screens, also inside the home tab. The slug and the id come
   /// from the backend, so a link keeps working when names change.
   static String customerCategory(String categorySlug) =>

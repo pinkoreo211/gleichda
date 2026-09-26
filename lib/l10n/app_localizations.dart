@@ -1616,6 +1616,330 @@ abstract class AppLocalizations {
   /// **'Kunde kontaktieren'**
   String get chatWithCustomer;
 
+  /// Title of the booking flow.
+  ///
+  /// In de, this message translates to:
+  /// **'Auftrag anlegen'**
+  String get bookingTitle;
+
+  /// Shown above the suggested services.
+  ///
+  /// In de, this message translates to:
+  /// **'Passt das?'**
+  String get bookingSuggestTitle;
+
+  /// Shown when nothing in the catalog matched the text.
+  ///
+  /// In de, this message translates to:
+  /// **'Welchen Service suchst du?'**
+  String get bookingSuggestNoneTitle;
+
+  /// While the backend matches the text against the catalog.
+  ///
+  /// In de, this message translates to:
+  /// **'Wir suchen passende Leistungen …'**
+  String get bookingSuggestLoading;
+
+  /// Shown when the suggestion call failed.
+  ///
+  /// In de, this message translates to:
+  /// **'Die Leistungen konnten nicht geladen werden.'**
+  String get bookingSuggestFailed;
+
+  /// Offer to browse the catalog when the suggestions are wrong.
+  ///
+  /// In de, this message translates to:
+  /// **'Nichts davon? Such dir die Leistung selbst aus.'**
+  String get bookingSuggestOtherHint;
+
+  /// Says plainly that nothing matched, instead of guessing.
+  ///
+  /// In de, this message translates to:
+  /// **'Wir konnten deinen Text keiner Leistung zuordnen. Such sie dir bitte selbst aus.'**
+  String get bookingSuggestNoneHint;
+
+  /// Opens the catalog.
+  ///
+  /// In de, this message translates to:
+  /// **'Leistungen durchsuchen'**
+  String get bookingSuggestBrowse;
+
+  /// Headline of the location step.
+  ///
+  /// In de, this message translates to:
+  /// **'Wo soll der Auftrag stattfinden?'**
+  String get bookingWhereTitle;
+
+  /// Explains why each field is asked for and who sees the address.
+  ///
+  /// In de, this message translates to:
+  /// **'Die Stadt brauchen wir, um passende Dienstleister zu finden. Die genaue Adresse sieht nur, wer den Auftrag annimmt.'**
+  String get bookingWhereHint;
+
+  /// Street address field.
+  ///
+  /// In de, this message translates to:
+  /// **'Straße und Hausnummer'**
+  String get bookingAddressLabel;
+
+  /// Postal code field.
+  ///
+  /// In de, this message translates to:
+  /// **'PLZ'**
+  String get bookingPostalCodeLabel;
+
+  /// City field.
+  ///
+  /// In de, this message translates to:
+  /// **'Stadt'**
+  String get bookingCityLabel;
+
+  /// Says the city is the one required field.
+  ///
+  /// In de, this message translates to:
+  /// **'Wird benötigt'**
+  String get bookingCityRequired;
+
+  /// Continues from the location step.
+  ///
+  /// In de, this message translates to:
+  /// **'Dienstleister suchen'**
+  String get bookingFindProviders;
+
+  /// Title of the provider list in the booking flow.
+  ///
+  /// In de, this message translates to:
+  /// **'Wer kann das machen?'**
+  String get bookingProvidersTitle;
+
+  /// Shown when the provider list could not be read.
+  ///
+  /// In de, this message translates to:
+  /// **'Die Dienstleister konnten nicht geladen werden.'**
+  String get bookingProvidersFailed;
+
+  /// Title of the empty provider list.
+  ///
+  /// In de, this message translates to:
+  /// **'Noch niemand verfügbar'**
+  String get bookingNoProvidersTitle;
+
+  /// Says plainly that nobody qualifies, instead of showing unverified providers.
+  ///
+  /// In de, this message translates to:
+  /// **'Derzeit ist für diesen Service in deiner Nähe kein verifizierter Dienstleister mit Festpreis verfügbar. Du kannst stattdessen eine Anfrage schreiben.'**
+  String get bookingNoProviders;
+
+  /// Opens one provider's profile.
+  ///
+  /// In de, this message translates to:
+  /// **'Profil ansehen'**
+  String get bookingViewProfile;
+
+  /// Title of the provider detail screen.
+  ///
+  /// In de, this message translates to:
+  /// **'Dienstleister'**
+  String get bookingProviderTitle;
+
+  /// Shown when the provider detail could not be read.
+  ///
+  /// In de, this message translates to:
+  /// **'Das Profil konnte nicht geladen werden.'**
+  String get bookingProviderFailed;
+
+  /// Title when the provider no longer offers this service.
+  ///
+  /// In de, this message translates to:
+  /// **'Nicht mehr verfügbar'**
+  String get bookingProviderGoneTitle;
+
+  /// Shown when the provider dropped out between the list and the tap.
+  ///
+  /// In de, this message translates to:
+  /// **'Dieser Dienstleister bietet die Leistung gerade nicht mehr an. Geh zurück und wähle jemand anderen.'**
+  String get bookingProviderGone;
+
+  /// Heading above the provider's price options.
+  ///
+  /// In de, this message translates to:
+  /// **'Preise'**
+  String get bookingPricesTitle;
+
+  /// Says where the prices come from — the app invents none.
+  ///
+  /// In de, this message translates to:
+  /// **'Diese Preise hat der Dienstleister selbst festgelegt.'**
+  String get bookingPricesHint;
+
+  /// Roughly how long the provider expects to need.
+  ///
+  /// In de, this message translates to:
+  /// **'ca. {minutes} Min.'**
+  String bookingApproxMinutes(int minutes);
+
+  /// Picks one price option.
+  ///
+  /// In de, this message translates to:
+  /// **'Auswählen'**
+  String get bookingChoosePrice;
+
+  /// Headline of the scheduling step.
+  ///
+  /// In de, this message translates to:
+  /// **'Wann passt es dir?'**
+  String get bookingWhenTitle;
+
+  /// Introduces the date and time pickers.
+  ///
+  /// In de, this message translates to:
+  /// **'Sag uns deinen Wunschtermin.'**
+  String get bookingWhenHint;
+
+  /// Date row.
+  ///
+  /// In de, this message translates to:
+  /// **'Datum'**
+  String get bookingDateLabel;
+
+  /// Time row.
+  ///
+  /// In de, this message translates to:
+  /// **'Uhrzeit'**
+  String get bookingTimeLabel;
+
+  /// Placeholder before a date or time is picked.
+  ///
+  /// In de, this message translates to:
+  /// **'Noch nicht gewählt'**
+  String get bookingNotChosen;
+
+  /// Says plainly that availability has not been checked.
+  ///
+  /// In de, this message translates to:
+  /// **'Das ist ein Wunschtermin. Ob der Dienstleister dann Zeit hat, klärt ihr gemeinsam – erst danach steht der Termin fest.'**
+  String get bookingWhenDisclaimer;
+
+  /// Continues to the summary.
+  ///
+  /// In de, this message translates to:
+  /// **'Weiter zur Übersicht'**
+  String get bookingToSummary;
+
+  /// Title of the summary screen.
+  ///
+  /// In de, this message translates to:
+  /// **'Übersicht'**
+  String get bookingSummaryTitle;
+
+  /// Headline of the summary.
+  ///
+  /// In de, this message translates to:
+  /// **'Dein Auftrag'**
+  String get bookingYourJob;
+
+  /// Summary row label.
+  ///
+  /// In de, this message translates to:
+  /// **'Leistung'**
+  String get bookingLabelService;
+
+  /// Summary row label.
+  ///
+  /// In de, this message translates to:
+  /// **'Dienstleister'**
+  String get bookingLabelProvider;
+
+  /// Summary row label for the chosen price option.
+  ///
+  /// In de, this message translates to:
+  /// **'Auswahl'**
+  String get bookingLabelOption;
+
+  /// Summary row label.
+  ///
+  /// In de, this message translates to:
+  /// **'Ort'**
+  String get bookingLabelPlace;
+
+  /// Summary row label.
+  ///
+  /// In de, this message translates to:
+  /// **'Wunschtermin'**
+  String get bookingLabelWhen;
+
+  /// Summary row label.
+  ///
+  /// In de, this message translates to:
+  /// **'Preis'**
+  String get bookingLabelPrice;
+
+  /// Says that sending costs nothing yet — there are no payments.
+  ///
+  /// In de, this message translates to:
+  /// **'Mit dem Senden geht deine Anfrage an den Dienstleister. Bezahlt wird noch nichts.'**
+  String get bookingSummaryDisclaimer;
+
+  /// Sends the booking.
+  ///
+  /// In de, this message translates to:
+  /// **'Anfrage senden'**
+  String get bookingSend;
+
+  /// Confirmation headline.
+  ///
+  /// In de, this message translates to:
+  /// **'Anfrage gesendet'**
+  String get bookingDoneTitle;
+
+  /// Names the provider the request went to.
+  ///
+  /// In de, this message translates to:
+  /// **'Deine Anfrage wurde an {name} gesendet.'**
+  String bookingDoneMessage(String name);
+
+  /// Used when the provider stored no name.
+  ///
+  /// In de, this message translates to:
+  /// **'Deine Anfrage wurde an den Dienstleister gesendet.'**
+  String get bookingDoneMessagePlain;
+
+  /// Says what happens next, without promising acceptance.
+  ///
+  /// In de, this message translates to:
+  /// **'Sobald sie angenommen wird, findest du den Auftrag unter Buchungen.'**
+  String get bookingDoneNext;
+
+  /// Opens the bookings tab.
+  ///
+  /// In de, this message translates to:
+  /// **'Auftrag ansehen'**
+  String get bookingDoneViewJob;
+
+  /// Opens the chat for this job.
+  ///
+  /// In de, this message translates to:
+  /// **'Nachricht schreiben'**
+  String get bookingDoneMessageProvider;
+
+  /// Returns to the customer home.
+  ///
+  /// In de, this message translates to:
+  /// **'Zur Startseite'**
+  String get bookingDoneHome;
+
+  /// The time the customer asked for, before anything is agreed.
+  ///
+  /// In de, this message translates to:
+  /// **'Wunschtermin: {when}'**
+  String jobWantedAt(String when);
+
+  /// The price agreed at booking time.
+  ///
+  /// In de, this message translates to:
+  /// **'Festpreis: {price}'**
+  String jobAgreedPrice(String price);
+
   /// Generic retry button, used wherever a screen failed to load.
   ///
   /// In de, this message translates to:

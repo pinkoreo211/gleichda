@@ -881,6 +881,186 @@ class AppLocalizationsEn extends AppLocalizations {
   String get chatWithCustomer => 'Contact customer';
 
   @override
+  String get bookingTitle => 'New job';
+
+  @override
+  String get bookingSuggestTitle => 'Is this it?';
+
+  @override
+  String get bookingSuggestNoneTitle => 'Which service are you looking for?';
+
+  @override
+  String get bookingSuggestLoading => 'Looking for matching services …';
+
+  @override
+  String get bookingSuggestFailed => 'The services could not be loaded.';
+
+  @override
+  String get bookingSuggestOtherHint =>
+      'None of these? Pick the service yourself.';
+
+  @override
+  String get bookingSuggestNoneHint =>
+      'We could not match your text to a service. Please pick one yourself.';
+
+  @override
+  String get bookingSuggestBrowse => 'Browse services';
+
+  @override
+  String get bookingWhereTitle => 'Where should the job happen?';
+
+  @override
+  String get bookingWhereHint =>
+      'We need the town to find matching providers. Only whoever accepts the job sees the exact address.';
+
+  @override
+  String get bookingAddressLabel => 'Street and number';
+
+  @override
+  String get bookingPostalCodeLabel => 'Postcode';
+
+  @override
+  String get bookingCityLabel => 'Town';
+
+  @override
+  String get bookingCityRequired => 'Required';
+
+  @override
+  String get bookingFindProviders => 'Find providers';
+
+  @override
+  String get bookingProvidersTitle => 'Who can do it?';
+
+  @override
+  String get bookingProvidersFailed => 'The providers could not be loaded.';
+
+  @override
+  String get bookingNoProvidersTitle => 'Nobody available yet';
+
+  @override
+  String get bookingNoProviders =>
+      'There is currently no verified provider with a fixed price for this service near you. You can write a request instead.';
+
+  @override
+  String get bookingViewProfile => 'View profile';
+
+  @override
+  String get bookingProviderTitle => 'Provider';
+
+  @override
+  String get bookingProviderFailed => 'The profile could not be loaded.';
+
+  @override
+  String get bookingProviderGoneTitle => 'No longer available';
+
+  @override
+  String get bookingProviderGone =>
+      'This provider no longer offers the service. Go back and pick someone else.';
+
+  @override
+  String get bookingPricesTitle => 'Prices';
+
+  @override
+  String get bookingPricesHint =>
+      'These prices were set by the provider themselves.';
+
+  @override
+  String bookingApproxMinutes(int minutes) {
+    return 'approx. $minutes min';
+  }
+
+  @override
+  String get bookingChoosePrice => 'Choose';
+
+  @override
+  String get bookingWhenTitle => 'When suits you?';
+
+  @override
+  String get bookingWhenHint => 'Tell us the time you would like.';
+
+  @override
+  String get bookingDateLabel => 'Date';
+
+  @override
+  String get bookingTimeLabel => 'Time';
+
+  @override
+  String get bookingNotChosen => 'Not chosen yet';
+
+  @override
+  String get bookingWhenDisclaimer =>
+      'This is the time you would like. Whether the provider is free then is something you agree between you — only then is the appointment set.';
+
+  @override
+  String get bookingToSummary => 'Continue to summary';
+
+  @override
+  String get bookingSummaryTitle => 'Summary';
+
+  @override
+  String get bookingYourJob => 'Your job';
+
+  @override
+  String get bookingLabelService => 'Service';
+
+  @override
+  String get bookingLabelProvider => 'Provider';
+
+  @override
+  String get bookingLabelOption => 'Option';
+
+  @override
+  String get bookingLabelPlace => 'Place';
+
+  @override
+  String get bookingLabelWhen => 'Preferred time';
+
+  @override
+  String get bookingLabelPrice => 'Price';
+
+  @override
+  String get bookingSummaryDisclaimer =>
+      'Sending this passes your request to the provider. Nothing is paid yet.';
+
+  @override
+  String get bookingSend => 'Send request';
+
+  @override
+  String get bookingDoneTitle => 'Request sent';
+
+  @override
+  String bookingDoneMessage(String name) {
+    return 'Your request was sent to $name.';
+  }
+
+  @override
+  String get bookingDoneMessagePlain =>
+      'Your request was sent to the provider.';
+
+  @override
+  String get bookingDoneNext =>
+      'Once it is accepted you will find the job under Bookings.';
+
+  @override
+  String get bookingDoneViewJob => 'View job';
+
+  @override
+  String get bookingDoneMessageProvider => 'Write a message';
+
+  @override
+  String get bookingDoneHome => 'Back to start';
+
+  @override
+  String jobWantedAt(String when) {
+    return 'Preferred time: $when';
+  }
+
+  @override
+  String jobAgreedPrice(String price) {
+    return 'Fixed price: $price';
+  }
+
+  @override
   String get actionRetry => 'Try again';
 
   @override

@@ -21,6 +21,9 @@ class IncomingRequest {
     this.timing = RequestTiming.asap,
     this.preferredDate,
     this.customerName,
+    this.priceCents,
+    this.currency = 'EUR',
+    this.requestedAt,
   });
 
   final String contactId;
@@ -48,6 +51,16 @@ class IncomingRequest {
 
   /// The name the customer chose to show. Null when they stored none.
   final String? customerName;
+
+  /// What the customer booked at, when they came through the booking flow.
+  /// Null for an open request — accepting that one agrees to no price.
+  final int? priceCents;
+  final String currency;
+
+  /// The time the customer asked for. A wish, not an appointment.
+  final DateTime? requestedAt;
+
+  bool get isBooking => priceCents != null;
 
   /// Falls back to German, because the catalog is German-first and a
   /// missing translation must never blank out the name.
@@ -85,5 +98,8 @@ class IncomingRequest {
     timing: RequestTiming.byName(json['timing'] as String?),
     preferredDate: DateTime.tryParse(json['preferred_date'] as String? ?? ''),
     customerName: json['customer_name'] as String?,
+    priceCents: (json['price_cents'] as num?)?.toInt(),
+    currency: json['currency'] as String? ?? 'EUR',
+    requestedAt: DateTime.tryParse(json['requested_at'] as String? ?? ''),
   );
 }

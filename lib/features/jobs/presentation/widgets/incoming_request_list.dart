@@ -3,6 +3,7 @@ import 'package:material_ui/material_ui.dart';
 
 import 'package:app/core/errors/app_failure_message.dart';
 import 'package:app/core/formatting/app_date_format.dart';
+import 'package:app/core/formatting/app_money_format.dart';
 import 'package:app/design_system/app_dimensions.dart';
 import 'package:app/design_system/widgets/button_progress.dart';
 import 'package:app/features/jobs/application/incoming_requests.dart';
@@ -206,9 +207,22 @@ class _IncomingRequestCard extends StatelessWidget {
               children: [
                 if (place != null)
                   _Detail(icon: Icons.place_outlined, text: place),
+                // A booking names the price and the hour. Accepting one
+                // without seeing either would be answering blind.
+                if (request.priceCents case final int cents)
+                  _Detail(
+                    icon: Icons.sell_outlined,
+                    text: formatCents(cents, currency: request.currency),
+                  ),
                 _Detail(
                   icon: Icons.schedule,
-                  text: request.timing.label(l10n, date: request.preferredDate),
+                  text: switch (request.requestedAt) {
+                    final DateTime wanted => formatDateTime(wanted),
+                    _ => request.timing.label(
+                      l10n,
+                      date: request.preferredDate,
+                    ),
+                  },
                 ),
                 _Detail(
                   icon: Icons.mark_email_unread_outlined,

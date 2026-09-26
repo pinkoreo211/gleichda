@@ -7,6 +7,13 @@ import 'package:app/core/routing/route_guard.dart';
 import 'package:app/features/auth/application/current_user.dart';
 import 'package:app/features/auth/presentation/login_screen.dart';
 import 'package:app/features/availability/presentation/availability_screen.dart';
+import 'package:app/features/booking/presentation/booking_done_screen.dart';
+import 'package:app/features/booking/presentation/booking_location_screen.dart';
+import 'package:app/features/booking/presentation/booking_providers_screen.dart';
+import 'package:app/features/booking/presentation/booking_schedule_screen.dart';
+import 'package:app/features/booking/presentation/booking_summary_screen.dart';
+import 'package:app/features/booking/presentation/provider_detail_screen.dart';
+import 'package:app/features/booking/presentation/service_suggestion_screen.dart';
 import 'package:app/features/catalog/presentation/category_screen.dart';
 import 'package:app/features/catalog/presentation/service_detail_screen.dart';
 import 'package:app/features/chat/presentation/chat_screen.dart';
@@ -166,6 +173,43 @@ List<RouteBase> _tabSubRoutes(ShellTab tab) => switch (tab) {
       path: 'providers/:serviceId',
       builder: (context, state) =>
           ProviderMatchesScreen(serviceId: state.pathParameters['serviceId']!),
+    ),
+    // The booking flow. Nested, so every step keeps the one before it on
+    // the stack and "back" walks the decisions in reverse.
+    GoRoute(
+      path: 'book',
+      builder: (context, state) => const ServiceSuggestionScreen(),
+      routes: [
+        GoRoute(
+          path: 'where',
+          builder: (context, state) => const BookingLocationScreen(),
+        ),
+        GoRoute(
+          path: 'providers',
+          builder: (context, state) => const BookingProvidersScreen(),
+          routes: [
+            GoRoute(
+              path: ':providerId',
+              builder: (context, state) => ProviderDetailScreen(
+                providerId: state.pathParameters['providerId']!,
+              ),
+            ),
+          ],
+        ),
+        GoRoute(
+          path: 'when',
+          builder: (context, state) => const BookingScheduleScreen(),
+        ),
+        GoRoute(
+          path: 'summary',
+          builder: (context, state) => const BookingSummaryScreen(),
+        ),
+        GoRoute(
+          path: 'done/:requestId',
+          builder: (context, state) =>
+              BookingDoneScreen(requestId: state.pathParameters['requestId']!),
+        ),
+      ],
     ),
     GoRoute(
       path: 'requests/:requestId/providers',

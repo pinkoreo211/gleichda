@@ -888,6 +888,188 @@ class AppLocalizationsDe extends AppLocalizations {
   String get chatWithCustomer => 'Kunde kontaktieren';
 
   @override
+  String get bookingTitle => 'Auftrag anlegen';
+
+  @override
+  String get bookingSuggestTitle => 'Passt das?';
+
+  @override
+  String get bookingSuggestNoneTitle => 'Welchen Service suchst du?';
+
+  @override
+  String get bookingSuggestLoading => 'Wir suchen passende Leistungen …';
+
+  @override
+  String get bookingSuggestFailed =>
+      'Die Leistungen konnten nicht geladen werden.';
+
+  @override
+  String get bookingSuggestOtherHint =>
+      'Nichts davon? Such dir die Leistung selbst aus.';
+
+  @override
+  String get bookingSuggestNoneHint =>
+      'Wir konnten deinen Text keiner Leistung zuordnen. Such sie dir bitte selbst aus.';
+
+  @override
+  String get bookingSuggestBrowse => 'Leistungen durchsuchen';
+
+  @override
+  String get bookingWhereTitle => 'Wo soll der Auftrag stattfinden?';
+
+  @override
+  String get bookingWhereHint =>
+      'Die Stadt brauchen wir, um passende Dienstleister zu finden. Die genaue Adresse sieht nur, wer den Auftrag annimmt.';
+
+  @override
+  String get bookingAddressLabel => 'Straße und Hausnummer';
+
+  @override
+  String get bookingPostalCodeLabel => 'PLZ';
+
+  @override
+  String get bookingCityLabel => 'Stadt';
+
+  @override
+  String get bookingCityRequired => 'Wird benötigt';
+
+  @override
+  String get bookingFindProviders => 'Dienstleister suchen';
+
+  @override
+  String get bookingProvidersTitle => 'Wer kann das machen?';
+
+  @override
+  String get bookingProvidersFailed =>
+      'Die Dienstleister konnten nicht geladen werden.';
+
+  @override
+  String get bookingNoProvidersTitle => 'Noch niemand verfügbar';
+
+  @override
+  String get bookingNoProviders =>
+      'Derzeit ist für diesen Service in deiner Nähe kein verifizierter Dienstleister mit Festpreis verfügbar. Du kannst stattdessen eine Anfrage schreiben.';
+
+  @override
+  String get bookingViewProfile => 'Profil ansehen';
+
+  @override
+  String get bookingProviderTitle => 'Dienstleister';
+
+  @override
+  String get bookingProviderFailed => 'Das Profil konnte nicht geladen werden.';
+
+  @override
+  String get bookingProviderGoneTitle => 'Nicht mehr verfügbar';
+
+  @override
+  String get bookingProviderGone =>
+      'Dieser Dienstleister bietet die Leistung gerade nicht mehr an. Geh zurück und wähle jemand anderen.';
+
+  @override
+  String get bookingPricesTitle => 'Preise';
+
+  @override
+  String get bookingPricesHint =>
+      'Diese Preise hat der Dienstleister selbst festgelegt.';
+
+  @override
+  String bookingApproxMinutes(int minutes) {
+    return 'ca. $minutes Min.';
+  }
+
+  @override
+  String get bookingChoosePrice => 'Auswählen';
+
+  @override
+  String get bookingWhenTitle => 'Wann passt es dir?';
+
+  @override
+  String get bookingWhenHint => 'Sag uns deinen Wunschtermin.';
+
+  @override
+  String get bookingDateLabel => 'Datum';
+
+  @override
+  String get bookingTimeLabel => 'Uhrzeit';
+
+  @override
+  String get bookingNotChosen => 'Noch nicht gewählt';
+
+  @override
+  String get bookingWhenDisclaimer =>
+      'Das ist ein Wunschtermin. Ob der Dienstleister dann Zeit hat, klärt ihr gemeinsam – erst danach steht der Termin fest.';
+
+  @override
+  String get bookingToSummary => 'Weiter zur Übersicht';
+
+  @override
+  String get bookingSummaryTitle => 'Übersicht';
+
+  @override
+  String get bookingYourJob => 'Dein Auftrag';
+
+  @override
+  String get bookingLabelService => 'Leistung';
+
+  @override
+  String get bookingLabelProvider => 'Dienstleister';
+
+  @override
+  String get bookingLabelOption => 'Auswahl';
+
+  @override
+  String get bookingLabelPlace => 'Ort';
+
+  @override
+  String get bookingLabelWhen => 'Wunschtermin';
+
+  @override
+  String get bookingLabelPrice => 'Preis';
+
+  @override
+  String get bookingSummaryDisclaimer =>
+      'Mit dem Senden geht deine Anfrage an den Dienstleister. Bezahlt wird noch nichts.';
+
+  @override
+  String get bookingSend => 'Anfrage senden';
+
+  @override
+  String get bookingDoneTitle => 'Anfrage gesendet';
+
+  @override
+  String bookingDoneMessage(String name) {
+    return 'Deine Anfrage wurde an $name gesendet.';
+  }
+
+  @override
+  String get bookingDoneMessagePlain =>
+      'Deine Anfrage wurde an den Dienstleister gesendet.';
+
+  @override
+  String get bookingDoneNext =>
+      'Sobald sie angenommen wird, findest du den Auftrag unter Buchungen.';
+
+  @override
+  String get bookingDoneViewJob => 'Auftrag ansehen';
+
+  @override
+  String get bookingDoneMessageProvider => 'Nachricht schreiben';
+
+  @override
+  String get bookingDoneHome => 'Zur Startseite';
+
+  @override
+  String jobWantedAt(String when) {
+    return 'Wunschtermin: $when';
+  }
+
+  @override
+  String jobAgreedPrice(String price) {
+    return 'Festpreis: $price';
+  }
+
+  @override
   String get actionRetry => 'Erneut versuchen';
 
   @override

@@ -4,6 +4,7 @@ import 'package:material_ui/material_ui.dart';
 
 import 'package:app/core/errors/app_failure_message.dart';
 import 'package:app/core/formatting/app_date_format.dart';
+import 'package:app/core/formatting/app_money_format.dart';
 import 'package:app/core/routing/app_routes.dart';
 import 'package:app/design_system/app_dimensions.dart';
 import 'package:app/design_system/widgets/button_progress.dart';
@@ -133,6 +134,13 @@ class _JobCardState extends ConsumerState<JobCard> {
                 color: theme.colorScheme.onSurfaceVariant,
               ),
             ),
+            // What was agreed when the job was booked. Absent for a job
+            // that grew out of an open request, and then nothing is shown
+            // rather than a blank label.
+            if (_job.hasPrice || _job.requestedAt != null) ...[
+              const SizedBox(height: AppSpacing.sm),
+              _BookedFacts(job: _job),
+            ],
             const SizedBox(height: AppSpacing.md),
             _Headline(job: _job, name: name),
             const SizedBox(height: AppSpacing.md),
@@ -286,6 +294,43 @@ class _Headline extends StatelessWidget {
             ),
           ),
         ],
+      ],
+    );
+  }
+}
+
+/// The price agreed at booking, and the time the customer asked for.
+///
+/// The wanted time disappears once an appointment exists: keeping a wish
+/// next to the real thing only invites reading the wrong one.
+class _BookedFacts extends StatelessWidget {
+  const _BookedFacts({required this.job});
+
+  final Job job;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    final style = theme.textTheme.bodySmall?.copyWith(
+      color: theme.colorScheme.onSurfaceVariant,
+    );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (job.priceCents case final int cents)
+          Text(
+            l10n.jobAgreedPrice(formatCents(cents, currency: job.currency)),
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.primary,
+            ),
+          ),
+        if (job.scheduledAt == null && job.requestedAt != null)
+          Text(
+            l10n.jobWantedAt(formatDateTime(job.requestedAt!)),
+            style: style,
+          ),
       ],
     );
   }
