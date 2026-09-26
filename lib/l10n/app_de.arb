@@ -841,6 +841,8 @@
   "@bookingNoProvidersTitle": { "description": "Title of the empty provider list." },
   "bookingNoProviders": "Derzeit ist für diesen Service in deiner Nähe kein verifizierter Dienstleister mit Festpreis verfügbar. Du kannst stattdessen eine Anfrage schreiben.",
   "@bookingNoProviders": { "description": "Says plainly that nobody qualifies, instead of showing unverified providers." },
+  "bookingWriteRequestInstead": "Stattdessen Anfrage schreiben",
+  "@bookingWriteRequestInstead": { "description": "Leads to the older flow: describe the job and ask providers, with no fixed price." },
   "bookingViewProfile": "Profil ansehen",
   "@bookingViewProfile": { "description": "Opens one provider's profile." },
 

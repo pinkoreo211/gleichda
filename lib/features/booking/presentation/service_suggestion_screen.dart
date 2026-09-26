@@ -137,6 +137,15 @@ class _Suggestions extends StatelessWidget {
           icon: const Icon(Icons.grid_view_outlined),
           label: Text(l10n.bookingSuggestBrowse),
         ),
+        const SizedBox(height: AppSpacing.sm),
+        // The older way stays open. Booking needs a verified provider who
+        // priced the work; describing the job and asking around needs
+        // neither, and for plenty of jobs it is still the right thing.
+        TextButton.icon(
+          onPressed: () => context.push(AppRoutes.customerRequest),
+          icon: const Icon(Icons.edit_outlined),
+          label: Text(l10n.bookingWriteRequestInstead),
+        ),
         const SizedBox(height: AppSpacing.xl),
       ],
     );

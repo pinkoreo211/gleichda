@@ -32,10 +32,29 @@ class BookingProvidersScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: Text(l10n.bookingProvidersTitle)),
       body: switch (providers) {
-        AsyncData(:final value) when value.isEmpty => EmptyState(
-          icon: Icons.person_search_outlined,
-          title: l10n.bookingNoProvidersTitle,
-          message: l10n.bookingNoProviders,
+        // Nobody qualifies. The screen says so and offers the other way
+        // in, rather than quietly widening the rules to fill the list.
+        AsyncData(:final value) when value.isEmpty => Column(
+          children: [
+            Expanded(
+              child: EmptyState(
+                icon: Icons.person_search_outlined,
+                title: l10n.bookingNoProvidersTitle,
+                message: l10n.bookingNoProviders,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(AppSpacing.md),
+              child: SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: () => context.push(AppRoutes.customerRequest),
+                  icon: const Icon(Icons.edit_outlined),
+                  label: Text(l10n.bookingWriteRequestInstead),
+                ),
+              ),
+            ),
+          ],
         ),
         AsyncData(:final value) => RefreshIndicator(
           onRefresh: () async {

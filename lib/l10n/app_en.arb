@@ -275,6 +275,7 @@
   "bookingProvidersFailed": "The providers could not be loaded.",
   "bookingNoProvidersTitle": "Nobody available yet",
   "bookingNoProviders": "There is currently no verified provider with a fixed price for this service near you. You can write a request instead.",
+  "bookingWriteRequestInstead": "Write a request instead",
   "bookingViewProfile": "View profile",
 
   "bookingProviderTitle": "Provider",

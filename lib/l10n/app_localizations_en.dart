@@ -942,6 +942,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'There is currently no verified provider with a fixed price for this service near you. You can write a request instead.';
 
   @override
+  String get bookingWriteRequestInstead => 'Write a request instead';
+
+  @override
   String get bookingViewProfile => 'View profile';
 
   @override

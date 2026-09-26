@@ -951,6 +951,9 @@ class AppLocalizationsDe extends AppLocalizations {
       'Derzeit ist für diesen Service in deiner Nähe kein verifizierter Dienstleister mit Festpreis verfügbar. Du kannst stattdessen eine Anfrage schreiben.';
 
   @override
+  String get bookingWriteRequestInstead => 'Stattdessen Anfrage schreiben';
+
+  @override
   String get bookingViewProfile => 'Profil ansehen';
 
   @override

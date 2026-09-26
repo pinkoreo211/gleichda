@@ -16,7 +16,11 @@ Finder _navLabel(String label) =>
 FilterChip _chip(WidgetTester tester, String label) =>
     tester.widget<FilterChip>(find.widgetWithText(FilterChip, label));
 
-/// Home → type something → "Weiter", the way a customer reaches the form.
+/// Home → type something → "Weiter" → "Stattdessen Anfrage schreiben".
+///
+/// The free text now opens the booking flow first, which offers whichever
+/// services it recognised. Writing an open request instead is one tap from
+/// there, and this is that tap.
 Future<void> _openRequestForm(
   WidgetTester tester, {
   String description = _washingMachine,
@@ -24,6 +28,10 @@ Future<void> _openRequestForm(
   await tester.enterText(find.byType(TextField), description);
   await tester.pump();
   await tester.tap(find.widgetWithText(FilledButton, 'Weiter'));
+  await tester.pumpAndSettle();
+
+  await scrollTo(tester, find.text('Stattdessen Anfrage schreiben'));
+  await tester.tap(find.text('Stattdessen Anfrage schreiben'));
   await tester.pumpAndSettle();
 }
 
@@ -44,10 +52,7 @@ void main() {
   ) async {
     await pumpSignedInApp(tester, role: AppRole.customer);
 
-    await tester.enterText(find.byType(TextField), _washingMachine);
-    await tester.pump();
-    await tester.tap(find.widgetWithText(FilledButton, 'Weiter'));
-    await tester.pumpAndSettle();
+    await _openRequestForm(tester);
 
     expect(find.text('Erzähl uns kurz, was du brauchst'), findsOneWidget);
     // The exact wording survives: nothing is reduced to a category here.
@@ -79,11 +84,12 @@ void main() {
   testWidgets('going back keeps what was already typed', (tester) async {
     await pumpSignedInApp(tester, role: AppRole.customer);
 
-    await tester.enterText(find.byType(TextField), _washingMachine);
-    await tester.pump();
-    await tester.tap(find.widgetWithText(FilledButton, 'Weiter'));
-    await tester.pumpAndSettle();
+    await _openRequestForm(tester);
 
+    // Two screens back now: the form sits on top of the suggestions, which
+    // sit on top of the home screen.
+    await tester.tap(find.byType(BackButton));
+    await tester.pumpAndSettle();
     await tester.tap(find.byType(BackButton));
     await tester.pumpAndSettle();
 
@@ -97,10 +103,7 @@ void main() {
     final requests = InMemoryServiceRequestRepository();
     await pumpSignedInApp(tester, role: AppRole.customer, requests: requests);
 
-    await tester.enterText(find.byType(TextField), _washingMachine);
-    await tester.pump();
-    await tester.tap(find.widgetWithText(FilledButton, 'Weiter'));
-    await tester.pumpAndSettle();
+    await _openRequestForm(tester);
     await tester.tap(find.widgetWithText(FilledButton, 'Anfrage erstellen'));
     await tester.pumpAndSettle();
 
@@ -143,10 +146,7 @@ void main() {
       ..failure = AppFailure.unknown;
     await pumpSignedInApp(tester, role: AppRole.customer, requests: requests);
 
-    await tester.enterText(find.byType(TextField), _washingMachine);
-    await tester.pump();
-    await tester.tap(find.widgetWithText(FilledButton, 'Weiter'));
-    await tester.pumpAndSettle();
+    await _openRequestForm(tester);
     await tester.tap(find.widgetWithText(FilledButton, 'Anfrage erstellen'));
     await tester.pumpAndSettle();
 
@@ -202,6 +202,8 @@ void main() {
     await scrollTo(tester, find.text('Fotos'));
     expect(tester.takeException(), isNull);
 
+    await tester.tap(find.byType(BackButton));
+    await tester.pumpAndSettle();
     await tester.tap(find.byType(BackButton));
     await tester.pumpAndSettle();
 

@@ -23,7 +23,7 @@ Legend: ✅ done · 🔄 in progress · ⏳ open
 | 4f | **Chat:** one private conversation per accepted job; text messages, opened from either side | ✅ | Customer and provider agree a time in the app |
 | 4g | **Chat list:** the Chats tab shows every conversation with the other person's name, the job and the last message | ✅ | A provider with ten jobs reaches any chat in one tap |
 | 4b | **Verification & documents:** upload to a private bucket, per-service requirements, team review in the dashboard | ✅ | Provider submits documents; the team approves in Supabase |
-| 5 | **Discovery & fixed-price booking:** location, nearby verified providers, option → price → time → request | ⏳ | Customer books a cleaner in Vienna |
+| 5 | **Discovery & fixed-price booking:** the catalog reads the customer's sentence, then place → verified providers → their own price → wanted time → summary | 🔄 | Customer books a cleaner in Vienna |
 | 6 | **Job flow:** accepted, time agreed, on the way, in progress, done, customer confirms — each side offered only its own steps | ✅ | Both sides move one job through to the end; skipping a step is refused by the database |
 | 7 | **Chat:** live messages and photos per job | ⏳ | |
 | 8 | **Reviews:** the customer rates a confirmed job once; the provider's average comes from real reviews | ✅ | An unrated provider reads "no reviews yet", never five stars |
@@ -64,6 +64,7 @@ analytics.
 - [x] Supabase: verification migration run — bucket `provider-documents` exists, is not public, and carries all three storage policies
 - [x] Supabase: bucket limits migration run — the bucket itself now refuses anything over 10 MB and anything that is not a PDF or a photo
 - [x] Verification walked through on a device with two accounts: the provider uploaded, the team rejected with a reason that arrived word for word, the provider replaced it, the team accepted and verified, and the badge appeared on the customer's side. Storage kept one file per document type, not two
+- [ ] **Supabase: run `20260926160000_booking.sql`** (see docs/supabase-setup.md, section 2). Until then the booking flow cannot find anybody. Max also needs a price for a service he offers, or no provider is bookable at all
 
 - [x] Android SDK Command-line Tools installed
 - [x] Android licences: Google replaced `sdkmanager --licenses`; `flutter doctor` still reports "unknown", which is a tooling mismatch, not a blocker — builds work

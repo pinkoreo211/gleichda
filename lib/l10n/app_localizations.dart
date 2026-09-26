@@ -1730,6 +1730,12 @@ abstract class AppLocalizations {
   /// **'Derzeit ist für diesen Service in deiner Nähe kein verifizierter Dienstleister mit Festpreis verfügbar. Du kannst stattdessen eine Anfrage schreiben.'**
   String get bookingNoProviders;
 
+  /// Leads to the older flow: describe the job and ask providers, with no fixed price.
+  ///
+  /// In de, this message translates to:
+  /// **'Stattdessen Anfrage schreiben'**
+  String get bookingWriteRequestInstead;
+
   /// Opens one provider's profile.
   ///
   /// In de, this message translates to:

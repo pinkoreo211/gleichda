@@ -9,6 +9,10 @@ import 'package:material_ui/material_ui.dart';
 import 'package:app/app.dart';
 import 'package:app/core/errors/app_failure.dart';
 import 'package:app/features/auth/data/auth_repository.dart';
+import 'package:app/features/booking/data/booking_repository.dart';
+import 'package:app/features/booking/domain/booking_draft.dart';
+import 'package:app/features/booking/domain/provider_offer.dart';
+import 'package:app/features/booking/domain/service_suggestion.dart';
 import 'package:app/features/catalog/data/catalog_repository.dart';
 import 'package:app/features/catalog/domain/service.dart';
 import 'package:app/features/catalog/domain/service_category.dart';
@@ -244,10 +248,24 @@ class FakeRequestContacts {
   String contactId(String requestId, String providerId) =>
       'contact-$requestId-$providerId';
 
-  void send({required String requestId, required String providerId}) {
+  /// What was agreed when a contact came from the booking flow, keyed by
+  /// contact id. Absent for an open request, which has no price and no
+  /// wanted time — the same way the columns are null in the database.
+  final bookedPrice = <String, int>{};
+  final wantedAt = <String, DateTime>{};
+
+  void send({
+    required String requestId,
+    required String providerId,
+    int? priceCents,
+    DateTime? wantedAt,
+  }) {
     _rows.putIfAbsent(requestId, () => {})[providerId] =
         RequestContactStatus.sent;
-    _byContactId[contactId(requestId, providerId)] = (requestId, providerId);
+    final id = contactId(requestId, providerId);
+    _byContactId[id] = (requestId, providerId);
+    if (priceCents != null) bookedPrice[id] = priceCents;
+    if (wantedAt != null) this.wantedAt[id] = wantedAt;
   }
 
   /// Answers once, like the backend: a second answer is refused rather than
@@ -407,6 +425,12 @@ class FakeIncomingRequestsRepository implements IncomingRequestsRepository {
             postalCode: request.postalCode,
             timing: request.timing,
             preferredDate: request.preferredDate,
+            // Present only for a booking. An open request carries no
+            // price, and the card then shows none.
+            priceCents:
+                contacts.bookedPrice[contacts.contactId(requestId, providerId)],
+            requestedAt:
+                contacts.wantedAt[contacts.contactId(requestId, providerId)],
           ),
     ];
   }
@@ -816,6 +840,10 @@ class FakeJobsRepository implements JobsRepository {
               postalCode: request.postalCode,
               scheduledAt:
                   appointments[contacts.contactId(requestId, myProviderId)],
+              priceCents: contacts
+                  .bookedPrice[contacts.contactId(requestId, myProviderId)],
+              requestedAt: contacts
+                  .wantedAt[contacts.contactId(requestId, myProviderId)],
               updatedAt: request.createdAt,
               myRating: reviews
                   ?.byContact[contacts.contactId(requestId, myProviderId)]
@@ -914,6 +942,171 @@ class FakeReviewsRepository implements ReviewsRepository {
       if (review.providerId == providerId) review,
   ];
 }
+
+const testBookingProviderId = 'provider-booking';
+
+/// The two suggestions the fake backend returns, keyed by a word that has
+/// to appear in what the customer wrote — the same shape as the real
+/// keyword match, small enough to reason about.
+final testCleaningSuggestion = ServiceSuggestion(
+  serviceId: testFlatCleaning.id,
+  slug: testFlatCleaning.slug,
+  name: testFlatCleaning.name,
+  shortDescription: testFlatCleaning.shortDescription,
+  serviceType: ServiceType.fixedPrice,
+  categorySlug: 'cleaning',
+  categoryName: 'Reinigung',
+);
+
+final testAssemblySuggestion = ServiceSuggestion(
+  serviceId: testFurnitureAssembly.id,
+  slug: testFurnitureAssembly.slug,
+  name: testFurnitureAssembly.name,
+  serviceType: ServiceType.fixedPrice,
+  categorySlug: 'handyman',
+  categoryName: 'Handwerker',
+);
+
+/// [BookingRepository] without a backend.
+///
+/// Models the rules that matter rather than only the happy path: the price
+/// has to belong to the provider and the service being booked, and only a
+/// verified provider is offered at all. A test that books something it
+/// should not be able to book fails here the way it would fail live.
+class FakeBookingRepository implements BookingRepository {
+  FakeBookingRepository({
+    Map<String, List<ServiceSuggestion>>? suggestions,
+    List<ProviderMatch>? providers,
+    Map<String, ProviderOffer>? offers,
+  }) : suggestions =
+           suggestions ??
+           {
+             'reinig': [testCleaningSuggestion],
+             'putz': [testCleaningSuggestion],
+             'kasten': [testAssemblySuggestion],
+             'schrank': [testAssemblySuggestion],
+             'möbel': [testAssemblySuggestion],
+           },
+       providers = providers ?? [testBookableMatch],
+       offers = offers ?? {testBookingProviderId: testBookableOffer};
+
+  /// Lower-case word → what the backend answers when it appears.
+  final Map<String, List<ServiceSuggestion>> suggestions;
+  final List<ProviderMatch> providers;
+  final Map<String, ProviderOffer> offers;
+
+  /// When set, every call throws it.
+  AppFailure? failure;
+
+  /// Which service the last provider list was asked for.
+  String? lastServiceId;
+  String? lastCity;
+
+  /// Every booking that was written, newest last.
+  final bookings = <Map<String, Object?>>[];
+
+  @override
+  Future<List<ServiceSuggestion>> suggestServices(String text) async {
+    if (failure case final failure?) throw failure;
+    final needle = text.toLowerCase();
+    for (final entry in suggestions.entries) {
+      if (needle.contains(entry.key)) return entry.value;
+    }
+    // Nothing convincing. The real backend says so too rather than
+    // returning its best bad guess.
+    return const [];
+  }
+
+  @override
+  Future<List<ProviderMatch>> bookableProviders({
+    required String serviceId,
+    String? city,
+  }) async {
+    if (failure case final failure?) throw failure;
+    lastServiceId = serviceId;
+    lastCity = city;
+    return List.unmodifiable(providers);
+  }
+
+  @override
+  Future<ProviderOffer?> offerOf({
+    required String providerId,
+    required String serviceId,
+  }) async {
+    if (failure case final failure?) throw failure;
+    return offers[providerId];
+  }
+
+  @override
+  Future<BookingResult> createBooking({
+    required String description,
+    required String serviceId,
+    required String providerId,
+    required String priceId,
+    required DateTime wantedAt,
+    String? address,
+    String? postalCode,
+    String? city,
+  }) async {
+    if (failure case final failure?) throw failure;
+
+    // The three checks the backend function makes. A price belonging to
+    // somebody else, or to another service, is not on offer.
+    final offer = offers[providerId];
+    if (offer == null) throw AppFailure.unknown;
+    if (!offer.verificationStatus.isVerified) throw AppFailure.unknown;
+    final price = offer.prices.where((p) => p.id == priceId).firstOrNull;
+    if (price == null) throw AppFailure.unknown;
+
+    bookings.add({
+      'description': description,
+      'service_id': serviceId,
+      'provider_id': providerId,
+      'price_id': priceId,
+      // Taken from the stored option, never from the caller.
+      'price_cents': price.priceCents,
+      'wanted_at': wantedAt,
+      'address': address,
+      'postal_code': postalCode,
+      'city': city,
+    });
+    return BookingResult(
+      requestId: 'request-${bookings.length}',
+      contactId: 'contact-${bookings.length}',
+    );
+  }
+}
+
+const testBookableMatch = ProviderMatch(
+  providerId: testBookingProviderId,
+  displayName: 'Clara Clean',
+  description: 'Gründlich und pünktlich.',
+  city: 'Wien',
+  verificationStatus: ProviderVerificationStatus.verified,
+  lowestPriceCents: 5900,
+  ratingAverage: 4.8,
+  ratingCount: 12,
+);
+
+const testBookableOffer = ProviderOffer(
+  providerId: testBookingProviderId,
+  displayName: 'Clara Clean',
+  description: 'Gründlich und pünktlich.',
+  city: 'Wien',
+  verificationStatus: ProviderVerificationStatus.verified,
+  ratingAverage: 4.8,
+  ratingCount: 12,
+  prices: [
+    ProviderPrice(
+      id: 'price-small',
+      name: 'Bis 50 m²',
+      priceCents: 5900,
+      unit: 'pro Auftrag',
+      durationMinutes: 120,
+    ),
+    ProviderPrice(id: 'price-large', name: '51–80 m²', priceCents: 8900),
+  ],
+);
 
 /// Stands in for the `provider_documents` table and the private bucket
 /// together: one store, shared by every fake, keyed by provider.
@@ -1111,6 +1304,7 @@ Future<void> pumpApp(
   FakeJobsRepository? jobs,
   FakeReviewsRepository? reviews,
   FakeVerificationRepository? verification,
+  FakeBookingRepository? booking,
   FakeDocumentPicker? picker,
   Locale locale = const Locale('de', 'AT'),
 }) async {
@@ -1151,6 +1345,9 @@ Future<void> pumpApp(
         ),
         reviewsRepositoryProvider.overrideWithValue(
           reviews ?? FakeReviewsRepository(contacts: FakeRequestContacts()),
+        ),
+        bookingRepositoryProvider.overrideWithValue(
+          booking ?? FakeBookingRepository(),
         ),
         verificationRepositoryProvider.overrideWithValue(
           verification ?? FakeVerificationRepository(),
@@ -1198,6 +1395,7 @@ Future<void> pumpSignedInApp(
   FakeJobsRepository? jobs,
   FakeReviewsRepository? reviews,
   FakeVerificationRepository? verification,
+  FakeBookingRepository? booking,
   FakeDocumentPicker? picker,
 }) {
   return pumpApp(
@@ -1217,6 +1415,7 @@ Future<void> pumpSignedInApp(
     jobs: jobs,
     reviews: reviews,
     verification: verification,
+    booking: booking,
     picker: picker,
     provider:
         provider ??
