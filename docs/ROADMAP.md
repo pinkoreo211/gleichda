@@ -22,7 +22,7 @@ Legend: ✅ done · 🔄 in progress · ⏳ open
 | 4e | **Accept or decline:** the provider answers a received request once; the customer sees the answer on the request and on the provider | ✅ | A provider accepts, and the customer's booking list says so |
 | 4f | **Chat:** one private conversation per accepted job; text messages, opened from either side | ✅ | Customer and provider agree a time in the app |
 | 4g | **Chat list:** the Chats tab shows every conversation with the other person's name, the job and the last message | ✅ | A provider with ten jobs reaches any chat in one tap |
-| 4b | **Verification & documents:** upload, category-specific requirements, admin review | ⏳ | Provider submits documents; the team approves in Supabase |
+| 4b | **Verification & documents:** upload to a private bucket, per-service requirements, team review in the dashboard | ✅ | Provider submits documents; the team approves in Supabase |
 | 5 | **Discovery & fixed-price booking:** location, nearby verified providers, option → price → time → request | ⏳ | Customer books a cleaner in Vienna |
 | 6 | **Job flow:** accepted, time agreed, on the way, in progress, done, customer confirms — each side offered only its own steps | ✅ | Both sides move one job through to the end; skipping a step is refused by the database |
 | 7 | **Chat:** live messages and photos per job | ⏳ | |
@@ -61,6 +61,7 @@ analytics.
 - [x] Supabase: no-self-hire migration run — verified on a device: the provider no longer appears in their own results
 - [x] Supabase: both job status migrations run — verified on a device with two accounts: the whole lifecycle from agreeing a time to the customer's confirmation
 - [x] Supabase: reviews migration run — verified on a device: the customer rated a confirmed job five stars with a comment, the button turned into the given rating, and the provider went from no rating at all to "5,0 · 1 review" in the search
+- [ ] **Supabase: run `20260926120000_provider_verification.sql`**, then check under Storage that `provider-documents` exists and is *not* public (see docs/supabase-setup.md, sections 2 and 2a). Until then, documents cannot be uploaded
 
 - [x] Android SDK Command-line Tools installed
 - [x] Android licences: Google replaced `sdkmanager --licenses`; `flutter doctor` still reports "unknown", which is a tooling mismatch, not a blocker — builds work

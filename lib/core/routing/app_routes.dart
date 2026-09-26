@@ -85,6 +85,15 @@ abstract final class AppRoutes {
   static String providerServicePrices(String offeringId) =>
       '/provider/jobs/services/$offeringId';
 
+  /// Handing in documents for verification. Reachable from two tabs — the
+  /// card on the provider's home and the profile list — so, like the
+  /// provider list on the customer side, each tab has its own path and
+  /// keeps its own back button.
+  static const String providerVerification = '/provider/jobs/verification';
+
+  static const String providerProfileVerification =
+      '/provider/profile/verification';
+
   static const String providerJobs = '/provider/jobs';
   static const String providerCalendar = '/provider/calendar';
   static const String providerMessages = '/provider/messages';

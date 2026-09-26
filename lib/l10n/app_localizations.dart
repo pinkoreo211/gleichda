@@ -917,7 +917,7 @@ abstract class AppLocalizations {
   /// Honest explanation that nothing has been checked yet and requirements differ per service.
   ///
   /// In de, this message translates to:
-  /// **'Wir prüfen deine Nachweise, bevor dich Kundinnen und Kunden als geprüft sehen. Welche Nachweise nötig sind, hängt von deinen Leistungen ab. Das Hochladen folgt in Kürze.'**
+  /// **'Wir prüfen deine Nachweise, bevor dich Kundinnen und Kunden als geprüft sehen. Welche Nachweise nötig sind, hängt von deinen Leistungen ab.'**
   String get providerVerificationExplanation;
 
   /// Greeting on the provider home screen.
@@ -1615,6 +1615,234 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Kunde kontaktieren'**
   String get chatWithCustomer;
+
+  /// Generic retry button, used wherever a screen failed to load.
+  ///
+  /// In de, this message translates to:
+  /// **'Erneut versuchen'**
+  String get actionRetry;
+
+  /// Headline of the verification screen.
+  ///
+  /// In de, this message translates to:
+  /// **'Verifiziere dein Profil'**
+  String get verificationHeadline;
+
+  /// Explains what the documents are for.
+  ///
+  /// In de, this message translates to:
+  /// **'Mit deinen Nachweisen können wir bestätigen, dass du die angegebenen Dienstleistungen professionell anbietest.'**
+  String get verificationIntro;
+
+  /// Says plainly that a person reviews the documents and nothing is automatic.
+  ///
+  /// In de, this message translates to:
+  /// **'Wir schauen uns jeden Nachweis von Hand an. Solange wir nicht fertig sind, siehst du kein Verifiziert-Abzeichen – und deine Kundinnen und Kunden auch nicht.'**
+  String get verificationTeamNote;
+
+  /// Marks a document the provider must hand in.
+  ///
+  /// In de, this message translates to:
+  /// **'Erforderlich'**
+  String get verificationRequired;
+
+  /// Marks a document that is welcome but not required.
+  ///
+  /// In de, this message translates to:
+  /// **'Optional'**
+  String get verificationOptional;
+
+  /// Status of a document nobody has handed in yet.
+  ///
+  /// In de, this message translates to:
+  /// **'Noch nicht hochgeladen'**
+  String get verificationNotUploaded;
+
+  /// Status of a document that was handed in and not yet decided.
+  ///
+  /// In de, this message translates to:
+  /// **'Prüfung ausstehend'**
+  String get verificationStatusWaiting;
+
+  /// Status of a document the team accepted.
+  ///
+  /// In de, this message translates to:
+  /// **'Geprüft'**
+  String get verificationStatusAccepted;
+
+  /// Status of a document the team turned down.
+  ///
+  /// In de, this message translates to:
+  /// **'Nachweis abgelehnt'**
+  String get verificationStatusRejected;
+
+  /// Why the team turned a document down.
+  ///
+  /// In de, this message translates to:
+  /// **'Ablehnungsgrund: {reason}'**
+  String verificationRejectionReason(String reason);
+
+  /// When a document was handed in.
+  ///
+  /// In de, this message translates to:
+  /// **'Hochgeladen am {date}'**
+  String verificationUploadedOn(String date);
+
+  /// Button that starts an upload.
+  ///
+  /// In de, this message translates to:
+  /// **'Nachweis hochladen'**
+  String get verificationUpload;
+
+  /// Button shown after a document was rejected.
+  ///
+  /// In de, this message translates to:
+  /// **'Neuen Nachweis hochladen'**
+  String get verificationUploadNew;
+
+  /// Button that swaps a handed-in document for a different file.
+  ///
+  /// In de, this message translates to:
+  /// **'Nachweis ersetzen'**
+  String get verificationReplace;
+
+  /// Confirmation after a successful upload.
+  ///
+  /// In de, this message translates to:
+  /// **'Dokument wurde hochgeladen'**
+  String get verificationUploadDone;
+
+  /// Take a photo of the document with the camera.
+  ///
+  /// In de, this message translates to:
+  /// **'Foto aufnehmen'**
+  String get verificationSourceCamera;
+
+  /// Pick an existing photo.
+  ///
+  /// In de, this message translates to:
+  /// **'Foto aus Galerie'**
+  String get verificationSourceGallery;
+
+  /// Pick a file, usually a PDF.
+  ///
+  /// In de, this message translates to:
+  /// **'PDF auswählen'**
+  String get verificationSourceFile;
+
+  /// Shown when the document list could not be read.
+  ///
+  /// In de, this message translates to:
+  /// **'Nachweise konnten nicht geladen werden.'**
+  String get verificationLoadFailed;
+
+  /// Shown when nothing required is missing.
+  ///
+  /// In de, this message translates to:
+  /// **'Alle erforderlichen Nachweise sind da. Wir melden uns, sobald wir sie geprüft haben.'**
+  String get verificationAllHandedIn;
+
+  /// Shown while at least one required document is missing.
+  ///
+  /// In de, this message translates to:
+  /// **'Es fehlen noch erforderliche Nachweise.'**
+  String get verificationMissing;
+
+  /// Shown when there is no provider profile to verify.
+  ///
+  /// In de, this message translates to:
+  /// **'Lege zuerst dein Dienstleisterprofil an.'**
+  String get verificationNoProfile;
+
+  /// Name of the identity document type.
+  ///
+  /// In de, this message translates to:
+  /// **'Identitätsnachweis'**
+  String get documentTypeIdentity;
+
+  /// Examples of an accepted identity document.
+  ///
+  /// In de, this message translates to:
+  /// **'Reisepass, Personalausweis oder Führerschein'**
+  String get documentTypeIdentityHint;
+
+  /// Name of the business registration document type.
+  ///
+  /// In de, this message translates to:
+  /// **'Gewerbeanmeldung'**
+  String get documentTypeBusinessRegistration;
+
+  /// Examples of an accepted business registration.
+  ///
+  /// In de, this message translates to:
+  /// **'Gewerbeschein oder Auszug aus dem Gewerberegister'**
+  String get documentTypeBusinessRegistrationHint;
+
+  /// Name of the trade licence document type.
+  ///
+  /// In de, this message translates to:
+  /// **'Gewerbeberechtigung'**
+  String get documentTypeTradeLicense;
+
+  /// Explains what a trade licence is.
+  ///
+  /// In de, this message translates to:
+  /// **'Befähigungsnachweis für ein reglementiertes Gewerbe'**
+  String get documentTypeTradeLicenseHint;
+
+  /// Name of the qualification document type.
+  ///
+  /// In de, this message translates to:
+  /// **'Qualifikation'**
+  String get documentTypeQualification;
+
+  /// Examples of an accepted qualification.
+  ///
+  /// In de, this message translates to:
+  /// **'Meisterbrief, Zeugnis oder Zertifikat'**
+  String get documentTypeQualificationHint;
+
+  /// Name of the insurance document type.
+  ///
+  /// In de, this message translates to:
+  /// **'Versicherung'**
+  String get documentTypeInsurance;
+
+  /// Explains which insurance is meant.
+  ///
+  /// In de, this message translates to:
+  /// **'Haftpflichtversicherung für deine Tätigkeit'**
+  String get documentTypeInsuranceHint;
+
+  /// Name of the catch-all document type.
+  ///
+  /// In de, this message translates to:
+  /// **'Sonstiger Nachweis'**
+  String get documentTypeOther;
+
+  /// Explains the catch-all document type.
+  ///
+  /// In de, this message translates to:
+  /// **'Ein Nachweis, der in keine andere Kategorie passt'**
+  String get documentTypeOtherHint;
+
+  /// The team has taken the document in hand.
+  ///
+  /// In de, this message translates to:
+  /// **'Dieser Nachweis wird gerade geprüft und kann nicht ersetzt werden.'**
+  String get errorDocumentLocked;
+
+  /// The chosen file is over the size limit.
+  ///
+  /// In de, this message translates to:
+  /// **'Die Datei ist zu groß. Bitte lade höchstens 10 MB hoch.'**
+  String get errorDocumentTooLarge;
+
+  /// The chosen file is not a document format the backend accepts.
+  ///
+  /// In de, this message translates to:
+  /// **'Dieses Dateiformat geht nicht. Erlaubt sind PDF, JPG, PNG, HEIC und WEBP.'**
+  String get errorDocumentTypeNotAllowed;
 }
 
 class _AppLocalizationsDelegate

@@ -52,6 +52,14 @@
 			</array>
 		</dict>
 	</dict>
+	<!-- Shown by iOS when the app first asks. Wording matters: a permission
+	     dialog that does not say why is the one people decline. German for
+	     now, because the launch market is Austria; translating these needs
+	     InfoPlist.strings per language, which comes with the iOS release. -->
+	<key>NSCameraUsageDescription</key>
+	<string>Damit kannst du deine Nachweise direkt abfotografieren.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Damit kannst du ein vorhandenes Foto als Nachweis hochladen.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>

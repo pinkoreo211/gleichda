@@ -31,6 +31,7 @@ import 'package:app/features/session/application/active_role_controller.dart';
 import 'package:app/features/session/domain/app_role.dart';
 import 'package:app/features/shell/presentation/role_shell.dart';
 import 'package:app/features/shell/presentation/shell_tab.dart';
+import 'package:app/features/verification/presentation/verification_screen.dart';
 
 /// The app's navigation.
 ///
@@ -146,6 +147,13 @@ final GoRoute _messagesChatRoute = GoRoute(
   ),
 );
 
+/// Handing in documents. Registered in two tabs, so it opens wherever the
+/// provider tapped rather than throwing them into another tab.
+final GoRoute _verificationRoute = GoRoute(
+  path: 'verification',
+  builder: (context, state) => const VerificationScreen(),
+);
+
 /// Screens that open on top of a tab. They stay inside the tab's branch, so
 /// the bottom navigation remains visible and the tab keeps its history.
 List<RouteBase> _tabSubRoutes(ShellTab tab) => switch (tab) {
@@ -199,6 +207,9 @@ List<RouteBase> _tabSubRoutes(ShellTab tab) => switch (tab) {
   ],
   ShellTab.customerMessages ||
   ShellTab.providerMessages => [_messagesChatRoute],
+  // The same screen as in the jobs tab, under the profile tab's own path:
+  // opening it from the profile list should leave the provider there.
+  ShellTab.providerProfile => [_verificationRoute],
   ShellTab.providerJobs => [
     GoRoute(
       path: 'chat/:requestId',
@@ -209,6 +220,7 @@ List<RouteBase> _tabSubRoutes(ShellTab tab) => switch (tab) {
         args: state.extra as ChatArgs? ?? const ChatArgs(),
       ),
     ),
+    _verificationRoute,
     GoRoute(
       path: 'services',
       builder: (context, state) => const ProviderServicesScreen(),

@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
+import 'package:app/core/routing/app_routes.dart';
 import 'package:app/design_system/app_dimensions.dart';
 import 'package:app/features/provider/application/provider_profile_providers.dart';
 import 'package:app/features/provider/domain/provider_profile.dart';
@@ -45,42 +47,48 @@ class VerificationCard extends ConsumerWidget {
     final shown = status ?? ProviderVerificationStatus.unverified;
 
     return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(
-                  shown.icon,
-                  color: shown.isVerified
-                      ? theme.colorScheme.primary
-                      : theme.colorScheme.onSurfaceVariant,
-                ),
-                const SizedBox(width: AppSpacing.sm),
-                Expanded(
-                  child: Text(
-                    l10n.providerVerificationTitle,
-                    style: theme.textTheme.titleSmall,
+      child: InkWell(
+        // The whole card opens the screen where documents are handed in.
+        onTap: () => context.push(AppRoutes.providerVerification),
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.md),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    shown.icon,
+                    color: shown.isVerified
+                        ? theme.colorScheme.primary
+                        : theme.colorScheme.onSurfaceVariant,
                   ),
-                ),
-                Text(
-                  shown.label(l10n),
-                  style: theme.textTheme.labelLarge?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
+                  const SizedBox(width: AppSpacing.sm),
+                  Expanded(
+                    child: Text(
+                      l10n.providerVerificationTitle,
+                      style: theme.textTheme.titleSmall,
+                    ),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              l10n.providerVerificationExplanation,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
+                  Text(
+                    shown.label(l10n),
+                    style: theme.textTheme.labelLarge?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                  const Icon(Icons.chevron_right),
+                ],
               ),
-            ),
-          ],
+              const SizedBox(height: AppSpacing.sm),
+              Text(
+                l10n.providerVerificationExplanation,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

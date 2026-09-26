@@ -54,3 +54,6 @@ app.*.map.json
 !.env.example
 /env/*.json
 !/env/*.example.json
+
+# Kotlin build cache the Android plugin writes since Gradle 9
+/android/.kotlin/

@@ -460,7 +460,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get providerVerificationExplanation =>
-      'We check your documents before customers see you as verified. Which documents are needed depends on your services. Uploading is coming soon.';
+      'We check your documents before customers see you as verified. Which documents are needed depends on your services.';
 
   @override
   String providerHomeGreeting(String name) {
@@ -879,4 +879,132 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get chatWithCustomer => 'Contact customer';
+
+  @override
+  String get actionRetry => 'Try again';
+
+  @override
+  String get verificationHeadline => 'Verify your profile';
+
+  @override
+  String get verificationIntro =>
+      'Your documents let us confirm that you offer the listed services professionally.';
+
+  @override
+  String get verificationTeamNote =>
+      'A person looks at every document by hand. Until we are done, you see no verified badge — and neither do your customers.';
+
+  @override
+  String get verificationRequired => 'Required';
+
+  @override
+  String get verificationOptional => 'Optional';
+
+  @override
+  String get verificationNotUploaded => 'Not uploaded yet';
+
+  @override
+  String get verificationStatusWaiting => 'Review pending';
+
+  @override
+  String get verificationStatusAccepted => 'Checked';
+
+  @override
+  String get verificationStatusRejected => 'Document rejected';
+
+  @override
+  String verificationRejectionReason(String reason) {
+    return 'Reason: $reason';
+  }
+
+  @override
+  String verificationUploadedOn(String date) {
+    return 'Uploaded on $date';
+  }
+
+  @override
+  String get verificationUpload => 'Upload document';
+
+  @override
+  String get verificationUploadNew => 'Upload a new document';
+
+  @override
+  String get verificationReplace => 'Replace document';
+
+  @override
+  String get verificationUploadDone => 'Document uploaded';
+
+  @override
+  String get verificationSourceCamera => 'Take a photo';
+
+  @override
+  String get verificationSourceGallery => 'Choose a photo';
+
+  @override
+  String get verificationSourceFile => 'Choose a PDF';
+
+  @override
+  String get verificationLoadFailed => 'The documents could not be loaded.';
+
+  @override
+  String get verificationAllHandedIn =>
+      'Everything required is here. We will get back to you once we have checked it.';
+
+  @override
+  String get verificationMissing =>
+      'Some required documents are still missing.';
+
+  @override
+  String get verificationNoProfile => 'Set up your provider profile first.';
+
+  @override
+  String get documentTypeIdentity => 'Proof of identity';
+
+  @override
+  String get documentTypeIdentityHint => 'Passport, ID card or driving licence';
+
+  @override
+  String get documentTypeBusinessRegistration => 'Business registration';
+
+  @override
+  String get documentTypeBusinessRegistrationHint =>
+      'Trade licence or an extract from the business register';
+
+  @override
+  String get documentTypeTradeLicense => 'Trade authorisation';
+
+  @override
+  String get documentTypeTradeLicenseHint =>
+      'Proof of competence for a regulated trade';
+
+  @override
+  String get documentTypeQualification => 'Qualification';
+
+  @override
+  String get documentTypeQualificationHint =>
+      'Master craftsman certificate, diploma or certificate';
+
+  @override
+  String get documentTypeInsurance => 'Insurance';
+
+  @override
+  String get documentTypeInsuranceHint => 'Liability insurance for your work';
+
+  @override
+  String get documentTypeOther => 'Other document';
+
+  @override
+  String get documentTypeOtherHint => 'A document that fits no other category';
+
+  @override
+  String get errorDocumentLocked =>
+      'This document is being checked and cannot be replaced.';
+
+  @override
+  String get errorDocumentTooLarge =>
+      'That file is too large. Please upload at most 10 MB.';
+
+  @override
+  String get errorDocumentTypeNotAllowed =>
+      'That file format does not work. PDF, JPG, PNG, HEIC and WEBP are accepted.';
 }

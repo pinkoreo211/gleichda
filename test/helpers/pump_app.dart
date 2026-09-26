@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -37,6 +38,10 @@ import 'package:app/features/session/application/active_role_controller.dart';
 import 'package:app/features/session/data/role_repository.dart';
 import 'package:app/features/session/data/session_store.dart';
 import 'package:app/features/session/domain/app_role.dart';
+import 'package:app/features/verification/data/document_picker.dart';
+import 'package:app/features/verification/data/verification_repository.dart';
+import 'package:app/features/verification/domain/picked_document.dart';
+import 'package:app/features/verification/domain/provider_document.dart';
 
 const testUserId = 'user-1';
 const testEmail = 'anna@example.at';
@@ -476,6 +481,14 @@ class FakeProviderRepository implements ProviderRepository {
     return profile!;
   }
 
+  /// Stands in for a person in the team changing the status in the
+  /// dashboard. Deliberately not part of [ProviderRepository]: the app has
+  /// no way to do this, and a test must not pretend otherwise.
+  void teamSetsVerification(ProviderVerificationStatus status) {
+    if (_row == null) return;
+    _row = {..._row!, 'verification_status': status.name};
+  }
+
   @override
   Future<Set<String>> myServiceIds(String providerId) async {
     if (failure case final failure?) throw failure;
@@ -902,6 +915,165 @@ class FakeReviewsRepository implements ReviewsRepository {
   ];
 }
 
+/// Stands in for the `provider_documents` table and the private bucket
+/// together: one store, shared by every fake, keyed by provider.
+///
+/// Two providers in a test share this the way they share a database, which
+/// is what makes "provider B cannot see provider A's document" a real
+/// assertion rather than a fake one.
+class FakeDocumentStore {
+  /// provider id -> document type -> the current document.
+  final byProvider = <String, Map<ProviderDocumentType, ProviderDocument>>{};
+
+  int _counter = 0;
+
+  List<ProviderDocument> documentsOf(String providerId) =>
+      byProvider[providerId]?.values.toList() ?? const [];
+
+  ProviderDocument? documentOf(String providerId, ProviderDocumentType type) =>
+      byProvider[providerId]?[type];
+
+  /// What `submit_provider_document()` does: refuses a replacement the team
+  /// has taken in hand, and otherwise records the file as waiting.
+  ProviderDocument submit({
+    required String providerId,
+    required ProviderDocumentType type,
+    required String fileName,
+  }) {
+    final existing = documentOf(providerId, type);
+    if (existing != null && !existing.status.canBeReplaced) {
+      throw AppFailure.documentLocked;
+    }
+    final document = ProviderDocument(
+      id: 'document-${++_counter}',
+      type: type,
+      status: ProviderDocumentStatus.uploaded,
+      uploadedAt: DateTime(2026, 9, 26).add(Duration(minutes: _counter)),
+      filePath: '$providerId/${type.dbName}/$_counter',
+      fileName: fileName,
+    );
+    (byProvider[providerId] ??= {})[type] = document;
+    return document;
+  }
+
+  /// What a person in the team does in the dashboard. No app path reaches
+  /// this, which is the point of having it separate.
+  void teamDecides({
+    required String providerId,
+    required ProviderDocumentType type,
+    required ProviderDocumentStatus status,
+    String? reason,
+  }) {
+    final existing = documentOf(providerId, type);
+    if (existing == null) return;
+    byProvider[providerId]![type] = ProviderDocument(
+      id: existing.id,
+      type: existing.type,
+      status: status,
+      uploadedAt: existing.uploadedAt,
+      filePath: existing.filePath,
+      fileName: existing.fileName,
+      rejectionReason: status == ProviderDocumentStatus.rejected
+          ? reason
+          : null,
+      reviewedAt: DateTime(2026, 9, 27),
+    );
+  }
+}
+
+/// [VerificationRepository] for one signed-in provider.
+///
+/// Reads and writes only [myProviderId]'s documents, the way the backend
+/// functions do: whatever else is in the store is unreachable from here.
+class FakeVerificationRepository implements VerificationRepository {
+  FakeVerificationRepository({
+    FakeDocumentStore? store,
+    this.myProviderId = testProviderId,
+    this.provider,
+    List<DocumentRequirement>? requirements,
+  }) : store = store ?? FakeDocumentStore(),
+       requirements = requirements ?? defaultRequirements;
+
+  /// The baseline the backend returns when no service asks for more.
+  static const defaultRequirements = [
+    DocumentRequirement(type: ProviderDocumentType.identity, isRequired: true),
+    DocumentRequirement(
+      type: ProviderDocumentType.businessRegistration,
+      isRequired: true,
+    ),
+    DocumentRequirement(
+      type: ProviderDocumentType.qualification,
+      isRequired: false,
+    ),
+    DocumentRequirement(
+      type: ProviderDocumentType.insurance,
+      isRequired: false,
+    ),
+  ];
+
+  final FakeDocumentStore store;
+  final String myProviderId;
+  final List<DocumentRequirement> requirements;
+
+  /// Kept in step so the status badge moves with the uploads, the way the
+  /// backend function moves it.
+  final FakeProviderRepository? provider;
+
+  @override
+  Future<List<DocumentRequirement>> myRequirements() async => requirements;
+
+  @override
+  Future<List<ProviderDocument>> myDocuments() async =>
+      store.documentsOf(myProviderId);
+
+  @override
+  Future<void> submit({
+    required String providerId,
+    required ProviderDocumentType type,
+    required PickedDocument file,
+  }) async {
+    if (file.sizeInBytes > maxDocumentBytes) throw AppFailure.documentTooLarge;
+    if (!allowedDocumentExtensions.contains(file.extension)) {
+      throw AppFailure.documentTypeNotAllowed;
+    }
+    // The backend takes the provider from the signed-in account, so a
+    // request naming somebody else's profile gets nowhere.
+    if (providerId != myProviderId) throw AppFailure.unknown;
+
+    store.submit(providerId: myProviderId, type: type, fileName: file.fileName);
+
+    // Handing something in starts a check. Never sets 'verified'.
+    final current = provider?.profile?.verificationStatus;
+    if (current == ProviderVerificationStatus.unverified ||
+        current == ProviderVerificationStatus.rejected) {
+      provider!.teamSetsVerification(ProviderVerificationStatus.pending);
+    }
+  }
+}
+
+/// [DocumentPicker] that hands back [next] instead of opening a camera.
+class FakeDocumentPicker implements DocumentPicker {
+  FakeDocumentPicker({PickedDocument? next})
+    : next =
+          next ??
+          PickedDocument(
+            fileName: 'ausweis.jpg',
+            bytes: Uint8List.fromList(const [1, 2, 3]),
+          );
+
+  /// Null stands for backing out of the picker, which is not an error.
+  PickedDocument? next;
+
+  /// Which sources the screen asked for, in order.
+  final asked = <DocumentSource>[];
+
+  @override
+  Future<PickedDocument?> pick(DocumentSource source) async {
+    asked.add(source);
+    return next;
+  }
+}
+
 /// [SessionStore] that keeps everything in memory.
 class InMemorySessionStore implements SessionStore {
   InMemorySessionStore([Map<String, AppRole>? activeRoles])
@@ -933,6 +1105,8 @@ Future<void> pumpApp(
   FakeChatRepository? chat,
   FakeJobsRepository? jobs,
   FakeReviewsRepository? reviews,
+  FakeVerificationRepository? verification,
+  FakeDocumentPicker? picker,
   Locale locale = const Locale('de', 'AT'),
 }) async {
   tester.platformDispatcher.localesTestValue = [locale];
@@ -973,6 +1147,12 @@ Future<void> pumpApp(
         reviewsRepositoryProvider.overrideWithValue(
           reviews ?? FakeReviewsRepository(contacts: FakeRequestContacts()),
         ),
+        verificationRepositoryProvider.overrideWithValue(
+          verification ?? FakeVerificationRepository(),
+        ),
+        documentPickerProvider.overrideWithValue(
+          picker ?? FakeDocumentPicker(),
+        ),
       ],
       child: const App(),
     ),
@@ -1012,6 +1192,8 @@ Future<void> pumpSignedInApp(
   FakeChatRepository? chat,
   FakeJobsRepository? jobs,
   FakeReviewsRepository? reviews,
+  FakeVerificationRepository? verification,
+  FakeDocumentPicker? picker,
 }) {
   return pumpApp(
     tester,
@@ -1029,6 +1211,8 @@ Future<void> pumpSignedInApp(
     chat: chat,
     jobs: jobs,
     reviews: reviews,
+    verification: verification,
+    picker: picker,
     provider:
         provider ??
         (role == AppRole.provider

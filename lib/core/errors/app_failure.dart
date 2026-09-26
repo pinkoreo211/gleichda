@@ -18,6 +18,15 @@ enum AppFailure implements Exception {
   /// Somebody answered this request before this tap arrived — from another
   /// device, or from a screen that had not refreshed yet.
   requestAlreadyAnswered,
+
+  /// The team has taken this document in hand, so the provider can no
+  /// longer swap it out.
+  documentLocked,
+
+  /// Caught in the app: uploading it would only waste the provider's data
+  /// to be told the same thing.
+  documentTooLarge,
+  documentTypeNotAllowed,
   unknown;
 
   static AppFailure fromError(Object error) {
@@ -25,6 +34,10 @@ enum AppFailure implements Exception {
     if (error is PostgrestException &&
         error.message.contains('already answered')) {
       return requestAlreadyAnswered;
+    }
+    if (error is PostgrestException &&
+        error.message.contains('already being checked')) {
+      return documentLocked;
     }
     if (error is AuthException) {
       switch (error.code) {

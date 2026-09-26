@@ -40,6 +40,7 @@ Bisher gibt es diese Dateien:
 | `20260925140000_job_status_values.sql` | **Teil 1:** Statuswerte und Zeitstempel für den Auftragsablauf | ✅ |
 | `20260925160000_job_status.sql` | **Teil 2:** Aufträge lesen und einen Schritt weiterschalten | ✅ |
 | `20260925180000_reviews.sql` | Bewertungen nach abgeschlossenen Aufträgen; Durchschnitt in der Anbietersuche | ✅ |
+| `20260926120000_provider_verification.sql` | Nachweise hochladen: Spalten, privater Storage-Bucket, Prüf-Funktionen fürs Team | ⬜ |
 
 Die beiden Auftragsstatus-Dateien sind **getrennt und in dieser Reihenfolge**
 auszuführen. Postgres erlaubt es nicht, einen gerade erst angelegten
@@ -58,6 +59,65 @@ RLS könnte jeder die Daten aller anderen lesen.
 nie mehr geändert. Änderungen an der Datenbank kommen immer als neue Datei.
 So bleibt diese Liste eine verlässliche Geschichte der Datenbank – was
 spätestens beim Anlegen des Produktivprojekts vor dem Start wichtig wird.
+
+### 2a. Nachweise: Bucket prüfen
+
+Die Verifizierungs-Migration legt auch einen **Speicherort für Dateien** an.
+Nach dem Ausführen unter **Storage** nachsehen:
+
+- Es gibt einen Bucket `provider-documents`.
+- Er ist **nicht** öffentlich (kein „Public“-Hinweis daneben).
+
+Ist der Bucket öffentlich, bitte sofort melden – dann könnte jeder mit dem
+richtigen Link fremde Ausweise ansehen.
+
+Falls beim Ausführen eine Fehlermeldung zu `storage.buckets` oder
+`storage.objects` kommt (manche Supabase-Projekte erlauben das nur über die
+Oberfläche): den Bucket unter **Storage → New bucket** anlegen, Name
+`provider-documents`, **Public bucket ausgeschaltet lassen**, und unter
+**Policies** die drei Regeln von Hand eintragen. Die Bedingungen stehen
+wörtlich in der Migrationsdatei – einfach melden, dann gehe ich sie mit dir
+durch.
+
+### 2b. Nachweise prüfen (Team)
+
+Das läuft heute im Dashboard, es gibt noch keinen Adminbereich in der App.
+Im **SQL Editor**:
+
+```sql
+-- Was liegt zur Prüfung da?
+select * from public.pending_verifications();
+```
+
+Die Datei selbst liegt unter **Storage → provider-documents** im Ordner mit
+der `provider_id`. Danach pro Dokument entscheiden:
+
+```sql
+-- Angenommen
+select public.review_provider_document('<document_id>', 'accepted');
+
+-- Abgelehnt, mit Grund (den sieht der Dienstleister in der App)
+select public.review_provider_document(
+  '<document_id>', 'rejected', 'Das Foto ist unscharf.'
+);
+```
+
+Erst wenn **alle** nötigen Nachweise passen, wird das Profil verifiziert:
+
+```sql
+select public.set_provider_verification('<provider_id>', 'verified');
+```
+
+Das ist bewusst ein eigener, bewusster Schritt. Die App kann diese drei
+Funktionen nicht aufrufen – weder ein Dienstleister noch ein Kunde, und
+auch keine KI. Nur eine Person hier im Dashboard.
+
+Soll eine Leistung mehr verlangen als Ausweis und Gewerbeanmeldung:
+
+```sql
+insert into public.service_document_requirements (service_id, document_type)
+select id, 'qualification' from public.services where slug = 'lampenmontage';
+```
 
 ## 3. Eigenen E-Mail-Versand einrichten (kostenlos)
 

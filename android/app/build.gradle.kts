@@ -6,7 +6,12 @@ plugins {
 
 android {
     namespace = "com.gleichda.app"
-    compileSdk = flutter.compileSdkVersion
+    // Pinned above Flutter's default: the file and photo pickers depend on
+    // AndroidX libraries built against 36, and the build refuses to link
+    // them otherwise. This only decides which APIs may be compiled against,
+    // not which phones the app runs on (minSdk) or which runtime rules it
+    // opts into (targetSdk).
+    compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
     compileOptions {

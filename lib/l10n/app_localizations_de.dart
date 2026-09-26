@@ -463,7 +463,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get providerVerificationExplanation =>
-      'Wir prüfen deine Nachweise, bevor dich Kundinnen und Kunden als geprüft sehen. Welche Nachweise nötig sind, hängt von deinen Leistungen ab. Das Hochladen folgt in Kürze.';
+      'Wir prüfen deine Nachweise, bevor dich Kundinnen und Kunden als geprüft sehen. Welche Nachweise nötig sind, hängt von deinen Leistungen ab.';
 
   @override
   String providerHomeGreeting(String name) {
@@ -886,4 +886,136 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get chatWithCustomer => 'Kunde kontaktieren';
+
+  @override
+  String get actionRetry => 'Erneut versuchen';
+
+  @override
+  String get verificationHeadline => 'Verifiziere dein Profil';
+
+  @override
+  String get verificationIntro =>
+      'Mit deinen Nachweisen können wir bestätigen, dass du die angegebenen Dienstleistungen professionell anbietest.';
+
+  @override
+  String get verificationTeamNote =>
+      'Wir schauen uns jeden Nachweis von Hand an. Solange wir nicht fertig sind, siehst du kein Verifiziert-Abzeichen – und deine Kundinnen und Kunden auch nicht.';
+
+  @override
+  String get verificationRequired => 'Erforderlich';
+
+  @override
+  String get verificationOptional => 'Optional';
+
+  @override
+  String get verificationNotUploaded => 'Noch nicht hochgeladen';
+
+  @override
+  String get verificationStatusWaiting => 'Prüfung ausstehend';
+
+  @override
+  String get verificationStatusAccepted => 'Geprüft';
+
+  @override
+  String get verificationStatusRejected => 'Nachweis abgelehnt';
+
+  @override
+  String verificationRejectionReason(String reason) {
+    return 'Ablehnungsgrund: $reason';
+  }
+
+  @override
+  String verificationUploadedOn(String date) {
+    return 'Hochgeladen am $date';
+  }
+
+  @override
+  String get verificationUpload => 'Nachweis hochladen';
+
+  @override
+  String get verificationUploadNew => 'Neuen Nachweis hochladen';
+
+  @override
+  String get verificationReplace => 'Nachweis ersetzen';
+
+  @override
+  String get verificationUploadDone => 'Dokument wurde hochgeladen';
+
+  @override
+  String get verificationSourceCamera => 'Foto aufnehmen';
+
+  @override
+  String get verificationSourceGallery => 'Foto aus Galerie';
+
+  @override
+  String get verificationSourceFile => 'PDF auswählen';
+
+  @override
+  String get verificationLoadFailed =>
+      'Nachweise konnten nicht geladen werden.';
+
+  @override
+  String get verificationAllHandedIn =>
+      'Alle erforderlichen Nachweise sind da. Wir melden uns, sobald wir sie geprüft haben.';
+
+  @override
+  String get verificationMissing => 'Es fehlen noch erforderliche Nachweise.';
+
+  @override
+  String get verificationNoProfile =>
+      'Lege zuerst dein Dienstleisterprofil an.';
+
+  @override
+  String get documentTypeIdentity => 'Identitätsnachweis';
+
+  @override
+  String get documentTypeIdentityHint =>
+      'Reisepass, Personalausweis oder Führerschein';
+
+  @override
+  String get documentTypeBusinessRegistration => 'Gewerbeanmeldung';
+
+  @override
+  String get documentTypeBusinessRegistrationHint =>
+      'Gewerbeschein oder Auszug aus dem Gewerberegister';
+
+  @override
+  String get documentTypeTradeLicense => 'Gewerbeberechtigung';
+
+  @override
+  String get documentTypeTradeLicenseHint =>
+      'Befähigungsnachweis für ein reglementiertes Gewerbe';
+
+  @override
+  String get documentTypeQualification => 'Qualifikation';
+
+  @override
+  String get documentTypeQualificationHint =>
+      'Meisterbrief, Zeugnis oder Zertifikat';
+
+  @override
+  String get documentTypeInsurance => 'Versicherung';
+
+  @override
+  String get documentTypeInsuranceHint =>
+      'Haftpflichtversicherung für deine Tätigkeit';
+
+  @override
+  String get documentTypeOther => 'Sonstiger Nachweis';
+
+  @override
+  String get documentTypeOtherHint =>
+      'Ein Nachweis, der in keine andere Kategorie passt';
+
+  @override
+  String get errorDocumentLocked =>
+      'Dieser Nachweis wird gerade geprüft und kann nicht ersetzt werden.';
+
+  @override
+  String get errorDocumentTooLarge =>
+      'Die Datei ist zu groß. Bitte lade höchstens 10 MB hoch.';
+
+  @override
+  String get errorDocumentTypeNotAllowed =>
+      'Dieses Dateiformat geht nicht. Erlaubt sind PDF, JPG, PNG, HEIC und WEBP.';
 }

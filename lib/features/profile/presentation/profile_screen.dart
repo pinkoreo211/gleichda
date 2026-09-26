@@ -1,7 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
 import 'package:app/core/errors/app_failure_message.dart';
+import 'package:app/core/routing/app_routes.dart';
 import 'package:app/design_system/app_dimensions.dart';
 import 'package:app/design_system/widgets/button_progress.dart';
 import 'package:app/features/auth/application/current_user.dart';
@@ -109,6 +111,16 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             margin: EdgeInsets.zero,
             child: Column(
               children: [
+                // Verification belongs to the provider side only: a
+                // customer has nothing to prove.
+                if (role == AppRole.provider)
+                  ListTile(
+                    leading: const Icon(Icons.verified_user_outlined),
+                    title: Text(l10n.providerVerificationTitle),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () =>
+                        context.push(AppRoutes.providerProfileVerification),
+                  ),
                 ListTile(
                   leading: const Icon(Icons.edit_outlined),
                   title: Text(l10n.profileEdit),
