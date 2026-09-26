@@ -42,7 +42,7 @@ Bisher gibt es diese Dateien:
 | `20260925180000_reviews.sql` | Bewertungen nach abgeschlossenen Aufträgen; Durchschnitt in der Anbietersuche | ✅ |
 | `20260926120000_provider_verification.sql` | Nachweise hochladen: Spalten, privater Storage-Bucket, Prüf-Funktionen fürs Team | ✅ |
 | `20260926140000_document_upload_limits.sql` | Größe und Dateiformat schon im Bucket begrenzen, nicht nur in der App | ✅ |
-| `20260926160000_booking.sql` | Festpreis-Buchung: Adresse, gewählte Preisoption, Wunschtermin; Servicevorschlag und buchbare Anbieter | ⬜ |
+| `20260926160000_booking.sql` | Festpreis-Buchung: Adresse, gewählte Preisoption, Wunschtermin; Servicevorschlag und buchbare Anbieter | ✅ |
 
 Die beiden Auftragsstatus-Dateien sind **getrennt und in dieser Reihenfolge**
 auszuführen. Postgres erlaubt es nicht, einen gerade erst angelegten

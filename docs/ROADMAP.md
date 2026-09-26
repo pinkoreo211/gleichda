@@ -64,7 +64,7 @@ analytics.
 - [x] Supabase: verification migration run — bucket `provider-documents` exists, is not public, and carries all three storage policies
 - [x] Supabase: bucket limits migration run — the bucket itself now refuses anything over 10 MB and anything that is not a PDF or a photo
 - [x] Verification walked through on a device with two accounts: the provider uploaded, the team rejected with a reason that arrived word for word, the provider replaced it, the team accepted and verified, and the badge appeared on the customer's side. Storage kept one file per document type, not two
-- [ ] **Supabase: run `20260926160000_booking.sql`** (see docs/supabase-setup.md, section 2). Until then the booking flow cannot find anybody. Max also needs a price for a service he offers, or no provider is bookable at all
+- [x] Supabase: booking migration run
 
 - [x] Android SDK Command-line Tools installed
 - [x] Android licences: Google replaced `sdkmanager --licenses`; `flutter doctor` still reports "unknown", which is a tooling mismatch, not a blocker — builds work
