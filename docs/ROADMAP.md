@@ -63,6 +63,7 @@ analytics.
 - [x] Supabase: reviews migration run — verified on a device: the customer rated a confirmed job five stars with a comment, the button turned into the given rating, and the provider went from no rating at all to "5,0 · 1 review" in the search
 - [x] Supabase: verification migration run — bucket `provider-documents` exists, is not public, and carries all three storage policies
 - [x] Supabase: bucket limits migration run — the bucket itself now refuses anything over 10 MB and anything that is not a PDF or a photo
+- [x] Verification walked through on a device with two accounts: the provider uploaded, the team rejected with a reason that arrived word for word, the provider replaced it, the team accepted and verified, and the badge appeared on the customer's side. Storage kept one file per document type, not two
 
 - [x] Android SDK Command-line Tools installed
 - [x] Android licences: Google replaced `sdkmanager --licenses`; `flutter doctor` still reports "unknown", which is a tooling mismatch, not a blocker — builds work
