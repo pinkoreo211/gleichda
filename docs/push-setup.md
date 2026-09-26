@@ -1,5 +1,16 @@
 # Push-Benachrichtigungen einrichten
 
+> **Zwei Ordner, zwei völlig verschiedene Orte im Dashboard.**
+>
+> | Ordner | Sprache | Wohin |
+> |---|---|---|
+> | `supabase/migrations/*.sql` | SQL | **SQL Editor** |
+> | `supabase/functions/*/index.ts` | TypeScript | **Edge Functions** |
+>
+> Eine `.ts`-Datei in den SQL Editor zu kopieren endet mit
+> `syntax error at or near "//"`. Kaputt geht dabei nichts – die Abfrage
+> wird komplett abgelehnt, bevor irgendetwas läuft.
+
 Diese Schritte machst nur du: Sie brauchen Konten und Schlüssel, die mir
 nicht gehören. Ich brauche von dir am Ende **zwei Dateien** – beide sind
 keine Geheimnisse und dürfen ins Projekt.
