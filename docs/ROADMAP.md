@@ -60,7 +60,7 @@ analytics.
 - [x] Supabase: conversation list migration run — verified on a device: the customer sees one chat, the provider both, each with its own last message
 - [x] Supabase: no-self-hire migration run — verified on a device: the provider no longer appears in their own results
 - [x] Supabase: both job status migrations run — verified on a device with two accounts: the whole lifecycle from agreeing a time to the customer's confirmation
-- [ ] **Supabase: run `20260925180000_reviews.sql`** (see docs/supabase-setup.md, section 2). Until then, a finished job cannot be rated
+- [x] Supabase: reviews migration run — verified on a device: the customer rated a confirmed job five stars with a comment, the button turned into the given rating, and the provider went from no rating at all to "5,0 · 1 review" in the search
 
 - [x] Android SDK Command-line Tools installed
 - [x] Android licences: Google replaced `sdkmanager --licenses`; `flutter doctor` still reports "unknown", which is a tooling mismatch, not a blocker — builds work
