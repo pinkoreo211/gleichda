@@ -169,6 +169,9 @@ void main() {
     expect(find.text('12 Bewertungen'), findsOneWidget);
     expect(find.text('Bis 50 m²'), findsOneWidget);
     expect(find.textContaining('59,00'), findsOneWidget);
+    // The second option sits below the fold now that a face is on the
+    // card, which is fine — it just has to be reachable.
+    await scrollTo(tester, find.text('51–80 m²'));
     expect(find.textContaining('89,00'), findsOneWidget);
     expect(find.textContaining('pro Auftrag'), findsOneWidget);
     expect(find.textContaining('ca. 120 Min.'), findsOneWidget);

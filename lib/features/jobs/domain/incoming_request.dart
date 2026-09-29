@@ -21,6 +21,7 @@ class IncomingRequest {
     this.timing = RequestTiming.asap,
     this.preferredDate,
     this.customerName,
+    this.customerAvatarUrl,
     this.priceCents,
     this.currency = 'EUR',
     this.requestedAt,
@@ -51,6 +52,10 @@ class IncomingRequest {
 
   /// The name the customer chose to show. Null when they stored none.
   final String? customerName;
+
+  /// Their picture, if they added one. A provider deciding whether to go
+  /// to a stranger's flat is entitled to see who they are.
+  final String? customerAvatarUrl;
 
   /// What the customer booked at, when they came through the booking flow.
   /// Null for an open request — accepting that one agrees to no price.
@@ -98,6 +103,7 @@ class IncomingRequest {
     timing: RequestTiming.byName(json['timing'] as String?),
     preferredDate: DateTime.tryParse(json['preferred_date'] as String? ?? ''),
     customerName: json['customer_name'] as String?,
+    customerAvatarUrl: json['customer_avatar_url'] as String?,
     priceCents: (json['price_cents'] as num?)?.toInt(),
     currency: json['currency'] as String? ?? 'EUR',
     requestedAt: DateTime.tryParse(json['requested_at'] as String? ?? ''),

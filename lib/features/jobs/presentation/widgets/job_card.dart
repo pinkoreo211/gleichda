@@ -7,6 +7,7 @@ import 'package:app/core/formatting/app_date_format.dart';
 import 'package:app/core/formatting/app_money_format.dart';
 import 'package:app/core/routing/app_routes.dart';
 import 'package:app/design_system/app_dimensions.dart';
+import 'package:app/design_system/widgets/avatar.dart';
 import 'package:app/design_system/widgets/button_progress.dart';
 import 'package:app/features/chat/presentation/chat_screen.dart';
 import 'package:app/features/jobs/application/my_jobs.dart';
@@ -136,14 +137,29 @@ class _JobCardState extends ConsumerState<JobCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            if (service != null && service.isNotEmpty)
-              Text(service, style: theme.textTheme.titleSmall),
-            const SizedBox(height: AppSpacing.xs),
-            Text(
-              name,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
+            // The person, then the work. Whoever is on the other side of
+            // this job is about to stand in a room with the reader.
+            Row(
+              children: [
+                Avatar(imageUrl: _job.otherAvatarUrl, name: _job.otherName),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (service != null && service.isNotEmpty)
+                        Text(service, style: theme.textTheme.titleSmall),
+                      const SizedBox(height: AppSpacing.xs),
+                      Text(
+                        name,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
             // What was agreed when the job was booked. Absent for a job
             // that grew out of an open request, and then nothing is shown

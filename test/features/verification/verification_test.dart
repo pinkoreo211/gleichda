@@ -9,7 +9,7 @@ import 'package:app/features/provider/domain/provider_profile.dart';
 import 'package:app/features/provider/presentation/widgets/verification_badge.dart';
 import 'package:app/features/requests/domain/service_request_draft.dart';
 import 'package:app/features/session/domain/app_role.dart';
-import 'package:app/features/verification/domain/picked_document.dart';
+import 'package:app/core/media/picked_media.dart';
 import 'package:app/features/verification/domain/provider_document.dart';
 
 import '../../helpers/pump_app.dart';
@@ -32,7 +32,7 @@ _openVerification(
   ProviderVerificationStatus verification =
       ProviderVerificationStatus.unverified,
   List<DocumentRequirement>? requirements,
-  FakeDocumentPicker? picker,
+  FakeMediaPicker? picker,
 }) async {
   final provider = FakeProviderRepository(
     hasProfile: true,
@@ -148,8 +148,8 @@ void main() {
     // renames it, so there is no name worth repeating to anybody.
     final opened = await _openVerification(
       tester,
-      picker: FakeDocumentPicker(
-        next: PickedDocument(
+      picker: FakeMediaPicker(
+        next: PickedMedia(
           fileName: 'scaled_53.png',
           bytes: Uint8List.fromList(const [1, 2, 3]),
         ),
@@ -200,7 +200,7 @@ void main() {
   testWidgets('backing out of the picker changes nothing', (tester) async {
     final opened = await _openVerification(
       tester,
-      picker: FakeDocumentPicker()..next = null,
+      picker: FakeMediaPicker()..next = null,
     );
     await _upload(tester, 'Identitätsnachweis');
 
@@ -234,7 +234,7 @@ void main() {
       () => opened.docs.submit(
         providerId: _otherProviderId,
         type: ProviderDocumentType.identity,
-        file: PickedDocument(
+        file: PickedMedia(
           fileName: 'x.jpg',
           bytes: Uint8List.fromList(const [1]),
         ),
@@ -321,7 +321,7 @@ void main() {
       () => opened.docs.submit(
         providerId: testProviderId,
         type: ProviderDocumentType.identity,
-        file: PickedDocument(
+        file: PickedMedia(
           fileName: 'neu.jpg',
           bytes: Uint8List.fromList(const [1]),
         ),
@@ -359,8 +359,8 @@ void main() {
   testWidgets('a file that is too big never leaves the phone', (tester) async {
     final opened = await _openVerification(
       tester,
-      picker: FakeDocumentPicker(
-        next: PickedDocument(
+      picker: FakeMediaPicker(
+        next: PickedMedia(
           fileName: 'riesig.jpg',
           bytes: Uint8List(11 * 1024 * 1024),
         ),
@@ -380,8 +380,8 @@ void main() {
   ) async {
     final opened = await _openVerification(
       tester,
-      picker: FakeDocumentPicker(
-        next: PickedDocument(
+      picker: FakeMediaPicker(
+        next: PickedMedia(
           fileName: 'notizen.txt',
           bytes: Uint8List.fromList(const [1, 2, 3]),
         ),

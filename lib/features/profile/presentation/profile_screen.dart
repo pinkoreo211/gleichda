@@ -5,11 +5,13 @@ import 'package:material_ui/material_ui.dart';
 import 'package:app/core/errors/app_failure_message.dart';
 import 'package:app/core/routing/app_routes.dart';
 import 'package:app/design_system/app_dimensions.dart';
+import 'package:app/design_system/widgets/avatar.dart';
 import 'package:app/design_system/widgets/button_progress.dart';
 import 'package:app/features/auth/application/current_user.dart';
 import 'package:app/features/auth/data/auth_repository.dart';
 import 'package:app/features/auth/presentation/sign_out_button.dart';
 import 'package:app/features/profile/application/my_display_name.dart';
+import 'package:app/features/profile/domain/user_profile.dart';
 import 'package:app/features/session/application/active_role_controller.dart';
 import 'package:app/features/session/domain/app_role.dart';
 import 'package:app/l10n/app_localizations.dart';
@@ -50,10 +52,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final email = ref.read(authRepositoryProvider).currentEmail;
     // While loading, or if reading it failed, the name simply reads as
     // "not set" instead of blocking the whole profile.
-    final displayName = switch (ref.watch(myDisplayNameProvider)) {
+    // Name and picture together: both are what the other side sees.
+    final profile = switch (ref.watch(myProfileProvider)) {
       AsyncData(:final value) => value,
-      _ => null,
+      _ => const UserProfile(),
     };
+    final displayName = profile.displayName;
     final role = ref.watch(activeRoleProvider);
     // Briefly null while leaving the area after sign-out.
     if (role == null) return const SizedBox.shrink();
@@ -80,6 +84,16 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             margin: EdgeInsets.zero,
             child: Column(
               children: [
+                // The face first: this is what the other side of a job
+                // sees, so it belongs where the person can check it.
+                Padding(
+                  padding: const EdgeInsets.only(top: AppSpacing.md),
+                  child: Avatar(
+                    imageUrl: profile.avatarUrl,
+                    name: displayName,
+                    size: AppAvatarSize.lg,
+                  ),
+                ),
                 ListTile(
                   leading: const Icon(Icons.person_outline),
                   title: Text(l10n.profileName),
@@ -125,7 +139,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   leading: const Icon(Icons.edit_outlined),
                   title: Text(l10n.profileEdit),
                   trailing: const Icon(Icons.chevron_right),
-                  onTap: _showComingSoon,
+                  onTap: () => context.push(
+                    role == AppRole.provider
+                        ? AppRoutes.providerEditProfile
+                        : AppRoutes.customerEditProfile,
+                  ),
                 ),
                 ListTile(
                   leading: const Icon(Icons.settings_outlined),

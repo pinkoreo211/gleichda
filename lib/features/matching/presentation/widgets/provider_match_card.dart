@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 
 import 'package:app/core/formatting/app_money_format.dart';
 import 'package:app/design_system/app_dimensions.dart';
+import 'package:app/design_system/widgets/avatar.dart';
 import 'package:app/features/matching/domain/provider_match.dart';
 import 'package:app/features/provider/presentation/widgets/verification_badge.dart';
 import 'package:app/l10n/app_localizations.dart';
@@ -35,6 +36,8 @@ class ProviderMatchCard extends StatelessWidget {
           children: [
             Row(
               children: [
+                Avatar(imageUrl: match.avatarUrl, name: match.displayName),
+                const SizedBox(width: AppSpacing.sm),
                 Expanded(
                   child: Text(
                     match.displayName ?? l10n.providerUnnamed,

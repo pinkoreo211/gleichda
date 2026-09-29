@@ -5,6 +5,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:app/core/formatting/app_money_format.dart';
 import 'package:app/core/routing/app_routes.dart';
 import 'package:app/design_system/app_dimensions.dart';
+import 'package:app/design_system/widgets/avatar.dart';
 import 'package:app/design_system/widgets/empty_state.dart';
 import 'package:app/design_system/widgets/error_state.dart';
 import 'package:app/features/booking/application/booking_controller.dart';
@@ -83,6 +84,12 @@ class _Offer extends ConsumerWidget {
         const SizedBox(height: AppSpacing.sm),
         Row(
           children: [
+            Avatar(
+              imageUrl: offer.profileImageUrl,
+              name: offer.displayName,
+              size: AppAvatarSize.lg,
+            ),
+            const SizedBox(width: AppSpacing.md),
             Expanded(
               child: Text(
                 offer.displayName ?? l10n.providerUnnamed,

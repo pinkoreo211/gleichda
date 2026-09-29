@@ -3,7 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:app/core/backend/supabase_providers.dart';
 import 'package:app/core/errors/app_failure.dart';
-import 'package:app/features/verification/domain/picked_document.dart';
+import 'package:app/core/media/picked_media.dart';
 import 'package:app/features/verification/domain/provider_document.dart';
 
 /// The documents a provider hands in, and what they are asked for.
@@ -26,7 +26,7 @@ abstract interface class VerificationRepository {
   Future<void> submit({
     required String providerId,
     required ProviderDocumentType type,
-    required PickedDocument file,
+    required PickedMedia file,
   });
 }
 
@@ -86,7 +86,7 @@ class SupabaseVerificationRepository implements VerificationRepository {
   Future<void> submit({
     required String providerId,
     required ProviderDocumentType type,
-    required PickedDocument file,
+    required PickedMedia file,
   }) async {
     if (file.sizeInBytes > maxDocumentBytes) {
       throw AppFailure.documentTooLarge;

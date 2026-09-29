@@ -9,7 +9,7 @@ import 'package:app/features/provider/application/provider_profile_providers.dar
 import 'package:app/features/provider/domain/provider_profile.dart';
 import 'package:app/features/provider/presentation/widgets/verification_badge.dart';
 import 'package:app/features/verification/application/my_verification.dart';
-import 'package:app/features/verification/data/document_picker.dart';
+import 'package:app/core/media/media_picker.dart';
 import 'package:app/features/verification/domain/provider_document.dart';
 import 'package:app/features/verification/presentation/widgets/document_labels.dart';
 import 'package:app/l10n/app_localizations.dart';
@@ -154,7 +154,7 @@ class _DocumentCard extends ConsumerWidget {
   Future<void> _upload(
     BuildContext context,
     WidgetRef ref,
-    DocumentSource source,
+    MediaSource source,
   ) async {
     final l10n = AppLocalizations.of(context);
     final messenger = ScaffoldMessenger.of(context);
@@ -174,7 +174,7 @@ class _DocumentCard extends ConsumerWidget {
 
   Future<void> _chooseSource(BuildContext context, WidgetRef ref) async {
     final l10n = AppLocalizations.of(context);
-    final source = await showModalBottomSheet<DocumentSource>(
+    final source = await showModalBottomSheet<MediaSource>(
       context: context,
       showDragHandle: true,
       builder: (context) => SafeArea(
@@ -184,17 +184,17 @@ class _DocumentCard extends ConsumerWidget {
             ListTile(
               leading: const Icon(Icons.photo_camera_outlined),
               title: Text(l10n.verificationSourceCamera),
-              onTap: () => Navigator.pop(context, DocumentSource.camera),
+              onTap: () => Navigator.pop(context, MediaSource.camera),
             ),
             ListTile(
               leading: const Icon(Icons.photo_library_outlined),
               title: Text(l10n.verificationSourceGallery),
-              onTap: () => Navigator.pop(context, DocumentSource.gallery),
+              onTap: () => Navigator.pop(context, MediaSource.gallery),
             ),
             ListTile(
               leading: const Icon(Icons.picture_as_pdf_outlined),
               title: Text(l10n.verificationSourceFile),
-              onTap: () => Navigator.pop(context, DocumentSource.file),
+              onTap: () => Navigator.pop(context, MediaSource.file),
             ),
             const SizedBox(height: AppSpacing.sm),
           ],

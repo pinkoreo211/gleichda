@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:app/features/provider/application/provider_profile_providers.dart';
-import 'package:app/features/verification/data/document_picker.dart';
+import 'package:app/core/media/media_picker.dart';
 import 'package:app/features/verification/data/verification_repository.dart';
 import 'package:app/features/verification/domain/provider_document.dart';
 
@@ -44,14 +44,14 @@ class DocumentUpload extends Notifier<ProviderDocumentType?> {
   /// the screen turns into a message.
   Future<bool> pickAndSubmit({
     required ProviderDocumentType type,
-    required DocumentSource source,
+    required MediaSource source,
   }) async {
     if (state != null) return false;
 
     final profile = await ref.read(myProviderProfileProvider.future);
     if (profile == null) return false;
 
-    final file = await ref.read(documentPickerProvider).pick(source);
+    final file = await ref.read(mediaPickerProvider).pick(source);
     if (file == null) return false;
 
     state = type;

@@ -15,6 +15,7 @@ class Job {
     required this.description,
     required this.updatedAt,
     this.otherName,
+    this.otherAvatarUrl,
     this.serviceName,
     this.serviceNameEn,
     this.city,
@@ -45,6 +46,11 @@ class Job {
   final String description;
 
   final String? otherName;
+
+  /// The other person's picture, or null. Both sides of a job see each
+  /// other: they are about to stand in the same room.
+  final String? otherAvatarUrl;
+
   final String? serviceName;
   final String? serviceNameEn;
   final String? city;
@@ -127,6 +133,7 @@ class Job {
         RequestContactStatus.accepted,
     description: json['description'] as String? ?? '',
     otherName: json['other_name'] as String?,
+    otherAvatarUrl: json['other_avatar_url'] as String?,
     serviceName: json['service_name'] as String?,
     serviceNameEn: json['service_name_en'] as String?,
     city: json['city'] as String?,

@@ -662,6 +662,78 @@ abstract class AppLocalizations {
   /// **'Noch nicht hinterlegt'**
   String get profileNameMissing;
 
+  /// Label of the name field in the profile editor.
+  ///
+  /// In de, this message translates to:
+  /// **'Dein Name'**
+  String get profileNameLabel;
+
+  /// Explains who sees the name and that a first name is enough.
+  ///
+  /// In de, this message translates to:
+  /// **'So sehen dich die Menschen, mit denen du einen Auftrag hast. Ein Vorname genügt.'**
+  String get profileNameHelp;
+
+  /// Adds a profile picture when there is none.
+  ///
+  /// In de, this message translates to:
+  /// **'Foto hinzufügen'**
+  String get profilePictureAdd;
+
+  /// Replaces an existing profile picture.
+  ///
+  /// In de, this message translates to:
+  /// **'Foto ändern'**
+  String get profilePictureChange;
+
+  /// Take a new profile picture with the camera.
+  ///
+  /// In de, this message translates to:
+  /// **'Foto aufnehmen'**
+  String get profilePictureCamera;
+
+  /// Pick an existing photo as the profile picture.
+  ///
+  /// In de, this message translates to:
+  /// **'Foto aus Galerie'**
+  String get profilePictureGallery;
+
+  /// Deletes the profile picture.
+  ///
+  /// In de, this message translates to:
+  /// **'Foto entfernen'**
+  String get profilePictureRemove;
+
+  /// Confirmation after a picture was uploaded.
+  ///
+  /// In de, this message translates to:
+  /// **'Foto gespeichert'**
+  String get profilePictureSaved;
+
+  /// Saves the profile.
+  ///
+  /// In de, this message translates to:
+  /// **'Speichern'**
+  String get profileSave;
+
+  /// Confirmation after the profile was saved.
+  ///
+  /// In de, this message translates to:
+  /// **'Profil gespeichert'**
+  String get profileSaved;
+
+  /// Shown when the profile could not be read.
+  ///
+  /// In de, this message translates to:
+  /// **'Dein Profil konnte nicht geladen werden.'**
+  String get profileLoadFailed;
+
+  /// Says plainly who sees the name and picture, and that an uploaded picture is reachable by its address.
+  ///
+  /// In de, this message translates to:
+  /// **'Name und Foto sehen die Menschen, mit denen du einen Auftrag hast, und Kundinnen und Kunden, die dein Profil ansehen. Deine E-Mail-Adresse und deine Telefonnummer bleiben verborgen. Ein einmal hochgeladenes Foto ist über seine Adresse auch ohne Anmeldung erreichbar.'**
+  String get profileVisibilityNote;
+
   /// Profile entry that will open profile editing.
   ///
   /// In de, this message translates to:

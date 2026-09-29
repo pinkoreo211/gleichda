@@ -11,6 +11,7 @@ class ProviderMatch {
     required this.providerId,
     required this.verificationStatus,
     this.displayName,
+    this.avatarUrl,
     this.description,
     this.city,
     this.lowestPriceCents,
@@ -24,6 +25,10 @@ class ProviderMatch {
 
   /// What the provider chose to be called. Null if they stored no name.
   final String? displayName;
+
+  /// Their picture, or null. Never a placeholder photograph: a stock face
+  /// beside a real name would be worse than no face.
+  final String? avatarUrl;
 
   final String? description;
   final String? city;
@@ -56,6 +61,7 @@ class ProviderMatch {
   static ProviderMatch fromJson(Map<String, dynamic> json) => ProviderMatch(
     providerId: json['provider_id'] as String,
     displayName: json['display_name'] as String?,
+    avatarUrl: json['avatar_url'] as String?,
     description: json['description'] as String?,
     city: json['city'] as String?,
     verificationStatus: ProviderVerificationStatus.fromDb(

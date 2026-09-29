@@ -5,6 +5,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:app/core/formatting/app_date_format.dart';
 import 'package:app/core/routing/app_routes.dart';
 import 'package:app/design_system/app_dimensions.dart';
+import 'package:app/design_system/widgets/avatar.dart';
 import 'package:app/design_system/widgets/empty_state.dart';
 import 'package:app/features/chat/application/chat_providers.dart';
 import 'package:app/features/chat/domain/conversation_summary.dart';
@@ -187,7 +188,7 @@ class _ConversationCard extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _Avatar(imageUrl: item.otherImageUrl, name: name),
+              Avatar(imageUrl: item.otherImageUrl, name: name),
               const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: Column(
@@ -243,35 +244,6 @@ class _ConversationCard extends StatelessWidget {
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-/// The provider's picture when there is one. Uploading does not exist yet,
-/// so in practice this is the initial — which is why it is drawn properly
-/// rather than left as a grey blank.
-class _Avatar extends StatelessWidget {
-  const _Avatar({required this.imageUrl, required this.name});
-
-  final String? imageUrl;
-  final String name;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final url = imageUrl;
-    final initial = name.trim().isEmpty ? '?' : name.trim().characters.first;
-
-    return CircleAvatar(
-      radius: AppIconSize.md,
-      backgroundColor: theme.colorScheme.secondaryContainer,
-      foregroundImage: url == null || url.isEmpty ? null : NetworkImage(url),
-      child: Text(
-        initial.toUpperCase(),
-        style: theme.textTheme.titleMedium?.copyWith(
-          color: theme.colorScheme.onSecondaryContainer,
         ),
       ),
     );

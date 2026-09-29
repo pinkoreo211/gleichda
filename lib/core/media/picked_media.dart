@@ -5,8 +5,8 @@ import 'dart:typed_data';
 /// Deliberately not an `XFile` or a platform path: the repository and the
 /// tests only ever see bytes and a name, so nothing below this line has to
 /// know whether it came from the camera, the gallery or a file browser.
-class PickedDocument {
-  const PickedDocument({
+class PickedMedia {
+  const PickedMedia({
     required this.fileName,
     required this.bytes,
     this.displayName,

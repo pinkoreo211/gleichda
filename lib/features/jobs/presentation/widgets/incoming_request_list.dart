@@ -5,6 +5,7 @@ import 'package:app/core/errors/app_failure_message.dart';
 import 'package:app/core/formatting/app_date_format.dart';
 import 'package:app/core/formatting/app_money_format.dart';
 import 'package:app/design_system/app_dimensions.dart';
+import 'package:app/design_system/widgets/avatar.dart';
 import 'package:app/design_system/widgets/button_progress.dart';
 import 'package:app/features/jobs/application/incoming_requests.dart';
 import 'package:app/features/jobs/application/my_jobs.dart';
@@ -200,17 +201,35 @@ class _IncomingRequestCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (serviceName != null && serviceName.isNotEmpty) ...[
-              Text(serviceName, style: theme.textTheme.titleSmall),
-              const SizedBox(height: AppSpacing.xs),
-            ],
-            Text(
-              l10n.providerIncomingFrom(
-                request.customerName ?? l10n.providerIncomingCustomerUnknown,
-              ),
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
+            // Who is asking, before what they are asking for.
+            Row(
+              children: [
+                Avatar(
+                  imageUrl: request.customerAvatarUrl,
+                  name: request.customerName,
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (serviceName != null && serviceName.isNotEmpty) ...[
+                        Text(serviceName, style: theme.textTheme.titleSmall),
+                        const SizedBox(height: AppSpacing.xs),
+                      ],
+                      Text(
+                        l10n.providerIncomingFrom(
+                          request.customerName ??
+                              l10n.providerIncomingCustomerUnknown,
+                        ),
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: AppSpacing.sm),
             // Not truncated: a provider decides on the whole text, not on

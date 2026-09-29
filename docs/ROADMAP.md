@@ -67,6 +67,7 @@ analytics.
 - [x] Push: Firebase project `gleichda-c328d` created and `google-services.json` in place; Firebase is wired into the app
 - [x] Supabase: push tables migration run — the outbox and the token table exist
 - [x] Push: secret, Edge Function and webhook all set up — verified on a device: a row in the outbox reached the phone by itself, the text was right, and tapping it outlined that job. A dead token was deleted on the way
+- [ ] **Supabase: run `20260929120000_profile_names_and_avatars.sql`**, then check under Storage that `avatars` exists and *is* public (the one bucket that is, on purpose)
 - [x] Push: walked from a real booking — a customer booked Max on a device and `create_booking()` wrote the outbox row by itself. The webhook woke the sender, Max's token was dead after a device reset, so it was deleted and the note stayed pending for a retry rather than being marked delivered
 - [x] Supabase: booking migration run — walked through on a device with two accounts: "Mein Kasten muss aufgebaut werden" found Möbelmontage in the catalog, Wien found Max, his own € 39,99 became the price, and he saw that price and the wanted hour before accepting. The street reached him only after he did
 

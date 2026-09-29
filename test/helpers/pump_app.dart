@@ -31,6 +31,7 @@ import 'package:app/features/notifications/data/push_token_repository.dart';
 import 'package:app/features/notifications/domain/push_message.dart';
 import 'package:app/features/matching/domain/provider_match.dart';
 import 'package:app/features/profile/data/profile_repository.dart';
+import 'package:app/features/profile/domain/user_profile.dart';
 import 'package:app/features/provider/data/provider_repository.dart';
 import 'package:app/features/provider/domain/provider_profile.dart';
 import 'package:app/features/provider/domain/provider_service_offering.dart';
@@ -45,9 +46,9 @@ import 'package:app/features/session/application/active_role_controller.dart';
 import 'package:app/features/session/data/role_repository.dart';
 import 'package:app/features/session/data/session_store.dart';
 import 'package:app/features/session/domain/app_role.dart';
-import 'package:app/features/verification/data/document_picker.dart';
+import 'package:app/core/media/media_picker.dart';
 import 'package:app/features/verification/data/verification_repository.dart';
-import 'package:app/features/verification/domain/picked_document.dart';
+import 'package:app/core/media/picked_media.dart';
 import 'package:app/features/verification/domain/provider_document.dart';
 
 const testUserId = 'user-1';
@@ -125,12 +126,60 @@ class FakeRoleRepository implements RoleRepository {
 
 /// [ProfileRepository] without a backend.
 class FakeProfileRepository implements ProfileRepository {
-  FakeProfileRepository({this.displayName});
+  FakeProfileRepository({String? displayName, String? avatarUrl})
+    : profile = UserProfile(displayName: displayName, avatarUrl: avatarUrl);
 
-  final String? displayName;
+  /// The stored profile, updated by the writes below so a test can check
+  /// what the screen actually saved.
+  UserProfile profile;
+
+  /// Every picture that was uploaded, newest last.
+  final uploaded = <PickedMedia>[];
+
+  /// When set, every call throws it.
+  AppFailure? failure;
+
+  String? get displayName => profile.displayName;
 
   @override
-  Future<String?> myDisplayName() async => displayName;
+  Future<String?> myDisplayName() async => profile.displayName;
+
+  @override
+  Future<UserProfile> myProfile() async {
+    if (failure case final failure?) throw failure;
+    return profile;
+  }
+
+  @override
+  Future<void> saveDisplayName(String? name) async {
+    if (failure case final failure?) throw failure;
+    final trimmed = (name ?? '').trim();
+    profile = UserProfile(
+      displayName: trimmed.isEmpty ? null : trimmed,
+      avatarUrl: profile.avatarUrl,
+    );
+  }
+
+  @override
+  Future<String> saveAvatar(PickedMedia picture) async {
+    if (failure case final failure?) throw failure;
+    // The same two checks the backend makes, so a test that uploads
+    // something impossible fails here the way it would live.
+    if (picture.sizeInBytes > maxAvatarBytes) throw AppFailure.documentTooLarge;
+    if (!allowedAvatarExtensions.contains(picture.extension)) {
+      throw AppFailure.documentTypeNotAllowed;
+    }
+    uploaded.add(picture);
+    final url = 'https://example.test/avatars/${uploaded.length}.jpg';
+    profile = UserProfile(displayName: profile.displayName, avatarUrl: url);
+    return url;
+  }
+
+  @override
+  Future<void> removeAvatar() async {
+    if (failure case final failure?) throw failure;
+    profile = UserProfile(displayName: profile.displayName);
+  }
 }
 
 /// A small stand-in catalog: two categories, three services, one of them
@@ -397,6 +446,8 @@ class FakeIncomingRequestsRepository implements IncomingRequestsRepository {
     this.requests,
     FakeRequestContacts? contacts,
     this.providerId = testProviderId,
+    this.customerName,
+    this.customerAvatarUrl,
   }) : seeded = seeded ?? const [],
        contacts = contacts ?? requests?.contacts ?? FakeRequestContacts();
 
@@ -407,6 +458,11 @@ class FakeIncomingRequestsRepository implements IncomingRequestsRepository {
   /// Which provider this repository speaks for. The real function works it
   /// out from the signed-in account.
   final String providerId;
+
+  /// Who the requests come from, as the backend hands it over: a name and
+  /// a picture, nothing else about them.
+  final String? customerName;
+  final String? customerAvatarUrl;
 
   @override
   Future<List<IncomingRequest>> myIncomingRequests() async {
@@ -428,6 +484,8 @@ class FakeIncomingRequestsRepository implements IncomingRequestsRepository {
             postalCode: request.postalCode,
             timing: request.timing,
             preferredDate: request.preferredDate,
+            customerName: customerName,
+            customerAvatarUrl: customerAvatarUrl,
             // Present only for a booking. An open request carries no
             // price, and the card then shows none.
             priceCents:
@@ -804,6 +862,8 @@ class FakeJobsRepository implements JobsRepository {
     this.isProvider = false,
     this.providerName = 'Max Montagen',
     this.customerName = 'Anna Kundin',
+    this.customerAvatarUrl,
+    this.providerAvatarUrl,
     this.myProviderId = testProviderId,
     this.reviews,
   });
@@ -817,6 +877,8 @@ class FakeJobsRepository implements JobsRepository {
   final bool isProvider;
   final String providerName;
   final String customerName;
+  final String? customerAvatarUrl;
+  final String? providerAvatarUrl;
   final String myProviderId;
 
   /// contact id -> the agreed time.
@@ -838,6 +900,9 @@ class FakeJobsRepository implements JobsRepository {
               status: status,
               description: request.originalDescription,
               otherName: isProvider ? customerName : providerName,
+              otherAvatarUrl: isProvider
+                  ? customerAvatarUrl
+                  : providerAvatarUrl,
               serviceName: request.service?.name,
               city: request.city,
               postalCode: request.postalCode,
@@ -1226,7 +1291,7 @@ class FakeVerificationRepository implements VerificationRepository {
   Future<void> submit({
     required String providerId,
     required ProviderDocumentType type,
-    required PickedDocument file,
+    required PickedMedia file,
   }) async {
     if (file.sizeInBytes > maxDocumentBytes) throw AppFailure.documentTooLarge;
     if (!allowedDocumentExtensions.contains(file.extension)) {
@@ -1251,25 +1316,25 @@ class FakeVerificationRepository implements VerificationRepository {
   }
 }
 
-/// [DocumentPicker] that hands back [next] instead of opening a camera.
-class FakeDocumentPicker implements DocumentPicker {
-  FakeDocumentPicker({PickedDocument? next})
+/// [MediaPicker] that hands back [next] instead of opening a camera.
+class FakeMediaPicker implements MediaPicker {
+  FakeMediaPicker({PickedMedia? next})
     : next =
           next ??
-          PickedDocument(
+          PickedMedia(
             fileName: 'ausweis.jpg',
             displayName: 'ausweis.jpg',
             bytes: Uint8List.fromList(const [1, 2, 3]),
           );
 
   /// Null stands for backing out of the picker, which is not an error.
-  PickedDocument? next;
+  PickedMedia? next;
 
   /// Which sources the screen asked for, in order.
-  final asked = <DocumentSource>[];
+  final asked = <MediaSource>[];
 
   @override
-  Future<PickedDocument?> pick(DocumentSource source) async {
+  Future<PickedMedia?> pick(MediaSource source) async {
     asked.add(source);
     return next;
   }
@@ -1403,7 +1468,7 @@ Future<void> pumpApp(
   FakeBookingRepository? booking,
   FakePushService? push,
   FakePushTokenRepository? pushTokens,
-  FakeDocumentPicker? picker,
+  FakeMediaPicker? picker,
   Locale locale = const Locale('de', 'AT'),
 }) async {
   tester.platformDispatcher.localesTestValue = [locale];
@@ -1454,9 +1519,7 @@ Future<void> pumpApp(
         verificationRepositoryProvider.overrideWithValue(
           verification ?? FakeVerificationRepository(),
         ),
-        documentPickerProvider.overrideWithValue(
-          picker ?? FakeDocumentPicker(),
-        ),
+        mediaPickerProvider.overrideWithValue(picker ?? FakeMediaPicker()),
       ],
       child: const App(),
     ),
@@ -1500,7 +1563,7 @@ Future<void> pumpSignedInApp(
   FakeBookingRepository? booking,
   FakePushService? push,
   FakePushTokenRepository? pushTokens,
-  FakeDocumentPicker? picker,
+  FakeMediaPicker? picker,
 }) {
   return pumpApp(
     tester,

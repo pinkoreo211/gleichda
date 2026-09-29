@@ -108,6 +108,11 @@ abstract final class AppRoutes {
   /// keeps its own back button.
   static const String providerVerification = '/provider/jobs/verification';
 
+  /// Editing the account's own name and picture. Reachable from either
+  /// area's profile tab, so each keeps its own back button.
+  static const String customerEditProfile = '/customer/profile/edit';
+  static const String providerEditProfile = '/provider/profile/edit';
+
   static const String providerProfileVerification =
       '/provider/profile/verification';
 

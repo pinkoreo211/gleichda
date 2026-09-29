@@ -318,6 +318,44 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileNameMissing => 'Not set yet';
 
   @override
+  String get profileNameLabel => 'Your name';
+
+  @override
+  String get profileNameHelp =>
+      'This is how the people you have a job with see you. A first name is enough.';
+
+  @override
+  String get profilePictureAdd => 'Add a photo';
+
+  @override
+  String get profilePictureChange => 'Change photo';
+
+  @override
+  String get profilePictureCamera => 'Take a photo';
+
+  @override
+  String get profilePictureGallery => 'Choose a photo';
+
+  @override
+  String get profilePictureRemove => 'Remove photo';
+
+  @override
+  String get profilePictureSaved => 'Photo saved';
+
+  @override
+  String get profileSave => 'Save';
+
+  @override
+  String get profileSaved => 'Profile saved';
+
+  @override
+  String get profileLoadFailed => 'Your profile could not be loaded.';
+
+  @override
+  String get profileVisibilityNote =>
+      'Your name and photo are seen by the people you have a job with, and by customers looking at your profile. Your email address and phone number stay hidden. Once uploaded, a photo is reachable by its address even without signing in.';
+
+  @override
   String get profileEdit => 'Edit profile';
 
   @override

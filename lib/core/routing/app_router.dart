@@ -32,6 +32,7 @@ import 'package:app/features/provider/presentation/provider_onboarding_screen.da
 import 'package:app/features/provider/presentation/provider_service_picker_screen.dart';
 import 'package:app/features/provider/presentation/provider_service_prices_screen.dart';
 import 'package:app/features/provider/presentation/provider_services_screen.dart';
+import 'package:app/features/profile/presentation/edit_profile_screen.dart';
 import 'package:app/features/requests/presentation/service_request_screen.dart';
 import 'package:app/features/reviews/presentation/review_screen.dart';
 import 'package:app/features/session/application/active_role_controller.dart';
@@ -161,6 +162,13 @@ final GoRoute _verificationRoute = GoRoute(
   builder: (context, state) => const VerificationScreen(),
 );
 
+/// Editing the account's own name and picture. Registered in both profile
+/// tabs, so it opens where the person tapped.
+final GoRoute _editProfileRoute = GoRoute(
+  path: 'edit',
+  builder: (context, state) => const EditProfileScreen(),
+);
+
 /// Screens that open on top of a tab. They stay inside the tab's branch, so
 /// the bottom navigation remains visible and the tab keeps its history.
 List<RouteBase> _tabSubRoutes(ShellTab tab) => switch (tab) {
@@ -253,7 +261,8 @@ List<RouteBase> _tabSubRoutes(ShellTab tab) => switch (tab) {
   ShellTab.providerMessages => [_messagesChatRoute],
   // The same screen as in the jobs tab, under the profile tab's own path:
   // opening it from the profile list should leave the provider there.
-  ShellTab.providerProfile => [_verificationRoute],
+  ShellTab.providerProfile => [_verificationRoute, _editProfileRoute],
+  ShellTab.customerProfile => [_editProfileRoute],
   ShellTab.providerJobs => [
     GoRoute(
       path: 'chat/:requestId',

@@ -321,6 +321,44 @@ class AppLocalizationsDe extends AppLocalizations {
   String get profileNameMissing => 'Noch nicht hinterlegt';
 
   @override
+  String get profileNameLabel => 'Dein Name';
+
+  @override
+  String get profileNameHelp =>
+      'So sehen dich die Menschen, mit denen du einen Auftrag hast. Ein Vorname genügt.';
+
+  @override
+  String get profilePictureAdd => 'Foto hinzufügen';
+
+  @override
+  String get profilePictureChange => 'Foto ändern';
+
+  @override
+  String get profilePictureCamera => 'Foto aufnehmen';
+
+  @override
+  String get profilePictureGallery => 'Foto aus Galerie';
+
+  @override
+  String get profilePictureRemove => 'Foto entfernen';
+
+  @override
+  String get profilePictureSaved => 'Foto gespeichert';
+
+  @override
+  String get profileSave => 'Speichern';
+
+  @override
+  String get profileSaved => 'Profil gespeichert';
+
+  @override
+  String get profileLoadFailed => 'Dein Profil konnte nicht geladen werden.';
+
+  @override
+  String get profileVisibilityNote =>
+      'Name und Foto sehen die Menschen, mit denen du einen Auftrag hast, und Kundinnen und Kunden, die dein Profil ansehen. Deine E-Mail-Adresse und deine Telefonnummer bleiben verborgen. Ein einmal hochgeladenes Foto ist über seine Adresse auch ohne Anmeldung erreichbar.';
+
+  @override
   String get profileEdit => 'Profil bearbeiten';
 
   @override
