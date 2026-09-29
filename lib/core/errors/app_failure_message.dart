@@ -19,6 +19,7 @@ extension AppFailureMessage on AppFailure {
     AppFailure.emailNotAuthorized => l10n.errorEmailNotAuthorized,
     AppFailure.messageEmpty => l10n.errorMessageEmpty,
     AppFailure.requestAlreadyAnswered => l10n.errorRequestAlreadyAnswered,
+    AppFailure.timedOut => l10n.errorTimedOut,
     AppFailure.documentLocked => l10n.errorDocumentLocked,
     AppFailure.documentTooLarge => l10n.errorDocumentTooLarge,
     AppFailure.documentTypeNotAllowed => l10n.errorDocumentTypeNotAllowed,

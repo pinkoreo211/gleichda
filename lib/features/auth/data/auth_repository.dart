@@ -32,6 +32,14 @@ class SupabaseAuthRepository implements AuthRepository {
 
   final GoTrueClient _auth;
 
+  /// How long to wait before calling it a failure.
+  ///
+  /// The client has no limit of its own: a request that never comes back
+  /// leaves the person watching a spinner with no message and no way out
+  /// but to kill the app. Thirty seconds is longer than a slow connection
+  /// needs and short enough that nobody sits there wondering.
+  static const _timeout = Duration(seconds: 30);
+
   @override
   String? get currentUserId => _auth.currentUser?.id;
 
@@ -45,7 +53,9 @@ class SupabaseAuthRepository implements AuthRepository {
   @override
   Future<void> sendEmailCode(String email) async {
     try {
-      await _auth.signInWithOtp(email: email, shouldCreateUser: true);
+      await _auth
+          .signInWithOtp(email: email, shouldCreateUser: true)
+          .timeout(_timeout);
     } catch (error) {
       throw AppFailure.fromError(error);
     }
@@ -57,7 +67,9 @@ class SupabaseAuthRepository implements AuthRepository {
     required String code,
   }) async {
     try {
-      await _auth.verifyOTP(email: email, token: code, type: OtpType.email);
+      await _auth
+          .verifyOTP(email: email, token: code, type: OtpType.email)
+          .timeout(_timeout);
     } catch (error) {
       throw AppFailure.fromError(error);
     }
@@ -66,7 +78,7 @@ class SupabaseAuthRepository implements AuthRepository {
   @override
   Future<void> signOut() async {
     try {
-      await _auth.signOut();
+      await _auth.signOut().timeout(_timeout);
     } catch (error) {
       throw AppFailure.fromError(error);
     }

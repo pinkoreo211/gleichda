@@ -2156,6 +2156,12 @@ abstract class AppLocalizations {
   /// **'Ein Nachweis, der in keine andere Kategorie passt'**
   String get documentTypeOtherHint;
 
+  /// Shown when a request never came back, instead of leaving a spinner running.
+  ///
+  /// In de, this message translates to:
+  /// **'Das hat zu lange gedauert. Bitte prüf deine Verbindung und versuch es noch einmal.'**
+  String get errorTimedOut;
+
   /// The team has taken the document in hand.
   ///
   /// In de, this message translates to:

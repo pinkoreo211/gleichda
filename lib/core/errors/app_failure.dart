@@ -1,3 +1,5 @@
+import 'dart:async' show TimeoutException;
+
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -23,6 +25,11 @@ enum AppFailure implements Exception {
   /// longer swap it out.
   documentLocked,
 
+  /// The request never came back. Shown rather than left as a spinner:
+  /// a person watching one forever has no way to tell a slow connection
+  /// from a broken app.
+  timedOut,
+
   /// Caught in the app: uploading it would only waste the provider's data
   /// to be told the same thing.
   documentTooLarge,
@@ -31,6 +38,7 @@ enum AppFailure implements Exception {
 
   static AppFailure fromError(Object error) {
     if (error is AppFailure) return error;
+    if (error is TimeoutException) return timedOut;
     if (error is PostgrestException &&
         error.message.contains('already answered')) {
       return requestAlreadyAnswered;

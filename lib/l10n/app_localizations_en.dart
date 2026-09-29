@@ -1180,6 +1180,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get documentTypeOtherHint => 'A document that fits no other category';
 
   @override
+  String get errorTimedOut =>
+      'That took too long. Please check your connection and try again.';
+
+  @override
   String get errorDocumentLocked =>
       'This document is being checked and cannot be replaced.';
 

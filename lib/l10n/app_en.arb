@@ -354,6 +354,7 @@
   "documentTypeOther": "Other document",
   "documentTypeOtherHint": "A document that fits no other category",
 
+  "errorTimedOut": "That took too long. Please check your connection and try again.",
   "errorDocumentLocked": "This document is being checked and cannot be replaced.",
   "errorDocumentTooLarge": "That file is too large. Please upload at most 10 MB.",
   "errorDocumentTypeNotAllowed": "That file format does not work. PDF, JPG, PNG, HEIC and WEBP are accepted."

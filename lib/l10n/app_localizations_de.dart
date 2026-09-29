@@ -1193,6 +1193,10 @@ class AppLocalizationsDe extends AppLocalizations {
       'Ein Nachweis, der in keine andere Kategorie passt';
 
   @override
+  String get errorTimedOut =>
+      'Das hat zu lange gedauert. Bitte prüf deine Verbindung und versuch es noch einmal.';
+
+  @override
   String get errorDocumentLocked =>
       'Dieser Nachweis wird gerade geprüft und kann nicht ersetzt werden.';
 

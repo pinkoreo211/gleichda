@@ -1009,6 +1009,8 @@
   "documentTypeOtherHint": "Ein Nachweis, der in keine andere Kategorie passt",
   "@documentTypeOtherHint": { "description": "Explains the catch-all document type." },
 
+  "errorTimedOut": "Das hat zu lange gedauert. Bitte prüf deine Verbindung und versuch es noch einmal.",
+  "@errorTimedOut": { "description": "Shown when a request never came back, instead of leaving a spinner running." },
   "errorDocumentLocked": "Dieser Nachweis wird gerade geprüft und kann nicht ersetzt werden.",
   "@errorDocumentLocked": { "description": "The team has taken the document in hand." },
   "errorDocumentTooLarge": "Die Datei ist zu groß. Bitte lade höchstens 10 MB hoch.",
