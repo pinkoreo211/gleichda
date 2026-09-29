@@ -64,8 +64,14 @@ class _PhotoViewerScreenState extends State<PhotoViewerScreen> {
         foregroundColor: Colors.white,
         elevation: 0,
         // Only worth saying when there is more than one to be lost among.
+        // The colour is spelled out because the app's own app bar theme
+        // sets one, and that one is meant for a cream bar, not this black
+        // one — inherited, it comes out almost invisible.
         title: total > 1
-            ? Text(l10n.photosPosition(_current + 1, total))
+            ? Text(
+                l10n.photosPosition(_current + 1, total),
+                style: const TextStyle(color: Colors.white),
+              )
             : null,
       ),
       body: PageView.builder(
