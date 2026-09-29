@@ -28,7 +28,7 @@ Legend: ✅ done · 🔄 in progress · ⏳ open
 | 7 | **Chat:** live messages and photos per job | ⏳ | |
 | 8 | **Reviews:** the customer rates a confirmed job once; the provider's average comes from real reviews | ✅ | An unrated provider reads "no reviews yet", never five stars |
 | 9 | **Projects & offers:** project with photos/measurements/budget, offers, compare, accept | ⏳ | Paving project receives offers |
-| 10 | **Push notifications:** device tokens, an outbox the booking writes to, and a sender that reads it | 🔄 | A provider learns about a request without opening the app |
+| 10 | **Push notifications:** device tokens, an outbox the booking writes to, and a sender that reads it | ✅ | A provider learns about a request without opening the app |
 | 11 | **Payments:** Stripe Connect in test mode (only when instructed) | ⏳ | Test payment, platform fee, payout, refund |
 | 12 | **Launch prep:** separate prod Supabase project, own email service (SMTP), icon, splash, legal pages + consent at sign-up, account deletion, sign-in tokens in secure storage, crash reporting, store listings, release signing, iOS build on a Mac, TestFlight + Play internal testing | ⏳ | Beta testers install the app |
 | 13 | **Closed beta in Vienna**, fixes, public launch | ⏳ | |
@@ -67,7 +67,7 @@ analytics.
 - [x] Push: Firebase project `gleichda-c328d` created and `google-services.json` in place; Firebase is wired into the app
 - [x] Supabase: push tables migration run — the outbox and the token table exist
 - [x] Push: secret, Edge Function and webhook all set up — verified on a device: a row in the outbox reached the phone by itself, the text was right, and tapping it outlined that job. A dead token was deleted on the way
-- [ ] **Push: walk it once from a real booking** — so far the outbox row was written by hand. Needs a login code for the customer account
+- [x] Push: walked from a real booking — a customer booked Max on a device and `create_booking()` wrote the outbox row by itself. The webhook woke the sender, Max's token was dead after a device reset, so it was deleted and the note stayed pending for a retry rather than being marked delivered
 - [x] Supabase: booking migration run — walked through on a device with two accounts: "Mein Kasten muss aufgebaut werden" found Möbelmontage in the catalog, Wien found Max, his own € 39,99 became the price, and he saw that price and the wanted hour before accepting. The street reached him only after he did
 
 - [x] Android SDK Command-line Tools installed
