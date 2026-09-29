@@ -3,12 +3,17 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:app/core/routing/app_router.dart';
+import 'package:app/core/routing/app_routes.dart';
 import 'package:app/features/auth/application/current_user.dart';
 import 'package:app/features/jobs/application/incoming_requests.dart';
 import 'package:app/features/jobs/application/my_jobs.dart';
 import 'package:app/features/notifications/data/push_service.dart';
+import 'package:app/features/session/application/active_role_controller.dart';
+import 'package:app/features/session/domain/app_role.dart';
 import 'package:app/features/notifications/data/push_token_repository.dart';
 import 'package:app/features/notifications/domain/push_message.dart';
+import 'package:app/features/requests/application/my_requests.dart';
 
 /// The job a notification asked the app to open.
 ///
@@ -95,17 +100,44 @@ class PushController extends Notifier<PushState> {
   }
 
   void _handle(PushMessage message) {
-    if (message.opensAJob) {
-      ref.read(highlightedJobProvider.notifier).show(message.contactId!);
-    }
     // Whatever the notification was about has changed on the server, so
     // both lists are re-read rather than guessed at from its text.
     _refreshLists();
+    if (!message.opensAJob) return;
+
+    ref.read(highlightedJobProvider.notifier).show(message.contactId!);
+    _openJobList();
+  }
+
+  /// Goes to wherever this person's jobs are.
+  ///
+  /// A provider's jobs are the screen their app opens on anyway, but a
+  /// customer's are a tab away — without this, tapping "your request was
+  /// accepted" would drop them on the home screen to go looking for it.
+  void _openJobList() {
+    final role = ref.read(activeRoleProvider);
+    if (role == null) return;
+    try {
+      ref.read(appRouterProvider).go(switch (role) {
+        AppRole.customer => AppRoutes.customerBookings,
+        AppRole.provider => AppRoutes.providerJobs,
+      });
+    } catch (error) {
+      // The router is not ready, or the person is signed out. The
+      // highlight is set either way, so the job is marked once they get
+      // there themselves.
+      debugPrint('Could not open the job a notification was about: $error');
+    }
   }
 
   void _refreshLists() {
     ref.invalidate(myIncomingRequestsProvider);
     ref.invalidate(myJobsProvider);
+    // The customer's own request list too: "one provider accepted" is
+    // written there, and on that screen it is the list the jobs sit
+    // inside. Leaving it stale would show yesterday's answer above
+    // today's job.
+    ref.invalidate(myRequestsProvider);
   }
 
   /// Asks for permission, at a moment where the reason is obvious.

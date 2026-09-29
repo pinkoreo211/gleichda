@@ -45,6 +45,7 @@ Bisher gibt es diese Dateien:
 | `20260926160000_booking.sql` | Festpreis-Buchung: Adresse, gewählte Preisoption, Wunschtermin; Servicevorschlag und buchbare Anbieter | ✅ |
 | `20260927120000_push_notifications.sql` | Geräte-Tokens und Benachrichtigungs-Warteschlange (siehe docs/push-setup.md) | ✅ |
 | `20260929120000_profile_names_and_avatars.sql` | Profilbild je Konto (öffentlicher Bucket `avatars`); Name und Foto in allen Listen | ✅ |
+| `20260929140000_status_notifications.sql` | Fünf Status-Benachrichtigungen (angenommen, Termin, unterwegs, fertig, bestätigt) | ⬜ |
 
 Die beiden Auftragsstatus-Dateien sind **getrennt und in dieser Reihenfolge**
 auszuführen. Postgres erlaubt es nicht, einen gerade erst angelegten

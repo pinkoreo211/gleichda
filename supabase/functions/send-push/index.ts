@@ -72,10 +72,17 @@ function textFor(note: Note): { title: string; body: string } {
     case 'job_completed':
       return {
         title: 'Auftrag fertig',
-        body: 'Der Auftrag wurde als fertig gemeldet. Bitte bestätige ihn.',
+        body: other
+          ? `${other} hat den Auftrag als fertig gemeldet. Bitte bestätige ihn.`
+          : 'Der Auftrag wurde als fertig gemeldet. Bitte bestätige ihn.',
       };
     case 'job_confirmed':
-      return { title: 'Auftrag bestätigt', body: 'Der Kunde hat den Auftrag bestätigt.' };
+      return {
+        title: 'Auftrag bestätigt',
+        body: other
+          ? `${other} hat den Auftrag bestätigt.`
+          : 'Der Kunde hat den Auftrag bestätigt.',
+      };
     case 'chat_message':
       // Deliberately without the message itself: a push shows up on a lock
       // screen, and what two people write each other does not belong there.

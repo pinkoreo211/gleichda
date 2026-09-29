@@ -68,6 +68,7 @@ analytics.
 - [x] Supabase: push tables migration run — the outbox and the token table exist
 - [x] Push: secret, Edge Function and webhook all set up — verified on a device: a row in the outbox reached the phone by itself, the text was right, and tapping it outlined that job. A dead token was deleted on the way
 - [x] Supabase: profile names and avatars migration run — verified on a device: a customer set the name "Anna Huber" and a photo, both appeared in their own profile, and a provider without a photo shows as "MM" rather than an empty circle
+- [ ] **Supabase: run `20260929140000_status_notifications.sql`**, then redeploy the `send-push` Edge Function (two texts now use the name)
 - [x] Push: walked from a real booking — a customer booked Max on a device and `create_booking()` wrote the outbox row by itself. The webhook woke the sender, Max's token was dead after a device reset, so it was deleted and the note stayed pending for a retry rather than being marked delivered
 - [x] Supabase: booking migration run — walked through on a device with two accounts: "Mein Kasten muss aufgebaut werden" found Möbelmontage in the catalog, Wien found Max, his own € 39,99 became the price, and he saw that price and the wanted hour before accepting. The street reached him only after he did
 
