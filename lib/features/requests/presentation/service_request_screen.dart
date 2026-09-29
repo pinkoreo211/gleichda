@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
 import 'package:app/core/errors/app_failure_message.dart';
+import 'package:app/core/media/picked_media.dart';
 import 'package:app/core/routing/app_routes.dart';
 import 'package:app/features/catalog/application/catalog_providers.dart';
 import 'package:app/features/catalog/presentation/widgets/catalog_async.dart';
@@ -10,6 +11,8 @@ import 'package:app/features/catalog/presentation/widgets/category_icon.dart';
 import 'package:app/design_system/app_dimensions.dart';
 import 'package:app/design_system/widgets/button_progress.dart';
 import 'package:app/features/requests/application/service_request_draft_controller.dart';
+import 'package:app/features/requests/data/request_photo_repository.dart';
+import 'package:app/features/requests/presentation/widgets/photo_picker_field.dart';
 import 'package:app/features/requests/domain/request_timing.dart';
 import 'package:app/features/catalog/domain/service_category.dart';
 import 'package:app/features/requests/domain/service_request_draft.dart';
@@ -35,6 +38,14 @@ class _ServiceRequestScreenState extends ConsumerState<ServiceRequestScreen> {
   late final TextEditingController _postalCode;
   bool _isSaving = false;
 
+  /// Pictures chosen for this request, still only in memory.
+  ///
+  /// Kept by the screen rather than in the draft: they only need to last
+  /// until the request is written, which happens without ever leaving this
+  /// screen. They go up afterwards, because until then there is nothing to
+  /// file them under.
+  final _photos = <PickedMedia>[];
+
   ServiceRequestDraftController get _draft =>
       ref.read(serviceRequestDraftProvider.notifier);
 
@@ -55,12 +66,6 @@ class _ServiceRequestScreenState extends ConsumerState<ServiceRequestScreen> {
     super.dispose();
   }
 
-  void _showComingSoon() {
-    final l10n = AppLocalizations.of(context);
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text(l10n.comingSoon)));
-  }
-
   Future<void> _pickDate() async {
     final now = DateTime.now();
     final selected = await showDatePicker(
@@ -73,15 +78,43 @@ class _ServiceRequestScreenState extends ConsumerState<ServiceRequestScreen> {
     _draft.setTiming(RequestTiming.onDate, date: selected);
   }
 
+  /// Returns how many did not make it. One at a time and in order, so the
+  /// first picture chosen is the first one a provider sees.
+  Future<int> _uploadPhotos(String requestId) async {
+    if (_photos.isEmpty) return 0;
+
+    final repository = ref.read(requestPhotoRepositoryProvider);
+    var failed = 0;
+    for (final photo in _photos) {
+      try {
+        await repository.attach(requestId: requestId, photo: photo);
+      } catch (error) {
+        failed++;
+        debugPrint('A photo did not reach the request: $error');
+      }
+    }
+    return failed;
+  }
+
   Future<void> _submit() async {
     final l10n = AppLocalizations.of(context);
     final messenger = ScaffoldMessenger.of(context);
     setState(() => _isSaving = true);
     try {
       final saved = await _draft.submit();
-      if (!mounted) return;
       if (saved != null) {
-        messenger.showSnackBar(SnackBar(content: Text(l10n.requestSaved)));
+        // Only now: until this line there was no request to file a photo
+        // under. The request is written and stays written — a picture that
+        // did not go up is said out loud rather than allowed to undo it.
+        final notSent = await _uploadPhotos(saved.id);
+        if (!mounted) return;
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text(
+              notSent > 0 ? l10n.photosNotSent(notSent) : l10n.requestSaved,
+            ),
+          ),
+        );
         // Replace rather than push: going back from the provider list
         // should return to the home screen, not to a form that was already
         // saved and cleared.
@@ -189,11 +222,19 @@ class _ServiceRequestScreenState extends ConsumerState<ServiceRequestScreen> {
                     _TimingChips(draft: draft, onPickDate: _pickDate),
                     const SizedBox(height: AppSpacing.lg),
                     _SectionLabel(l10n.requestPhotosLabel),
+                    const SizedBox(height: AppSpacing.xs),
+                    Text(
+                      l10n.photosHint,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
                     const SizedBox(height: AppSpacing.sm),
-                    OutlinedButton.icon(
-                      onPressed: _showComingSoon,
-                      icon: const Icon(Icons.add_a_photo_outlined),
-                      label: Text(l10n.requestAddPhoto),
+                    PhotoPickerField(
+                      photos: _photos,
+                      onAdd: (photo) => setState(() => _photos.add(photo)),
+                      onRemove: (index) =>
+                          setState(() => _photos.removeAt(index)),
                     ),
                     const SizedBox(height: AppSpacing.lg),
                     Text(

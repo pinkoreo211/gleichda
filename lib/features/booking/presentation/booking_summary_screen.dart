@@ -9,7 +9,7 @@ import 'package:app/core/routing/app_routes.dart';
 import 'package:app/design_system/app_dimensions.dart';
 import 'package:app/design_system/widgets/button_progress.dart';
 import 'package:app/features/booking/application/booking_controller.dart';
-import 'package:app/features/booking/presentation/widgets/booking_photo_field.dart';
+import 'package:app/features/requests/presentation/widgets/photo_picker_field.dart';
 import 'package:app/l10n/app_localizations.dart';
 
 /// Step six: everything the customer chose, before anything is sent.
@@ -118,7 +118,20 @@ class _BookingSummaryScreenState extends ConsumerState<BookingSummaryScreen> {
           const SizedBox(height: AppSpacing.lg),
           // Last stop before sending, which is where somebody reaches for a
           // photo: they have just read back what they are about to ask for.
-          const BookingPhotoField(),
+          Text(l10n.photosLabel, style: theme.textTheme.titleMedium),
+          const SizedBox(height: AppSpacing.xs),
+          Text(
+            l10n.photosHint,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          PhotoPickerField(
+            photos: draft.photos,
+            onAdd: ref.read(bookingProvider.notifier).addPhoto,
+            onRemove: ref.read(bookingProvider.notifier).removePhoto,
+          ),
           const SizedBox(height: AppSpacing.md),
           Text(
             l10n.bookingSummaryDisclaimer,

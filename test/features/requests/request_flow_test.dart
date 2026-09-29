@@ -1,7 +1,10 @@
+import 'dart:typed_data';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
 import 'package:app/core/errors/app_failure.dart';
+import 'package:app/core/media/picked_media.dart';
 import 'package:app/features/requests/domain/request_timing.dart';
 
 import 'package:app/features/session/domain/app_role.dart';
@@ -212,6 +215,8 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  _openRequestPhotoTests();
+
   testWidgets('the profile says so when no name is stored yet', (tester) async {
     await pumpSignedInApp(tester, role: AppRole.customer);
 
@@ -219,5 +224,91 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Noch nicht hinterlegt'), findsOneWidget);
+  });
+}
+
+// Photos on an open request ---------------------------------------------------
+
+void _openRequestPhotoTests() {
+  testWidgets('a photo on an open request is uploaded once it exists', (
+    tester,
+  ) async {
+    final requests = InMemoryServiceRequestRepository();
+    final photos = FakeRequestPhotoRepository();
+    await pumpSignedInApp(
+      tester,
+      role: AppRole.customer,
+      requests: requests,
+      photos: photos,
+      picker: FakeMediaPicker(
+        next: PickedMedia(
+          fileName: 'waschmaschine.jpg',
+          bytes: Uint8List.fromList(const [1, 2, 3]),
+        ),
+      ),
+    );
+
+    await _openRequestForm(tester);
+
+    // The button used to say "coming soon". It picks a photo now.
+    await scrollTo(tester, find.byIcon(Icons.add_a_photo_outlined));
+    await tester.tap(find.byIcon(Icons.add_a_photo_outlined));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Foto aufnehmen'));
+    await tester.pumpAndSettle();
+
+    // Still nothing uploaded: the request does not exist yet.
+    expect(photos.attached, isEmpty);
+
+    await scrollTo(
+      tester,
+      find.widgetWithText(FilledButton, 'Anfrage erstellen'),
+    );
+    await tester.tap(find.widgetWithText(FilledButton, 'Anfrage erstellen'));
+    await tester.pumpAndSettle();
+
+    // Filed under the request that was just written.
+    final stored = requests.requests.single;
+    expect(photos.photos[stored.id], hasLength(1));
+    expect(photos.attached, ['waschmaschine.jpg']);
+  });
+
+  testWidgets('a request whose photo fails is still a request', (tester) async {
+    final requests = InMemoryServiceRequestRepository();
+    await pumpSignedInApp(
+      tester,
+      role: AppRole.customer,
+      requests: requests,
+      photos: FakeRequestPhotoRepository(failsToAttach: true),
+      picker: FakeMediaPicker(
+        next: PickedMedia(
+          fileName: 'waschmaschine.jpg',
+          bytes: Uint8List.fromList(const [1, 2, 3]),
+        ),
+      ),
+    );
+
+    await _openRequestForm(tester);
+    await scrollTo(tester, find.byIcon(Icons.add_a_photo_outlined));
+    await tester.tap(find.byIcon(Icons.add_a_photo_outlined));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Foto aufnehmen'));
+    await tester.pumpAndSettle();
+
+    await scrollTo(
+      tester,
+      find.widgetWithText(FilledButton, 'Anfrage erstellen'),
+    );
+    await tester.tap(find.widgetWithText(FilledButton, 'Anfrage erstellen'));
+    await tester.pumpAndSettle();
+
+    // The request is the thing that matters and it was written.
+    expect(requests.requests, hasLength(1));
+    // Said out loud, in place of the usual confirmation, so nobody believes
+    // a picture is there that is not.
+    expect(
+      find.textContaining('Foto konnte nicht gesendet werden'),
+      findsOneWidget,
+    );
   });
 }
