@@ -106,6 +106,33 @@ void main() {
     expect(find.byType(RequestPhotoStrip), findsWidgets);
   });
 
+  testWidgets('a customer sees their own photos before anyone has answered', (
+    tester,
+  ) async {
+    // Their own request, still unanswered, so it is not a job yet and does
+    // not appear as one. Somebody who attached a picture should still be
+    // able to check what they sent.
+    final requests = await _requestAt(RequestContactStatus.sent);
+
+    await pumpSignedInApp(
+      tester,
+      role: AppRole.customer,
+      requests: requests,
+      jobs: FakeJobsRepository(contacts: requests.contacts, requests: requests),
+      photos: _withPhotos(_idOf(requests), 2),
+    );
+    await tester.tap(
+      find.descendant(
+        of: find.byType(NavigationBar),
+        matching: find.text('Buchungen'),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await scrollTo(tester, find.textContaining(_job));
+    expect(_thumbnails(tester), 2);
+  });
+
   testWidgets('both sides of a job see the same pictures', (tester) async {
     final requests = await _requestAt(RequestContactStatus.accepted);
     final photos = _withPhotos(_idOf(requests), 3);

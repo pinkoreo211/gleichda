@@ -11,6 +11,7 @@ import 'package:app/features/jobs/presentation/widgets/jobs_section.dart';
 import 'package:app/features/requests/application/my_requests.dart';
 import 'package:app/features/requests/domain/request_contact_status.dart';
 import 'package:app/features/requests/domain/service_request.dart';
+import 'package:app/features/requests/presentation/widgets/request_photo_strip.dart';
 import 'package:app/features/requests/presentation/widgets/request_timing_display.dart';
 import 'package:app/features/catalog/presentation/widgets/category_icon.dart';
 import 'package:app/l10n/app_localizations.dart';
@@ -122,6 +123,10 @@ class _RequestCard extends StatelessWidget {
               maxLines: 3,
               overflow: TextOverflow.ellipsis,
             ),
+            // Their own request, so their own pictures — from the moment
+            // it is sent, not only once somebody accepts. Anyone who
+            // attached a photo should be able to check what they sent.
+            RequestPhotoStrip(requestId: request.id),
             const SizedBox(height: AppSpacing.sm),
             Wrap(
               spacing: AppSpacing.sm,
