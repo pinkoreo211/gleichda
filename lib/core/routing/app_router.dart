@@ -214,8 +214,17 @@ List<RouteBase> _tabSubRoutes(ShellTab tab) => switch (tab) {
         ),
         GoRoute(
           path: 'done/:requestId',
-          builder: (context, state) =>
-              BookingDoneScreen(requestId: state.pathParameters['requestId']!),
+          builder: (context, state) => BookingDoneScreen(
+            requestId: state.pathParameters['requestId']!,
+            // Carried across rather than put in the address: how many
+            // photos failed belongs to this one send, not to the page.
+            // Nought when there is no number to read, which is also what
+            // "nothing went wrong" looks like.
+            photosNotSent: switch (state.extra) {
+              final int failed => failed,
+              _ => 0,
+            },
+          ),
         ),
       ],
     ),

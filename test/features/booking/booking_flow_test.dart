@@ -1,7 +1,10 @@
+import 'dart:typed_data';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 
 import 'package:app/core/errors/app_failure.dart';
+import 'package:app/core/media/picked_media.dart';
 import 'package:app/features/booking/domain/provider_offer.dart';
 import 'package:app/features/requests/domain/service_request_draft.dart';
 import 'package:app/features/matching/domain/provider_match.dart';
@@ -244,6 +247,8 @@ void main() {
     expect(find.textContaining('Wien'), findsOneWidget);
     expect(find.textContaining('59,00'), findsOneWidget);
     // Says plainly that sending costs nothing: there are no payments yet.
+    // Below the fold since the photo field moved in under the card.
+    await scrollTo(tester, find.textContaining('Bezahlt wird noch nichts'));
     expect(find.textContaining('Bezahlt wird noch nichts'), findsOneWidget);
   });
 
@@ -385,5 +390,157 @@ void main() {
 
     expect(find.textContaining('Festpreis:'), findsOneWidget);
     expect(find.text('Wunschtermin: 3.10.2026, 14:00'), findsOneWidget);
+  });
+
+  _photoTests();
+}
+
+// Photos ----------------------------------------------------------------------
+
+/// Adds one picture on the summary screen, through the sheet the button
+/// opens. Named after what the customer does, not what the widget is.
+Future<void> _addPhoto(WidgetTester tester) async {
+  await scrollTo(tester, find.byIcon(Icons.add_a_photo_outlined));
+  await tester.tap(find.byIcon(Icons.add_a_photo_outlined));
+  await tester.pumpAndSettle();
+  await tester.tap(find.text('Foto aufnehmen'));
+  await tester.pumpAndSettle();
+}
+
+FakeMediaPicker _pickerReturning(String fileName) => FakeMediaPicker(
+  next: PickedMedia(
+    fileName: fileName,
+    bytes: Uint8List.fromList(const [1, 2, 3]),
+  ),
+);
+
+void _photoTests() {
+  testWidgets('a booking without photos uploads nothing at all', (
+    tester,
+  ) async {
+    final photos = FakeRequestPhotoRepository();
+    await pumpSignedInApp(
+      tester,
+      role: AppRole.customer,
+      booking: FakeBookingRepository(),
+      photos: photos,
+    );
+    await _start(tester);
+    await _toProviders(tester);
+    await _toSchedule(tester);
+    await _toSummary(tester);
+
+    await scrollTo(tester, find.widgetWithText(FilledButton, 'Anfrage senden'));
+    await tester.tap(find.widgetWithText(FilledButton, 'Anfrage senden'));
+    await tester.pumpAndSettle();
+
+    // The ordinary case, and it must stay free of anything to do with
+    // photos: most requests will never have one.
+    expect(find.text('Anfrage gesendet'), findsOneWidget);
+    expect(photos.attached, isEmpty);
+    expect(find.textContaining('konnte nicht'), findsNothing);
+  });
+
+  testWidgets('a photo chosen before sending reaches the request', (
+    tester,
+  ) async {
+    final photos = FakeRequestPhotoRepository();
+    await pumpSignedInApp(
+      tester,
+      role: AppRole.customer,
+      booking: FakeBookingRepository(),
+      photos: photos,
+      picker: _pickerReturning('kueche.jpg'),
+    );
+    await _start(tester);
+    await _toProviders(tester);
+    await _toSchedule(tester);
+    await _toSummary(tester);
+
+    await _addPhoto(tester);
+
+    // Nothing has left the phone yet: there is no request to file it under.
+    expect(photos.attached, isEmpty);
+    // And it says who will be able to see it, before anyone decides.
+    expect(find.textContaining('Nur du und die Dienstleister'), findsOneWidget);
+
+    await scrollTo(tester, find.widgetWithText(FilledButton, 'Anfrage senden'));
+    await tester.tap(find.widgetWithText(FilledButton, 'Anfrage senden'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Anfrage gesendet'), findsOneWidget);
+    // Filed under the request the booking just created, not under the
+    // customer or the provider.
+    expect(photos.photos['request-1'], hasLength(1));
+    expect(photos.attached, ['kueche.jpg']);
+  });
+
+  testWidgets('a photo can be taken back off before anything is sent', (
+    tester,
+  ) async {
+    final photos = FakeRequestPhotoRepository();
+    await pumpSignedInApp(
+      tester,
+      role: AppRole.customer,
+      booking: FakeBookingRepository(),
+      photos: photos,
+      picker: _pickerReturning('kueche.jpg'),
+    );
+    await _start(tester);
+    await _toProviders(tester);
+    await _toSchedule(tester);
+    await _toSummary(tester);
+
+    await _addPhoto(tester);
+    await _addPhoto(tester);
+    expect(find.byIcon(Icons.close), findsNWidgets(2));
+
+    await tester.tap(find.byIcon(Icons.close).first);
+    await tester.pumpAndSettle();
+    expect(find.byIcon(Icons.close), findsOneWidget);
+
+    await scrollTo(tester, find.widgetWithText(FilledButton, 'Anfrage senden'));
+    await tester.tap(find.widgetWithText(FilledButton, 'Anfrage senden'));
+    await tester.pumpAndSettle();
+
+    // The one they took back never went anywhere. Taking it off cost
+    // nothing because it had never left this phone.
+    expect(photos.attached, hasLength(1));
+  });
+
+  testWidgets('a photo that did not go up is said out loud, and the booking '
+      'still stands', (tester) async {
+    final booking = FakeBookingRepository();
+    final photos = FakeRequestPhotoRepository(failsToAttach: true);
+    await pumpSignedInApp(
+      tester,
+      role: AppRole.customer,
+      booking: booking,
+      photos: photos,
+      picker: _pickerReturning('kueche.jpg'),
+    );
+    await _start(tester);
+    await _toProviders(tester);
+    await _toSchedule(tester);
+    await _toSummary(tester);
+
+    await _addPhoto(tester);
+    await scrollTo(tester, find.widgetWithText(FilledButton, 'Anfrage senden'));
+    await tester.tap(find.widgetWithText(FilledButton, 'Anfrage senden'));
+    await tester.pumpAndSettle();
+
+    // The booking is the thing that matters and it went through. A picture
+    // that failed must never undo a job the provider may already know about.
+    expect(booking.bookings, hasLength(1));
+    expect(find.text('Anfrage gesendet'), findsOneWidget);
+
+    // Said plainly, so nobody believes the provider can see something they
+    // cannot — and it says the request itself arrived, so nobody books a
+    // second time to be safe.
+    expect(
+      find.textContaining('Foto konnte nicht gesendet werden'),
+      findsOneWidget,
+    );
+    expect(find.textContaining('trotzdem angekommen'), findsOneWidget);
   });
 }

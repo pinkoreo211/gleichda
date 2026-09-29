@@ -13,6 +13,7 @@ import 'package:app/features/jobs/data/incoming_requests_repository.dart';
 import 'package:app/features/jobs/domain/incoming_request.dart';
 import 'package:app/features/notifications/application/push_controller.dart';
 import 'package:app/features/requests/domain/request_contact_status.dart';
+import 'package:app/features/requests/presentation/widgets/request_photo_strip.dart';
 import 'package:app/features/requests/presentation/widgets/request_status_display.dart';
 import 'package:app/features/requests/presentation/widgets/request_timing_display.dart';
 import 'package:app/l10n/app_localizations.dart';
@@ -235,6 +236,10 @@ class _IncomingRequestCard extends StatelessWidget {
             // Not truncated: a provider decides on the whole text, not on
             // the first two lines of it.
             Text(request.description, style: theme.textTheme.bodyMedium),
+            // For the same reason the text above is not cut short: a photo
+            // of the job belongs in front of the provider while they are
+            // deciding, not after. There is no way back out of a job.
+            RequestPhotoStrip(requestId: request.requestId),
             const SizedBox(height: AppSpacing.sm),
             Wrap(
               spacing: AppSpacing.sm,

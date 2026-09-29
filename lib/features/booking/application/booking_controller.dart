@@ -1,5 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:app/core/media/picked_media.dart';
 import 'package:app/features/booking/data/booking_repository.dart';
 import 'package:app/features/booking/domain/booking_draft.dart';
 import 'package:app/features/booking/domain/provider_offer.dart';
@@ -7,6 +9,7 @@ import 'package:app/features/booking/domain/service_suggestion.dart';
 import 'package:app/features/jobs/application/my_jobs.dart';
 import 'package:app/features/matching/domain/provider_match.dart';
 import 'package:app/features/requests/application/my_requests.dart';
+import 'package:app/features/requests/data/request_photo_repository.dart';
 
 /// The booking being put together, across the screens of the flow.
 ///
@@ -45,6 +48,21 @@ class BookingController extends Notifier<BookingDraft> {
   void chooseTime(DateTime wantedAt) =>
       state = state.copyWith(wantedAt: wantedAt);
 
+  /// Silently ignores anything past the limit, which the button that calls
+  /// this has already stopped offering.
+  void addPhoto(PickedMedia photo) {
+    if (state.photos.length >= maxRequestPhotos) return;
+    state = state.copyWith(photos: [...state.photos, photo]);
+  }
+
+  /// Taking one back before sending costs nothing: it was never anywhere
+  /// but in this phone's memory.
+  void removePhoto(int index) {
+    if (index < 0 || index >= state.photos.length) return;
+    final left = [...state.photos]..removeAt(index);
+    state = state.copyWith(photos: left);
+  }
+
   /// Sends the booking. Returns what the backend created.
   ///
   /// Throws [AppFailure] on errors, and [StateError] if a screen calls this
@@ -69,11 +87,40 @@ class BookingController extends Notifier<BookingDraft> {
           city: draft.city,
         );
 
+    // Photos go up only now, because until this line there was no request
+    // to file them under. The booking is already made and stays made: a
+    // photo that did not arrive is counted and said out loud on the next
+    // screen, never a reason to undo a job the provider may already have
+    // been told about.
+    final notSent = await _uploadPhotos(result.requestId, draft.photos);
+
     // The booking list and the job list both changed. Re-read rather than
     // patch: what the backend stored is the truth about a request.
     ref.invalidate(myRequestsProvider);
     ref.invalidate(myJobsProvider);
-    return result;
+    return BookingResult(
+      requestId: result.requestId,
+      contactId: result.contactId,
+      photosNotSent: notSent,
+    );
+  }
+
+  /// Returns how many did not make it. One at a time and in order, so the
+  /// first photo the customer chose is the first one the provider sees.
+  Future<int> _uploadPhotos(String requestId, List<PickedMedia> photos) async {
+    if (photos.isEmpty) return 0;
+
+    final repository = ref.read(requestPhotoRepositoryProvider);
+    var failed = 0;
+    for (final photo in photos) {
+      try {
+        await repository.attach(requestId: requestId, photo: photo);
+      } catch (error) {
+        failed++;
+        debugPrint('A photo did not reach the request: $error');
+      }
+    }
+    return failed;
   }
 }
 

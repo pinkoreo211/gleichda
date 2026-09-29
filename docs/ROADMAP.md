@@ -25,6 +25,7 @@ Legend: ✅ done · 🔄 in progress · ⏳ open
 | 4b | **Verification & documents:** upload to a private bucket, per-service requirements, team review in the dashboard | ✅ | Provider submits documents; the team approves in Supabase |
 | 5 | **Discovery & fixed-price booking:** the catalog reads the customer's sentence, then place → verified providers → their own price → wanted time → summary | ✅ | A customer books a verified provider in Vienna at a price that provider set |
 | 6 | **Job flow:** accepted, time agreed, on the way, in progress, done, customer confirms — each side offered only its own steps | ✅ | Both sides move one job through to the end; skipping a step is refused by the database |
+| 6b | **Photos on a request:** several pictures, optional, in a private bucket, readable only by the customer and the providers they asked | ✅ | A provider sees the dripping tap before deciding; nobody else can reach the picture |
 | 7 | **Chat:** live messages and photos per job | ⏳ | |
 | 8 | **Reviews:** the customer rates a confirmed job once; the provider's average comes from real reviews | ✅ | An unrated provider reads "no reviews yet", never five stars |
 | 9 | **Projects & offers:** project with photos/measurements/budget, offers, compare, accept | ⏳ | Paving project receives offers |
@@ -70,6 +71,7 @@ analytics.
 - [x] Supabase: profile names and avatars migration run — verified on a device: a customer set the name "Anna Huber" and a photo, both appeared in their own profile, and a provider without a photo shows as "MM" rather than an empty circle
 - [x] Supabase: status notifications migration run
 - [x] Push: all five status notifications walked on a device with both accounts — accepted, time agreed, on the way, finished and confirmed each wrote exactly one note, and "work started" wrote none, which is the step that is meant to stay quiet. The direction turns over correctly: while Max acted, every note went to Anna and named him; once Anna acted, they went to Max and named her. Agreeing a time was tried from both sides and reached the other one each time. The first note found a device Anna had left behind, so it was deleted and the note went out on the retry without anyone stepping in
+- [ ] **Supabase: run the request photos migration** — `supabase/migrations/20260930120000_request_photos.sql`, which also creates the private `request-photos` bucket
 - [ ] **Push: redeploy the `send-push` Edge Function** — two texts now use the name, so an old deploy still says "Der Kunde" where it could say who
 - [x] Push: walked from a real booking — a customer booked Max on a device and `create_booking()` wrote the outbox row by itself. The webhook woke the sender, Max's token was dead after a device reset, so it was deleted and the note stayed pending for a retry rather than being marked delivered
 - [x] Supabase: booking migration run — walked through on a device with two accounts: "Mein Kasten muss aufgebaut werden" found Möbelmontage in the catalog, Wien found Max, his own € 39,99 became the price, and he saw that price and the wanted hour before accepting. The street reached him only after he did

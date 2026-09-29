@@ -2006,6 +2006,72 @@ abstract class AppLocalizations {
   /// **'Zur Startseite'**
   String get bookingDoneHome;
 
+  /// Section title for the pictures on a request.
+  ///
+  /// In de, this message translates to:
+  /// **'Fotos'**
+  String get photosLabel;
+
+  /// Says photos are voluntary, and why they are worth adding.
+  ///
+  /// In de, this message translates to:
+  /// **'Optional. Ein Foto zeigt oft schneller als Worte, worum es geht.'**
+  String get photosHint;
+
+  /// Says plainly who can see the photos, right where they are chosen.
+  ///
+  /// In de, this message translates to:
+  /// **'Nur du und die Dienstleister, die du anfragst, sehen sie.'**
+  String get photosPrivacy;
+
+  /// Adds another picture to the request.
+  ///
+  /// In de, this message translates to:
+  /// **'Foto hinzufügen'**
+  String get photosAdd;
+
+  /// Takes a chosen picture back off again, before anything is sent.
+  ///
+  /// In de, this message translates to:
+  /// **'Foto entfernen'**
+  String get photosRemove;
+
+  /// Takes a new picture of the job with the camera.
+  ///
+  /// In de, this message translates to:
+  /// **'Foto aufnehmen'**
+  String get photosFromCamera;
+
+  /// Picks an existing picture of the job.
+  ///
+  /// In de, this message translates to:
+  /// **'Foto aus Galerie'**
+  String get photosFromGallery;
+
+  /// Spoken label for a thumbnail, read out by a screen reader.
+  ///
+  /// In de, this message translates to:
+  /// **'Foto ansehen'**
+  String get photosOpen;
+
+  /// How many pictures are on a request.
+  ///
+  /// In de, this message translates to:
+  /// **'{count, plural, =1{1 Foto} other{{count} Fotos}}'**
+  String photosCount(int count);
+
+  /// Which picture of how many is open in the viewer.
+  ///
+  /// In de, this message translates to:
+  /// **'{index} von {total}'**
+  String photosPosition(int index, int total);
+
+  /// Shown after booking when pictures failed to upload. Says the booking itself went through, so nobody books a second time.
+  ///
+  /// In de, this message translates to:
+  /// **'{count, plural, =1{Ein Foto konnte nicht gesendet werden. Deine Anfrage ist trotzdem angekommen.} other{{count} Fotos konnten nicht gesendet werden. Deine Anfrage ist trotzdem angekommen.}}'**
+  String photosNotSent(int count);
+
   /// The time the customer asked for, before anything is agreed.
   ///
   /// In de, this message translates to:
@@ -2251,6 +2317,12 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Dieses Dateiformat geht nicht. Erlaubt sind PDF, JPG, PNG, HEIC und WEBP.'**
   String get errorDocumentTypeNotAllowed;
+
+  /// The request already carries the most photos it may.
+  ///
+  /// In de, this message translates to:
+  /// **'Mehr als sechs Fotos gehen nicht.'**
+  String get errorTooManyPhotos;
 }
 
 class _AppLocalizationsDelegate

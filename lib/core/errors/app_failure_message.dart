@@ -23,6 +23,7 @@ extension AppFailureMessage on AppFailure {
     AppFailure.documentLocked => l10n.errorDocumentLocked,
     AppFailure.documentTooLarge => l10n.errorDocumentTooLarge,
     AppFailure.documentTypeNotAllowed => l10n.errorDocumentTypeNotAllowed,
+    AppFailure.tooManyPhotos => l10n.errorTooManyPhotos,
     AppFailure.unknown => l10n.errorUnknown,
   };
 }

@@ -1101,6 +1101,60 @@ class AppLocalizationsDe extends AppLocalizations {
   String get bookingDoneHome => 'Zur Startseite';
 
   @override
+  String get photosLabel => 'Fotos';
+
+  @override
+  String get photosHint =>
+      'Optional. Ein Foto zeigt oft schneller als Worte, worum es geht.';
+
+  @override
+  String get photosPrivacy =>
+      'Nur du und die Dienstleister, die du anfragst, sehen sie.';
+
+  @override
+  String get photosAdd => 'Foto hinzufügen';
+
+  @override
+  String get photosRemove => 'Foto entfernen';
+
+  @override
+  String get photosFromCamera => 'Foto aufnehmen';
+
+  @override
+  String get photosFromGallery => 'Foto aus Galerie';
+
+  @override
+  String get photosOpen => 'Foto ansehen';
+
+  @override
+  String photosCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Fotos',
+      one: '1 Foto',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String photosPosition(int index, int total) {
+    return '$index von $total';
+  }
+
+  @override
+  String photosNotSent(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$count Fotos konnten nicht gesendet werden. Deine Anfrage ist trotzdem angekommen.',
+      one: 'Ein Foto konnte nicht gesendet werden. Deine Anfrage ist trotzdem angekommen.',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String jobWantedAt(String when) {
     return 'Wunschtermin: $when';
   }
@@ -1245,4 +1299,7 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get errorDocumentTypeNotAllowed =>
       'Dieses Dateiformat geht nicht. Erlaubt sind PDF, JPG, PNG, HEIC und WEBP.';
+
+  @override
+  String get errorTooManyPhotos => 'Mehr als sechs Fotos gehen nicht.';
 }

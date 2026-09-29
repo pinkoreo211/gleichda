@@ -326,6 +326,18 @@
   "bookingDoneMessageProvider": "Write a message",
   "bookingDoneHome": "Back to start",
 
+  "photosLabel": "Photos",
+  "photosHint": "Optional. A picture often says quicker than words what this is about.",
+  "photosPrivacy": "Only you and the providers you ask can see them.",
+  "photosAdd": "Add a photo",
+  "photosRemove": "Remove photo",
+  "photosFromCamera": "Take a photo",
+  "photosFromGallery": "Photo from gallery",
+  "photosOpen": "View photo",
+  "photosCount": "{count, plural, =1{1 photo} other{{count} photos}}",
+  "photosPosition": "{index} of {total}",
+  "photosNotSent": "{count, plural, =1{One photo could not be sent. Your request still arrived.} other{{count} photos could not be sent. Your request still arrived.}}",
+
   "jobWantedAt": "Preferred time: {when}",
   "jobAgreedPrice": "Fixed price: {price}",
 
@@ -369,5 +381,6 @@
   "errorTimedOut": "That took too long. Please check your connection and try again.",
   "errorDocumentLocked": "This document is being checked and cannot be replaced.",
   "errorDocumentTooLarge": "That file is too large. Please upload at most 10 MB.",
-  "errorDocumentTypeNotAllowed": "That file format does not work. PDF, JPG, PNG, HEIC and WEBP are accepted."
+  "errorDocumentTypeNotAllowed": "That file format does not work. PDF, JPG, PNG, HEIC and WEBP are accepted.",
+  "errorTooManyPhotos": "More than six photos is not possible."
 }

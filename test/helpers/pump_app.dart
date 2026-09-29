@@ -47,6 +47,8 @@ import 'package:app/features/session/data/role_repository.dart';
 import 'package:app/features/session/data/session_store.dart';
 import 'package:app/features/session/domain/app_role.dart';
 import 'package:app/core/media/media_picker.dart';
+import 'package:app/features/requests/data/request_photo_repository.dart';
+import 'package:app/features/requests/domain/request_photo.dart';
 import 'package:app/features/verification/data/verification_repository.dart';
 import 'package:app/core/media/picked_media.dart';
 import 'package:app/features/verification/domain/provider_document.dart';
@@ -1340,6 +1342,56 @@ class FakeMediaPicker implements MediaPicker {
   }
 }
 
+/// Photos on requests, kept in a map instead of a private bucket.
+///
+/// Says nothing about who may look: the real one does not either. That
+/// question is the backend's, and a fake that answered it would be testing
+/// a rule the app does not hold.
+class FakeRequestPhotoRepository implements RequestPhotoRepository {
+  FakeRequestPhotoRepository({this.failsToAttach = false});
+
+  /// What each request carries, in the order it was added.
+  final photos = <String, List<RequestPhoto>>{};
+
+  /// Every file that reached this repository, across all requests. Lets a
+  /// test say "exactly these, in this order" rather than "some number".
+  final attached = <String>[];
+
+  /// Makes every upload fail, for the case where a booking goes through
+  /// and a picture does not.
+  bool failsToAttach;
+
+  int _next = 0;
+
+  @override
+  Future<List<RequestPhoto>> photosOf(String requestId) async =>
+      List.unmodifiable(photos[requestId] ?? const <RequestPhoto>[]);
+
+  @override
+  Future<void> attach({
+    required String requestId,
+    required PickedMedia photo,
+  }) async {
+    if (failsToAttach) throw AppFailure.unknown;
+    attached.add(photo.fileName);
+    (photos[requestId] ??= []).add(
+      RequestPhoto(
+        id: 'photo-${_next++}',
+        // Never loads in a test, which is the point: the strip has to cope
+        // with a picture that does not arrive.
+        url: 'https://example.invalid/${photo.fileName}',
+      ),
+    );
+  }
+
+  @override
+  Future<void> remove(String photoId) async {
+    for (final list in photos.values) {
+      list.removeWhere((photo) => photo.id == photoId);
+    }
+  }
+}
+
 /// [PushService] without a push provider.
 ///
 /// Nothing here reaches a network. It records what the app asked for, so a
@@ -1469,6 +1521,7 @@ Future<void> pumpApp(
   FakePushService? push,
   FakePushTokenRepository? pushTokens,
   FakeMediaPicker? picker,
+  FakeRequestPhotoRepository? photos,
   Locale locale = const Locale('de', 'AT'),
 }) async {
   tester.platformDispatcher.localesTestValue = [locale];
@@ -1520,6 +1573,9 @@ Future<void> pumpApp(
           verification ?? FakeVerificationRepository(),
         ),
         mediaPickerProvider.overrideWithValue(picker ?? FakeMediaPicker()),
+        requestPhotoRepositoryProvider.overrideWithValue(
+          photos ?? FakeRequestPhotoRepository(),
+        ),
       ],
       child: const App(),
     ),
@@ -1564,6 +1620,7 @@ Future<void> pumpSignedInApp(
   FakePushService? push,
   FakePushTokenRepository? pushTokens,
   FakeMediaPicker? picker,
+  FakeRequestPhotoRepository? photos,
 }) {
   return pumpApp(
     tester,
@@ -1586,6 +1643,7 @@ Future<void> pumpSignedInApp(
     push: push,
     pushTokens: pushTokens,
     picker: picker,
+    photos: photos,
     provider:
         provider ??
         (role == AppRole.provider

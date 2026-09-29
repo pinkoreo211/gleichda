@@ -1,3 +1,4 @@
+import 'package:app/core/media/picked_media.dart';
 import 'package:app/features/booking/domain/provider_offer.dart';
 import 'package:app/features/booking/domain/service_suggestion.dart';
 
@@ -22,6 +23,7 @@ class BookingDraft {
     this.provider,
     this.price,
     this.wantedAt,
+    this.photos = const [],
   });
 
   /// What the customer typed at the very start, kept word for word. It
@@ -42,6 +44,17 @@ class BookingDraft {
   /// checked whether the provider is free, and the app must not pretend
   /// otherwise.
   final DateTime? wantedAt;
+
+  /// Pictures of the job, still only in memory.
+  ///
+  /// They stay here until the request exists, because a photo has to be
+  /// filed under something and the request is that something. Backing out
+  /// of the flow therefore leaves no picture of anybody's flat behind in
+  /// storage — the same reason nothing else here is written early.
+  ///
+  /// Always optional. A booking with no photos is a perfectly ordinary
+  /// booking.
+  final List<PickedMedia> photos;
 
   /// A town is the least the matching needs; the street is for the person
   /// who will stand in front of the door.
@@ -68,6 +81,7 @@ class BookingDraft {
     ProviderOffer? provider,
     ProviderPrice? price,
     DateTime? wantedAt,
+    List<PickedMedia>? photos,
     bool clearProvider = false,
     bool clearPrice = false,
   }) => BookingDraft(
@@ -79,16 +93,29 @@ class BookingDraft {
     provider: clearProvider ? null : (provider ?? this.provider),
     price: clearPrice || clearProvider ? null : (price ?? this.price),
     wantedAt: wantedAt ?? this.wantedAt,
+    photos: photos ?? this.photos,
   );
 }
 
 /// What came back once the booking was written.
 class BookingResult {
-  const BookingResult({required this.requestId, required this.contactId});
+  const BookingResult({
+    required this.requestId,
+    required this.contactId,
+    this.photosNotSent = 0,
+  });
 
   final String requestId;
 
   /// The job itself — the same id the status flow, the chat and a later
   /// review all hang off.
   final String contactId;
+
+  /// How many chosen photos did not make it up.
+  ///
+  /// The booking itself is already done by then and stays done: a picture
+  /// that failed to upload is a smaller problem than a job that had to be
+  /// booked twice. The screen afterwards says so plainly rather than
+  /// letting the customer believe a provider can see something they cannot.
+  final int photosNotSent;
 }

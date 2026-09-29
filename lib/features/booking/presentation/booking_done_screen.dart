@@ -14,11 +14,22 @@ import 'package:app/l10n/app_localizations.dart';
 /// all that has happened. It is not confirmed, and the time is not agreed —
 /// the provider answers next.
 class BookingDoneScreen extends ConsumerWidget {
-  const BookingDoneScreen({super.key, required this.requestId});
+  const BookingDoneScreen({
+    super.key,
+    required this.requestId,
+    this.photosNotSent = 0,
+  });
 
   /// The request the booking created, so "write a message" opens the
   /// conversation for this job rather than starting a new one.
   final String requestId;
+
+  /// How many chosen photos did not make it up.
+  ///
+  /// Said out loud rather than passed over. The booking itself went
+  /// through, and somebody who believes the provider can see a photo they
+  /// cannot is worse off than somebody who knows.
+  final int photosNotSent;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -67,6 +78,16 @@ class BookingDoneScreen extends ConsumerWidget {
                 ),
                 textAlign: TextAlign.center,
               ),
+              if (photosNotSent > 0) ...[
+                const SizedBox(height: AppSpacing.md),
+                Text(
+                  l10n.photosNotSent(photosNotSent),
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.error,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
               const Spacer(),
               FilledButton(
                 onPressed: () => context.go(AppRoutes.customerBookings),

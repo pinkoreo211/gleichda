@@ -944,6 +944,41 @@
   "bookingDoneHome": "Zur Startseite",
   "@bookingDoneHome": { "description": "Returns to the customer home." },
 
+  "photosLabel": "Fotos",
+  "@photosLabel": { "description": "Section title for the pictures on a request." },
+  "photosHint": "Optional. Ein Foto zeigt oft schneller als Worte, worum es geht.",
+  "@photosHint": { "description": "Says photos are voluntary, and why they are worth adding." },
+  "photosPrivacy": "Nur du und die Dienstleister, die du anfragst, sehen sie.",
+  "@photosPrivacy": { "description": "Says plainly who can see the photos, right where they are chosen." },
+  "photosAdd": "Foto hinzufügen",
+  "@photosAdd": { "description": "Adds another picture to the request." },
+  "photosRemove": "Foto entfernen",
+  "@photosRemove": { "description": "Takes a chosen picture back off again, before anything is sent." },
+  "photosFromCamera": "Foto aufnehmen",
+  "@photosFromCamera": { "description": "Takes a new picture of the job with the camera." },
+  "photosFromGallery": "Foto aus Galerie",
+  "@photosFromGallery": { "description": "Picks an existing picture of the job." },
+  "photosOpen": "Foto ansehen",
+  "@photosOpen": { "description": "Spoken label for a thumbnail, read out by a screen reader." },
+  "photosCount": "{count, plural, =1{1 Foto} other{{count} Fotos}}",
+  "@photosCount": {
+    "description": "How many pictures are on a request.",
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "photosPosition": "{index} von {total}",
+  "@photosPosition": {
+    "description": "Which picture of how many is open in the viewer.",
+    "placeholders": {
+      "index": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "photosNotSent": "{count, plural, =1{Ein Foto konnte nicht gesendet werden. Deine Anfrage ist trotzdem angekommen.} other{{count} Fotos konnten nicht gesendet werden. Deine Anfrage ist trotzdem angekommen.}}",
+  "@photosNotSent": {
+    "description": "Shown after booking when pictures failed to upload. Says the booking itself went through, so nobody books a second time.",
+    "placeholders": { "count": { "type": "int" } }
+  },
+
   "jobWantedAt": "Wunschtermin: {when}",
   "@jobWantedAt": {
     "description": "The time the customer asked for, before anything is agreed.",
@@ -1040,5 +1075,7 @@
   "errorDocumentTooLarge": "Die Datei ist zu groß. Bitte lade höchstens 10 MB hoch.",
   "@errorDocumentTooLarge": { "description": "The chosen file is over the size limit." },
   "errorDocumentTypeNotAllowed": "Dieses Dateiformat geht nicht. Erlaubt sind PDF, JPG, PNG, HEIC und WEBP.",
-  "@errorDocumentTypeNotAllowed": { "description": "The chosen file is not a document format the backend accepts." }
+  "@errorDocumentTypeNotAllowed": { "description": "The chosen file is not a document format the backend accepts." },
+  "errorTooManyPhotos": "Mehr als sechs Fotos gehen nicht.",
+  "@errorTooManyPhotos": { "description": "The request already carries the most photos it may." }
 }

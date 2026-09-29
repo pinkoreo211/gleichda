@@ -34,6 +34,11 @@ enum AppFailure implements Exception {
   /// to be told the same thing.
   documentTooLarge,
   documentTypeNotAllowed,
+
+  /// The request already carries as many photos as it may. The app stops
+  /// offering the button at that point, so this is the backend holding the
+  /// same line against a second device, or a very fast thumb.
+  tooManyPhotos,
   unknown;
 
   static AppFailure fromError(Object error) {
@@ -46,6 +51,10 @@ enum AppFailure implements Exception {
     if (error is PostgrestException &&
         error.message.contains('already being checked')) {
       return documentLocked;
+    }
+    if (error is PostgrestException &&
+        error.message.contains('at most six photos')) {
+      return tooManyPhotos;
     }
     if (error is AuthException) {
       switch (error.code) {

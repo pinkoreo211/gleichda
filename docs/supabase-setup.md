@@ -46,6 +46,7 @@ Bisher gibt es diese Dateien:
 | `20260927120000_push_notifications.sql` | Geräte-Tokens und Benachrichtigungs-Warteschlange (siehe docs/push-setup.md) | ✅ |
 | `20260929120000_profile_names_and_avatars.sql` | Profilbild je Konto (öffentlicher Bucket `avatars`); Name und Foto in allen Listen | ✅ |
 | `20260929140000_status_notifications.sql` | Fünf Status-Benachrichtigungen (angenommen, Termin, unterwegs, fertig, bestätigt) | ✅ |
+| `20260930120000_request_photos.sql` | Fotos an einer Anfrage (privater Bucket `request-photos`); sichtbar nur für den Kunden und die angefragten Dienstleister | ⬜ |
 
 Die beiden Auftragsstatus-Dateien sind **getrennt und in dieser Reihenfolge**
 auszuführen. Postgres erlaubt es nicht, einen gerade erst angelegten
@@ -83,6 +84,30 @@ Oberfläche): den Bucket unter **Storage → New bucket** anlegen, Name
 **Policies** die drei Regeln von Hand eintragen. Die Bedingungen stehen
 wörtlich in der Migrationsdatei – einfach melden, dann gehe ich sie mit dir
 durch.
+
+### 2ab. Anfrage-Fotos: Bucket prüfen
+
+Die Foto-Migration legt einen zweiten privaten Speicherort an. Nach dem
+Ausführen unter **Storage** nachsehen:
+
+- Es gibt einen Bucket `request-photos`.
+- Er ist **nicht** öffentlich (kein „Public“-Hinweis daneben).
+- Unter **Policies** stehen drei Regeln.
+
+Das ist wichtiger als beim Profilbild, das absichtlich öffentlich ist: Hier
+liegen Fotos aus fremden Wohnungen. Steht dort „Public“, bitte sofort
+melden.
+
+Wer die Fotos sehen darf, entscheidet allein die Datenbank:
+
+- der Kunde, dem die Anfrage gehört,
+- jeder Dienstleister, an den **diese** Anfrage geschickt wurde,
+- sonst niemand — auch kein anderer Dienstleister.
+
+Dass ein Dienstleister die Fotos schon **vor** dem Annehmen sieht, ist
+Absicht: Genau dafür sind sie da, und aus einem angenommenen Auftrag kommt
+man nicht wieder heraus. Die Straße bleibt davon unberührt — die sieht er
+weiterhin erst danach.
 
 ### 2b. Nachweise prüfen (Team)
 

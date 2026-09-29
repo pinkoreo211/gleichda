@@ -15,6 +15,7 @@ import 'package:app/features/jobs/data/jobs_repository.dart';
 import 'package:app/features/notifications/application/push_controller.dart';
 import 'package:app/features/jobs/domain/job.dart';
 import 'package:app/features/requests/domain/request_contact_status.dart';
+import 'package:app/features/requests/presentation/widgets/request_photo_strip.dart';
 import 'package:app/features/requests/presentation/widgets/request_status_display.dart';
 import 'package:app/features/reviews/presentation/widgets/star_rating.dart';
 import 'package:app/l10n/app_localizations.dart';
@@ -168,6 +169,9 @@ class _JobCardState extends ConsumerState<JobCard> {
               const SizedBox(height: AppSpacing.sm),
               _BookedFacts(job: _job),
             ],
+            // Both sides of a job see the same pictures. They are about to
+            // stand in the same room about the thing in them.
+            RequestPhotoStrip(requestId: _job.requestId),
             const SizedBox(height: AppSpacing.md),
             _Headline(job: _job, name: name),
             const SizedBox(height: AppSpacing.md),

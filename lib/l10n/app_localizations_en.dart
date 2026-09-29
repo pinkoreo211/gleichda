@@ -1092,6 +1092,59 @@ class AppLocalizationsEn extends AppLocalizations {
   String get bookingDoneHome => 'Back to start';
 
   @override
+  String get photosLabel => 'Photos';
+
+  @override
+  String get photosHint =>
+      'Optional. A picture often says quicker than words what this is about.';
+
+  @override
+  String get photosPrivacy =>
+      'Only you and the providers you ask can see them.';
+
+  @override
+  String get photosAdd => 'Add a photo';
+
+  @override
+  String get photosRemove => 'Remove photo';
+
+  @override
+  String get photosFromCamera => 'Take a photo';
+
+  @override
+  String get photosFromGallery => 'Photo from gallery';
+
+  @override
+  String get photosOpen => 'View photo';
+
+  @override
+  String photosCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count photos',
+      one: '1 photo',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String photosPosition(int index, int total) {
+    return '$index of $total';
+  }
+
+  @override
+  String photosNotSent(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count photos could not be sent. Your request still arrived.',
+      one: 'One photo could not be sent. Your request still arrived.',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String jobWantedAt(String when) {
     return 'Preferred time: $when';
   }
@@ -1232,4 +1285,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get errorDocumentTypeNotAllowed =>
       'That file format does not work. PDF, JPG, PNG, HEIC and WEBP are accepted.';
+
+  @override
+  String get errorTooManyPhotos => 'More than six photos is not possible.';
 }
