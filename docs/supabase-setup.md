@@ -46,7 +46,7 @@ Bisher gibt es diese Dateien:
 | `20260927120000_push_notifications.sql` | Geräte-Tokens und Benachrichtigungs-Warteschlange (siehe docs/push-setup.md) | ✅ |
 | `20260929120000_profile_names_and_avatars.sql` | Profilbild je Konto (öffentlicher Bucket `avatars`); Name und Foto in allen Listen | ✅ |
 | `20260929140000_status_notifications.sql` | Fünf Status-Benachrichtigungen (angenommen, Termin, unterwegs, fertig, bestätigt) | ✅ |
-| `20260930120000_request_photos.sql` | Fotos an einer Anfrage (privater Bucket `request-photos`); sichtbar nur für den Kunden und die angefragten Dienstleister | ⬜ |
+| `20260930120000_request_photos.sql` | Fotos an einer Anfrage (privater Bucket `request-photos`); sichtbar nur für den Kunden und die angefragten Dienstleister | ✅ |
 
 Die beiden Auftragsstatus-Dateien sind **getrennt und in dieser Reihenfolge**
 auszuführen. Postgres erlaubt es nicht, einen gerade erst angelegten
